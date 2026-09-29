@@ -34,6 +34,29 @@ final class KickCounterUITests: XCTestCase {
         app.buttons["kickButton"].value as? String
     }
 
+    /// Waits for the kick button's accessibility value to become `expected` and asserts it.
+    ///
+    /// Counter mutations (`recordKick`, `undo`, `cancelSession`) all run inside an async
+    /// `Task` in `CounterView`, so the accessibility value updates asynchronously after
+    /// the triggering tap. Reading `kickValue` immediately after a tap races that update and
+    /// can observe the stale value (seen flaking on CI); wait for the predicate instead of
+    /// asserting straight away.
+    @MainActor
+    private func waitForKickValue(
+        _ expected: String,
+        timeout: TimeInterval = 5,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let kick = app.buttons["kickButton"]
+        let reached = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == %@", expected),
+            object: kick
+        )
+        XCTAssertEqual(XCTWaiter().wait(for: [reached], timeout: timeout), .completed, file: file, line: line)
+        XCTAssertEqual(kickValue, expected, file: file, line: line)
+    }
+
     @MainActor
     func testCountingTenMovementsShowsCompletionAndHistory() {
         tapKick(times: 10)
@@ -49,7 +72,7 @@ final class KickCounterUITests: XCTestCase {
     func testUndoRemovesLastMovement() {
         tapKick(times: 3)
         app.buttons["undoButton"].tap()
-        XCTAssertEqual(kickValue, "2 of 10 movements")
+        waitForKickValue("2 of 10 movements")
     }
 
     @MainActor
@@ -63,16 +86,7 @@ final class KickCounterUITests: XCTestCase {
             // Newer iOS versions may render the dialog as a popover rather than a sheet.
             app.buttons.matching(identifier: "Cancel session").element(boundBy: 1).tap()
         }
-        // cancelSession() runs in an async Task, so the kick button's accessibility
-        // value updates asynchronously after the tap; wait for it instead of reading
-        // it immediately (which raced the update and observed the stale count on CI).
-        let kick = app.buttons["kickButton"]
-        let reset = XCTNSPredicateExpectation(
-            predicate: NSPredicate(format: "value == %@", "0 of 10 movements"),
-            object: kick
-        )
-        XCTAssertEqual(XCTWaiter().wait(for: [reset], timeout: 5), .completed)
-        XCTAssertEqual(kickValue, "0 of 10 movements")
+        waitForKickValue("0 of 10 movements")
     }
 
     @MainActor
@@ -80,6 +94,16 @@ final class KickCounterUITests: XCTestCase {
         let kick = app.buttons["kickButton"]
         XCTAssertTrue(kick.waitForExistence(timeout: 5))
         kick.doubleTap()
-        XCTAssertEqual(kickValue, "1 of 10 movements")
+        waitForKickValue("1 of 10 movements")
+
+        // The debounce must hold: confirm the second tap of the double-tap never gets
+        // counted later by asserting the value does NOT progress to "2 of 10 movements"
+        // within a short settle window (an inverted expectation, not a fixed sleep gate).
+        let regressed = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == %@", "2 of 10 movements"),
+            object: kick
+        )
+        let result = XCTWaiter().wait(for: [regressed], timeout: 1.5)
+        XCTAssertEqual(result, .timedOut, "second tap of the double-tap must remain debounced")
     }
 }
