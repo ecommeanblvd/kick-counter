@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Local gate before push. The dev Mac has no Xcode, so only KickCore can be
+# checked here; the iOS build, KickData and UI tests are gated by CI.
+exec "$(git rev-parse --show-toplevel)/scripts/test-core.sh"
