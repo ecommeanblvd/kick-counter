@@ -15,6 +15,8 @@ settings:
 packages:
   KickCore:
     path: Packages/KickCore
+  KickData:
+    path: Packages/KickData
 targets:
   KickCounter:
     type: application
@@ -23,6 +25,7 @@ targets:
       - App
     dependencies:
       - package: KickCore
+      - package: KickData
     info:
       path: App/Info.plist
       properties:
