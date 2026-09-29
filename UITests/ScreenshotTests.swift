@@ -87,4 +87,29 @@ final class ScreenshotTests: XCTestCase {
         tapKick(app, times: 2)
         snap(app, "counter-2-en")
     }
+
+    @MainActor
+    func testOnboardingAndSettingsScreens() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-AppleLanguages", "(vi)", "-AppleLocale", "vi_VN"]
+        app.launch()
+
+        let next = app.buttons["onboardingNext"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        snap(app, "onboarding-1")
+        next.tap()
+        snap(app, "onboarding-2")
+        next.tap()
+        snap(app, "onboarding-3")
+        app.buttons["onboardingAgree"].tap()
+
+        app.tabBars.buttons.element(boundBy: 2).tap()
+        XCTAssertTrue(app.switches.firstMatch.waitForExistence(timeout: 5))
+        snap(app, "settings")
+        app.switches.element(boundBy: 1).tap() // "Đặt ngày dự sinh"
+        snap(app, "settings-due-date")
+
+        app.tabBars.buttons.element(boundBy: 0).tap()
+        snap(app, "counter-with-week")
+    }
 }

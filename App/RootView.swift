@@ -13,8 +13,14 @@ struct RootView: View {
                 .tabItem { Label(L10n.tabCounter, systemImage: "hand.tap.fill") }
             HistoryView()
                 .tabItem { Label(L10n.tabHistory, systemImage: "chart.bar.fill") }
-            Text(L10n.settingsTitle) // replaced by SettingsView in Task 10
+            SettingsView()
                 .tabItem { Label(L10n.tabSettings, systemImage: "gearshape.fill") }
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { !hasCompletedOnboarding },
+            set: { hasCompletedOnboarding = !$0 }
+        )) {
+            OnboardingView { hasCompletedOnboarding = true }
         }
         .task { await coordinator.load() }
         .onChange(of: scenePhase) { _, phase in
