@@ -174,9 +174,9 @@ struct KickCoordinatorTests {
         let idA = try #require(coordinator.activeSessionID)
 
         live.holdUpdate = true
-        defer { live.releaseUpdate() }
         async let completion: KickOutcome = coordinator.recordKick() // 10th kick: completes A, suspends in `update`
-        while !live.updatePending { await Task.yield() }
+        defer { live.releaseUpdate() }
+        try await waitUntil(live.updatePending)
 
         clock.advance(60)
         let secondOutcome = await coordinator.recordKick() // starts session B
@@ -199,9 +199,9 @@ struct KickCoordinatorTests {
     /// `start` resumes must push the real count.
     @Test func kickWhileStartIsHeldUpdatesLiveActivityAfterRelease() async throws {
         live.holdStart = true
-        defer { live.releaseStart() }
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends in `start`
-        while !live.startPending { await Task.yield() }
+        defer { live.releaseStart() }
+        try await waitUntil(live.startPending)
 
         clock.advance(1)
         let second = await coordinator.recordKick() // kick 2, arrives while start is in flight
@@ -221,10 +221,10 @@ struct KickCoordinatorTests {
     @Test func sessionCompletingWhileAuthorizationIsHeldSchedulesNoAlert() async throws {
         center.status = .notDetermined
         center.holdRequestAuthorization = true
-        defer { center.releaseRequestAuthorization() }
 
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends requesting authorization
-        while !center.requestAuthorizationPending { await Task.yield() }
+        defer { center.releaseRequestAuthorization() }
+        try await waitUntil(center.requestAuthorizationPending)
         let idA = try #require(coordinator.activeSessionID)
 
         for _ in 0..<9 {
@@ -243,10 +243,10 @@ struct KickCoordinatorTests {
     @Test func sessionCancelledWhileAuthorizationIsHeldSchedulesNoAlert() async throws {
         center.status = .notDetermined
         center.holdRequestAuthorization = true
-        defer { center.releaseRequestAuthorization() }
 
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends requesting authorization
-        while !center.requestAuthorizationPending { await Task.yield() }
+        defer { center.releaseRequestAuthorization() }
+        try await waitUntil(center.requestAuthorizationPending)
         let idA = try #require(coordinator.activeSessionID)
 
         await coordinator.cancelSession()
@@ -298,10 +298,10 @@ struct KickCoordinatorTests {
         live.activeIDs.removeAll()
         live.started.removeAll()
         live.holdStart = true
-        defer { live.releaseStart() }
 
         async let loadA: Void = coordinator.load()
-        while !live.startPending { await Task.yield() }
+        defer { live.releaseStart() }
+        try await waitUntil(live.startPending)
         async let loadB: Void = coordinator.load()
 
         live.releaseStart()
@@ -336,10 +336,10 @@ struct KickCoordinatorTests {
         let id = seeded.record.id
 
         live.holdStart = true
-        defer { live.releaseStart() }
 
         async let loadTask: Void = coordinator.load()
-        while !live.startPending { await Task.yield() }
+        defer { live.releaseStart() }
+        try await waitUntil(live.startPending)
 
         await coordinator.cancelSession()
 
@@ -360,10 +360,10 @@ struct KickCoordinatorTests {
         let id = try #require(coordinator.activeSessionID)
 
         center.holdAuthorizationStatus = true
-        defer { center.releaseAuthorizationStatus() }
 
         async let loadTask: Void = coordinator.load()
-        while !center.authorizationStatusPending { await Task.yield() }
+        defer { center.releaseAuthorizationStatus() }
+        try await waitUntil(center.authorizationStatusPending)
 
         clock.advance(60)
         await coordinator.recordKick() // 10th kick completes the session
@@ -380,10 +380,10 @@ struct KickCoordinatorTests {
     /// must not blindly `cancelOverdueAlerts(except: nil)` once it resumes.
     @Test func loadWithNoSessionSuspendedInEndAllDoesNotDeleteNewSessionsAlert() async throws {
         live.holdEndAll = true
-        defer { live.releaseEndAll() }
 
         async let loadTask: Void = coordinator.load() // no active session: endAll(), held
-        while !live.endAllPending { await Task.yield() }
+        defer { live.releaseEndAll() }
+        try await waitUntil(live.endAllPending)
 
         await coordinator.recordKick() // starts session Y, schedules its overdue alert
         let idY = try #require(coordinator.activeSessionID)
@@ -407,10 +407,10 @@ struct KickCoordinatorTests {
         #expect(seeded.record.state.count == 2)
 
         live.holdStart = true
-        defer { live.releaseStart() }
 
         async let loadTask: Void = coordinator.load()
-        while !live.startPending { await Task.yield() }
+        defer { live.releaseStart() }
+        try await waitUntil(live.startPending)
 
         clock.advance(60)
         let outcome = await coordinator.recordKick() // 3rd kick: its own `update` is dropped, no activity yet
@@ -423,5 +423,29 @@ struct KickCoordinatorTests {
         #expect(live.started.count == 1)
         #expect(live.updates.last?.sessionID == id)
         #expect(live.updates.last?.count == 3)
+    }
+
+    // MARK: - Fix round 3: test hygiene (no hangs)
+
+    /// Literal regression test for the `startingSessionID` gate in
+    /// `performLoad`: a `load()` call must not start a second activity while
+    /// the first kick's own `start` is still in flight. This already passes on
+    /// the prior HEAD (fix round 1 already shared `startingSessionID` between
+    /// `startSideEffects` and `performLoad`); it's added as explicit coverage
+    /// per the round-3 review, not because it currently fails.
+    @Test func loadDoesNotStartSecondActivityWhileFirstKickStartIsInFlight() async throws {
+        live.holdStart = true
+
+        async let firstKick: KickOutcome = coordinator.recordKick() // starts session, suspends in `start`
+        defer { live.releaseStart() }
+        try await waitUntil(live.startPending)
+
+        await coordinator.load()
+
+        live.releaseStart()
+        let outcome = await firstKick
+        #expect(outcome == .added(count: 1))
+
+        #expect(live.started.count == 1)
     }
 }

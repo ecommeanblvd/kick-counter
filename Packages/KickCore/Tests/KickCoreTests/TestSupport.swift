@@ -1,4 +1,5 @@
 import Foundation
+import Testing
 @preconcurrency import UserNotifications
 @testable import KickCore
 
@@ -11,6 +12,23 @@ var utcCalendar: Calendar {
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(identifier: "UTC")!
     return calendar
+}
+
+/// Spins on `Task.yield()` until `condition` becomes true, failing the test
+/// (via `#require`) after `maxYields` iterations instead of hanging forever
+/// when a regression means some gated fake call never reaches its hold point.
+@MainActor
+func waitUntil(
+    _ condition: @autoclosure () -> Bool,
+    maxYields: Int = 10_000,
+    sourceLocation: SourceLocation = #_sourceLocation
+) async throws {
+    var yields = 0
+    while !condition() {
+        yields += 1
+        try #require(yields < maxYields, "Timed out waiting for condition to become true", sourceLocation: sourceLocation)
+        await Task.yield()
+    }
 }
 
 @MainActor
