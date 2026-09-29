@@ -45,9 +45,32 @@ final class FakeNotificationCenter: NotificationCenterClient {
         return grantOnRequest
     }
 
-    func authorizationStatus() async -> UNAuthorizationStatus { status }
+    func authorizationStatus() async -> UNAuthorizationStatus {
+        if holdAuthorizationStatus {
+            holdAuthorizationStatus = false
+            authorizationStatusPending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                authorizationStatusContinuations.append(continuation)
+            }
+            authorizationStatusPending = false
+        }
+        return status
+    }
 
     func pendingRequestIDs() async -> [String] { added.map(\.identifier) }
+
+    /// One-shot gate: the next `authorizationStatus()` call suspends until
+    /// `releaseAuthorizationStatus()` is called, simulating an in-flight
+    /// authorization check (e.g. `isAuthorized()` during `load()`).
+    var holdAuthorizationStatus = false
+    private(set) var authorizationStatusPending = false
+    private var authorizationStatusContinuations: [CheckedContinuation<Void, Never>] = []
+
+    func releaseAuthorizationStatus() {
+        let continuations = authorizationStatusContinuations
+        authorizationStatusContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
+    }
 
     /// One-shot gate: the next `requestAuthorization()` call suspends until
     /// `releaseRequestAuthorization()` is called, simulating a permission prompt
@@ -192,8 +215,28 @@ final class FakeLiveActivities: LiveActivityManaging {
     }
 
     func endAll() async {
+        if holdEndAll {
+            holdEndAll = false
+            endAllPending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                endAllContinuations.append(continuation)
+            }
+            endAllPending = false
+        }
         endAllCount += 1
         activeIDs.removeAll()
+    }
+
+    /// One-shot gate: the next `endAll()` call suspends until `releaseEndAll()`
+    /// is called, simulating an in-flight ActivityKit request.
+    var holdEndAll = false
+    private(set) var endAllPending = false
+    private var endAllContinuations: [CheckedContinuation<Void, Never>] = []
+
+    func releaseEndAll() {
+        let continuations = endAllContinuations
+        endAllContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
     }
 }
 

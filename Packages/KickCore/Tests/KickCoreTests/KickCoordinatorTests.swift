@@ -174,6 +174,7 @@ struct KickCoordinatorTests {
         let idA = try #require(coordinator.activeSessionID)
 
         live.holdUpdate = true
+        defer { live.releaseUpdate() }
         async let completion: KickOutcome = coordinator.recordKick() // 10th kick: completes A, suspends in `update`
         while !live.updatePending { await Task.yield() }
 
@@ -198,6 +199,7 @@ struct KickCoordinatorTests {
     /// `start` resumes must push the real count.
     @Test func kickWhileStartIsHeldUpdatesLiveActivityAfterRelease() async throws {
         live.holdStart = true
+        defer { live.releaseStart() }
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends in `start`
         while !live.startPending { await Task.yield() }
 
@@ -219,6 +221,7 @@ struct KickCoordinatorTests {
     @Test func sessionCompletingWhileAuthorizationIsHeldSchedulesNoAlert() async throws {
         center.status = .notDetermined
         center.holdRequestAuthorization = true
+        defer { center.releaseRequestAuthorization() }
 
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends requesting authorization
         while !center.requestAuthorizationPending { await Task.yield() }
@@ -240,6 +243,7 @@ struct KickCoordinatorTests {
     @Test func sessionCancelledWhileAuthorizationIsHeldSchedulesNoAlert() async throws {
         center.status = .notDetermined
         center.holdRequestAuthorization = true
+        defer { center.releaseRequestAuthorization() }
 
         async let first: KickOutcome = coordinator.recordKick() // kick 1, suspends requesting authorization
         while !center.requestAuthorizationPending { await Task.yield() }
@@ -294,6 +298,7 @@ struct KickCoordinatorTests {
         live.activeIDs.removeAll()
         live.started.removeAll()
         live.holdStart = true
+        defer { live.releaseStart() }
 
         async let loadA: Void = coordinator.load()
         while !live.startPending { await Task.yield() }
@@ -317,5 +322,106 @@ struct KickCoordinatorTests {
         await coordinator.load()
 
         #expect(center.requestCount == 0)
+    }
+
+    // MARK: - Fix round 2: performLoad() re-entrancy safety
+
+    /// Finding 3 (round 2): `load()` starting a missing activity must re-check
+    /// the session afterward like `startSideEffects` does. If the session is
+    /// cancelled while that `start` is in flight, the just-created activity
+    /// must be torn down again instead of left orphaned, and no overdue alert
+    /// should be scheduled.
+    @Test func loadCancelledWhileStartIsHeldLeavesNoActivityOrAlert() async throws {
+        let seeded = try repository.addKick(at: t0) // active session, no Live Activity yet
+        let id = seeded.record.id
+
+        live.holdStart = true
+        defer { live.releaseStart() }
+
+        async let loadTask: Void = coordinator.load()
+        while !live.startPending { await Task.yield() }
+
+        await coordinator.cancelSession()
+
+        live.releaseStart()
+        await loadTask
+
+        #expect(coordinator.activeSession == nil)
+        #expect(live.activeIDs.isEmpty)
+        #expect(!center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: id) })
+    }
+
+    /// Finding 3 (round 2): a session that completes while `load()` is
+    /// suspended reconciling its overdue alert (after `cancelOverdueAlerts`,
+    /// waiting on `isAuthorized()`) must not have a false alert scheduled for
+    /// it once `load()` resumes.
+    @Test func loadSchedulesNoAlertWhenSessionCompletesWhileSuspended() async throws {
+        await kick(times: 9)
+        let id = try #require(coordinator.activeSessionID)
+
+        center.holdAuthorizationStatus = true
+        defer { center.releaseAuthorizationStatus() }
+
+        async let loadTask: Void = coordinator.load()
+        while !center.authorizationStatusPending { await Task.yield() }
+
+        clock.advance(60)
+        await coordinator.recordKick() // 10th kick completes the session
+        #expect(coordinator.activeSession == nil)
+
+        center.releaseAuthorizationStatus()
+        await loadTask
+
+        #expect(!center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: id) })
+    }
+
+    /// Finding 3 (round 2): a new session starting while a no-session `load()`
+    /// is suspended inside `endAll()` must keep its own overdue alert — `load()`
+    /// must not blindly `cancelOverdueAlerts(except: nil)` once it resumes.
+    @Test func loadWithNoSessionSuspendedInEndAllDoesNotDeleteNewSessionsAlert() async throws {
+        live.holdEndAll = true
+        defer { live.releaseEndAll() }
+
+        async let loadTask: Void = coordinator.load() // no active session: endAll(), held
+        while !live.endAllPending { await Task.yield() }
+
+        await coordinator.recordKick() // starts session Y, schedules its overdue alert
+        let idY = try #require(coordinator.activeSessionID)
+
+        live.releaseEndAll()
+        await loadTask
+
+        #expect(center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: idY) })
+    }
+
+    /// Finding 3 (round 2): `load()`'s own `start` (for an active session found
+    /// in the store with no Live Activity yet) must get the same post-start
+    /// count correction as `startSideEffects`. Without it, a kick landing while
+    /// that `start` is in flight is silently dropped (no activity yet) and the
+    /// Live Activity is left showing a stale count.
+    @Test func loadStartedActivityGetsCountCorrectionAfterDroppedKick() async throws {
+        _ = try repository.addKick(at: t0)
+        clock.advance(60)
+        let seeded = try repository.addKick(at: clock.now) // active session, count 2, no Live Activity yet
+        let id = seeded.record.id
+        #expect(seeded.record.state.count == 2)
+
+        live.holdStart = true
+        defer { live.releaseStart() }
+
+        async let loadTask: Void = coordinator.load()
+        while !live.startPending { await Task.yield() }
+
+        clock.advance(60)
+        let outcome = await coordinator.recordKick() // 3rd kick: its own `update` is dropped, no activity yet
+        #expect(outcome == .added(count: 3))
+        #expect(live.droppedUpdates.contains { $0.sessionID == id && $0.count == 3 })
+
+        live.releaseStart()
+        await loadTask
+
+        #expect(live.started.count == 1)
+        #expect(live.updates.last?.sessionID == id)
+        #expect(live.updates.last?.count == 3)
     }
 }

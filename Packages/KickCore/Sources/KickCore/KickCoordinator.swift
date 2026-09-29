@@ -79,24 +79,37 @@ public final class KickCoordinator {
                 let sessionID = record.id
                 if liveActivities.isAvailable {
                     if !liveActivities.hasActivity(for: sessionID), startingSessionID != sessionID {
-                        await liveActivities.start(sessionID: sessionID, startedAt: record.state.startedAt, count: record.state.count)
+                        await startLiveActivity(sessionID: sessionID, startedAt: record.state.startedAt, initialCount: record.state.count)
                     } else if liveActivities.hasActivity(for: sessionID) {
                         await liveActivities.update(sessionID: sessionID, count: record.state.count, completedAt: nil)
                     }
                 }
+                // The session may have completed, been cancelled, or been superseded
+                // by a new one while the Live Activity call above was in flight; don't
+                // touch another session's overdue alert.
+                guard activeSessionID == sessionID else { return }
+
                 await notifications.cancelOverdueAlerts(except: sessionID)
+                guard activeSessionID == sessionID else { return }
+
                 // Never prompt from load(): only (re)schedule when already authorized.
-                if await notifications.isAuthorized() {
-                    do {
-                        try await notifications.scheduleOverdueAlert(
-                            sessionID: sessionID, startedAt: record.state.startedAt, now: now(), text: overdueText
-                        )
-                    } catch {
-                        logger.error("Scheduling overdue alert during load failed: \(error.localizedDescription)")
+                guard await notifications.isAuthorized() else { return }
+                guard activeSessionID == sessionID else { return }
+                do {
+                    try await notifications.scheduleOverdueAlert(
+                        sessionID: sessionID, startedAt: record.state.startedAt, now: now(), text: overdueText
+                    )
+                    if activeSessionID != sessionID {
+                        notifications.cancelOverdueAlert(sessionID: sessionID)
                     }
+                } catch {
+                    logger.error("Scheduling overdue alert during load failed: \(error.localizedDescription)")
                 }
             } else {
                 await liveActivities.endAll()
+                // A new session may have started (and scheduled its own overdue alert)
+                // while `endAll` was in flight; don't wipe it out from under it.
+                guard activeSessionID == nil else { return }
                 await notifications.cancelOverdueAlerts(except: nil)
             }
         } catch {
@@ -202,15 +215,7 @@ public final class KickCoordinator {
         let sessionID = record.id
 
         if liveActivities.isAvailable {
-            startingSessionID = sessionID
-            await liveActivities.start(sessionID: sessionID, startedAt: record.state.startedAt, count: record.state.count)
-            if startingSessionID == sessionID { startingSessionID = nil }
-
-            // A later kick may have landed while `start` was in flight; the Live
-            // Activity was requested with a stale count, so push the real one.
-            if activeSessionID == sessionID, let current = activeSession?.count, current != record.state.count {
-                await liveActivities.update(sessionID: sessionID, count: current, completedAt: nil)
-            }
+            await startLiveActivity(sessionID: sessionID, startedAt: record.state.startedAt, initialCount: record.state.count)
         }
 
         guard await notifications.requestAuthorizationIfNeeded() else { return }
@@ -226,6 +231,27 @@ public final class KickCoordinator {
             }
         } catch {
             logger.error("Scheduling overdue alert failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Starts a Live Activity for `sessionID`, shared by `recordKick`'s first-kick
+    /// path and by `load()`'s reconciliation. Tracks the in-flight request via
+    /// `startingSessionID` so a concurrent `load()` doesn't race it into a second
+    /// `start`; once the request resolves, corrects the activity to the current
+    /// published count if it drifted while suspended, and — if the session is no
+    /// longer active by then — tears the just-created activity down again instead
+    /// of leaving it orphaned.
+    private func startLiveActivity(sessionID: UUID, startedAt: Date, initialCount: Int) async {
+        startingSessionID = sessionID
+        await liveActivities.start(sessionID: sessionID, startedAt: startedAt, count: initialCount)
+        if startingSessionID == sessionID { startingSessionID = nil }
+
+        guard activeSessionID == sessionID else {
+            await liveActivities.end(sessionID: sessionID, dismissAfter: 0)
+            return
+        }
+        if let current = activeSession?.count, current != initialCount {
+            await liveActivities.update(sessionID: sessionID, count: current, completedAt: nil)
         }
     }
 }
