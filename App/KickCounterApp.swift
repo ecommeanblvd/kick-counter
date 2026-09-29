@@ -10,7 +10,11 @@ struct KickCounterApp: App {
 
     init() {
         environment = Result { try AppEnvironment.make() }
-        if case .failure(let error) = environment {
+        switch environment {
+        case .success(let env):
+            let coordinator = env.coordinator
+            KickIntentBridge.recordKick = { _ = await coordinator.recordKick() }
+        case .failure(let error):
             logger.fault("Could not open the data store: \(error.localizedDescription)")
         }
     }

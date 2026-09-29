@@ -21,7 +21,7 @@ struct AppEnvironment {
         }
         let container = try KickPersistence.makeContainer(inMemory: isUITesting)
         let notificationCenter: NotificationCenterClient = isUITesting ? DisabledNotificationCenter() : SystemNotificationCenter()
-        let liveActivities: LiveActivityManaging = NoopLiveActivityManager() // replaced in Task 11
+        let liveActivities: LiveActivityManaging = isUITesting ? NoopLiveActivityManager() : SystemLiveActivityManager()
         let coordinator = KickCoordinator(
             store: KickStore(context: container.mainContext),
             notifications: NotificationScheduler(center: notificationCenter),
