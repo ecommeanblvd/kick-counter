@@ -5,6 +5,15 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.lmtiep.kickcounter", category: "live-activity")
 
+private extension ActivityState {
+    /// `.active` is the common case; ActivityKit moves an activity to `.stale`
+    /// once its `staleDate` (our overdue threshold) passes, but it is still
+    /// live — updatable and endable — until dismissed/ended.
+    var isLive: Bool {
+        self == .active || self == .stale
+    }
+}
+
 @MainActor
 final class SystemLiveActivityManager: LiveActivityManaging {
     private var activities: [Activity<KickActivityAttributes>] {
@@ -12,7 +21,7 @@ final class SystemLiveActivityManager: LiveActivityManaging {
     }
 
     private func activity(for sessionID: UUID) -> Activity<KickActivityAttributes>? {
-        activities.first { $0.attributes.sessionID == sessionID && $0.activityState == .active }
+        activities.first { $0.attributes.sessionID == sessionID && $0.activityState.isLive }
     }
 
     var isAvailable: Bool {
