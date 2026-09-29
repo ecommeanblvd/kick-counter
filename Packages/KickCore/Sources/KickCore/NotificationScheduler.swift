@@ -29,6 +29,7 @@ public protocol NotificationCenterClient: AnyObject {
     func removePending(ids: [String])
     func requestAuthorization() async throws -> Bool
     func authorizationStatus() async -> UNAuthorizationStatus
+    func pendingRequestIDs() async -> [String]
 }
 
 @MainActor
@@ -51,6 +52,10 @@ public final class SystemNotificationCenter: NotificationCenterClient {
 
     public func authorizationStatus() async -> UNAuthorizationStatus {
         await center.notificationSettings().authorizationStatus
+    }
+
+    public func pendingRequestIDs() async -> [String] {
+        await center.pendingNotificationRequests().map(\.identifier)
     }
 }
 
@@ -108,5 +113,15 @@ public final class NotificationScheduler {
 
     public func cancelOverdueAlert(sessionID: UUID) {
         center.removePending(ids: [Self.overdueID(for: sessionID)])
+    }
+
+    /// Removes every pending overdue alert other than the one for `sessionID`
+    /// (or all of them, when `sessionID` is nil). Cleans up alerts orphaned by
+    /// a killed app or a session that changed without going through this scheduler.
+    public func cancelOverdueAlerts(except sessionID: UUID?) async {
+        let keepID = sessionID.map(Self.overdueID(for:))
+        let staleIDs = await center.pendingRequestIDs().filter { $0.hasPrefix("overdue-") && $0 != keepID }
+        guard !staleIDs.isEmpty else { return }
+        center.removePending(ids: staleIDs)
     }
 }

@@ -32,12 +32,35 @@ final class FakeNotificationCenter: NotificationCenterClient {
     }
 
     func requestAuthorization() async throws -> Bool {
+        if holdRequestAuthorization {
+            holdRequestAuthorization = false
+            requestAuthorizationPending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                requestAuthorizationContinuations.append(continuation)
+            }
+            requestAuthorizationPending = false
+        }
         requestCount += 1
         status = grantOnRequest ? .authorized : .denied
         return grantOnRequest
     }
 
     func authorizationStatus() async -> UNAuthorizationStatus { status }
+
+    func pendingRequestIDs() async -> [String] { added.map(\.identifier) }
+
+    /// One-shot gate: the next `requestAuthorization()` call suspends until
+    /// `releaseRequestAuthorization()` is called, simulating a permission prompt
+    /// the user hasn't answered yet.
+    var holdRequestAuthorization = false
+    private(set) var requestAuthorizationPending = false
+    private var requestAuthorizationContinuations: [CheckedContinuation<Void, Never>] = []
+
+    func releaseRequestAuthorization() {
+        let continuations = requestAuthorizationContinuations
+        requestAuthorizationContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
+    }
 }
 
 /// In-memory SessionRepository with the same rules as KickStore.
@@ -95,22 +118,77 @@ final class FakeLiveActivities: LiveActivityManaging {
     var isAvailable = true
     var activeIDs: Set<UUID> = []
     var started: [(id: UUID, startedAt: Date, count: Int)] = []
-    var updates: [(count: Int, completedAt: Date?)] = []
-    var ended: [TimeInterval] = []
+    /// Calls that found an activity for that session and were applied.
+    var updates: [(sessionID: UUID, count: Int, completedAt: Date?)] = []
+    var ended: [(sessionID: UUID, dismissAfter: TimeInterval)] = []
+    /// Calls that found no activity for that session and were dropped (no-op).
+    var droppedUpdates: [(sessionID: UUID, count: Int, completedAt: Date?)] = []
+    var droppedEnds: [(sessionID: UUID, dismissAfter: TimeInterval)] = []
     var endAllCount = 0
+
+    /// One-shot gate: the next `start(...)` call suspends until `releaseStart()`
+    /// is called, simulating an in-flight ActivityKit request.
+    var holdStart = false
+    private(set) var startPending = false
+    private var startContinuations: [CheckedContinuation<Void, Never>] = []
 
     func hasActivity(for sessionID: UUID) -> Bool { activeIDs.contains(sessionID) }
 
     func start(sessionID: UUID, startedAt: Date, count: Int) async {
+        if holdStart {
+            holdStart = false
+            startPending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                startContinuations.append(continuation)
+            }
+            startPending = false
+        }
+        activeIDs = activeIDs.filter { $0 == sessionID } // ending activities of any other session
         activeIDs.insert(sessionID)
         started.append((sessionID, startedAt, count))
     }
 
-    func update(count: Int, completedAt: Date?) async { updates.append((count, completedAt)) }
+    func releaseStart() {
+        let continuations = startContinuations
+        startContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
+    }
 
-    func end(dismissAfter: TimeInterval) async {
-        ended.append(dismissAfter)
-        activeIDs.removeAll()
+    /// One-shot gate: the next `update(...)` call suspends until `releaseUpdate()`
+    /// is called, simulating an in-flight ActivityKit update.
+    var holdUpdate = false
+    private(set) var updatePending = false
+    private var updateContinuations: [CheckedContinuation<Void, Never>] = []
+
+    func update(sessionID: UUID, count: Int, completedAt: Date?) async {
+        if holdUpdate {
+            holdUpdate = false
+            updatePending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                updateContinuations.append(continuation)
+            }
+            updatePending = false
+        }
+        guard activeIDs.contains(sessionID) else {
+            droppedUpdates.append((sessionID, count, completedAt))
+            return
+        }
+        updates.append((sessionID, count, completedAt))
+    }
+
+    func releaseUpdate() {
+        let continuations = updateContinuations
+        updateContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
+    }
+
+    func end(sessionID: UUID, dismissAfter: TimeInterval) async {
+        guard activeIDs.contains(sessionID) else {
+            droppedEnds.append((sessionID, dismissAfter))
+            return
+        }
+        ended.append((sessionID, dismissAfter))
+        activeIDs.remove(sessionID)
     }
 
     func endAll() async {

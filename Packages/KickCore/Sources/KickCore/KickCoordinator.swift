@@ -11,6 +11,13 @@ public enum KickFailure: Equatable, Sendable {
 
 /// Single entry point for counting actions, used by the UI and by AddKickIntent.
 /// Keeps the repository, the overdue notification and the Live Activity in step.
+///
+/// Every Live Activity call is scoped to a session id, and every side-effect
+/// sequence re-checks `activeSessionID` after each `await` before touching that
+/// session's Live Activity or overdue alert again, so a session that completes,
+/// is cancelled, or is superseded while a side effect is in flight can't corrupt
+/// another session's state (see task-6-fix-round-1.md for the defects this guards
+/// against).
 @MainActor
 @Observable
 public final class KickCoordinator {
@@ -26,6 +33,13 @@ public final class KickCoordinator {
     private let liveActivities: LiveActivityManaging
     private let overdueText: NotificationText
     private let now: @MainActor () -> Date
+
+    /// The session whose Live Activity `start` call is currently in flight, so
+    /// `load()` never races it into starting a second activity for the same session.
+    private var startingSessionID: UUID?
+    /// The in-flight `load()` reconciliation, so concurrent callers await the
+    /// same run instead of each starting their own.
+    private var loadTask: Task<Void, Never>?
 
     public init(
         store: SessionRepository,
@@ -43,18 +57,47 @@ public final class KickCoordinator {
 
     public var liveActivitiesAvailable: Bool { liveActivities.isAvailable }
 
-    /// Refreshes state from the store and reconciles the Live Activity.
-    /// Call on launch and whenever the app becomes active.
+    /// Refreshes state from the store and reconciles the Live Activity and the
+    /// overdue alert. Call on launch and whenever the app becomes active.
+    /// Concurrent calls share a single in-flight reconciliation.
     public func load() async {
+        if let loadTask {
+            await loadTask.value
+            return
+        }
+        let task = Task { await self.performLoad() }
+        loadTask = task
+        await task.value
+        loadTask = nil
+    }
+
+    private func performLoad() async {
         do {
             let record = try store.activeSession()
             publish(record)
             if let record {
-                if liveActivities.isAvailable, !liveActivities.hasActivity(for: record.id) {
-                    await liveActivities.start(sessionID: record.id, startedAt: record.state.startedAt, count: record.state.count)
+                let sessionID = record.id
+                if liveActivities.isAvailable {
+                    if !liveActivities.hasActivity(for: sessionID), startingSessionID != sessionID {
+                        await liveActivities.start(sessionID: sessionID, startedAt: record.state.startedAt, count: record.state.count)
+                    } else if liveActivities.hasActivity(for: sessionID) {
+                        await liveActivities.update(sessionID: sessionID, count: record.state.count, completedAt: nil)
+                    }
+                }
+                await notifications.cancelOverdueAlerts(except: sessionID)
+                // Never prompt from load(): only (re)schedule when already authorized.
+                if await notifications.isAuthorized() {
+                    do {
+                        try await notifications.scheduleOverdueAlert(
+                            sessionID: sessionID, startedAt: record.state.startedAt, now: now(), text: overdueText
+                        )
+                    } catch {
+                        logger.error("Scheduling overdue alert during load failed: \(error.localizedDescription)")
+                    }
                 }
             } else {
                 await liveActivities.endAll()
+                await notifications.cancelOverdueAlerts(except: nil)
             }
         } catch {
             logger.error("Loading active session failed: \(error.localizedDescription)")
@@ -81,14 +124,14 @@ public final class KickCoordinator {
             if result.didStartSession {
                 await startSideEffects(for: record, at: time)
             } else {
-                await liveActivities.update(count: count, completedAt: nil)
+                await liveActivities.update(sessionID: record.id, count: count, completedAt: nil)
             }
         case .completed:
             publish(nil)
             completedSession = record.state
             notifications.cancelOverdueAlert(sessionID: record.id)
-            await liveActivities.update(count: record.state.count, completedAt: record.state.endedAt)
-            await liveActivities.end(dismissAfter: Self.completedActivityLinger)
+            await liveActivities.update(sessionID: record.id, count: record.state.count, completedAt: record.state.endedAt)
+            await liveActivities.end(sessionID: record.id, dismissAfter: Self.completedActivityLinger)
         case .ignoredDebounce, .ignoredInactive:
             break
         }
@@ -99,7 +142,7 @@ public final class KickCoordinator {
         do {
             guard let record = try store.undoLastKick() else { return }
             publish(record)
-            await liveActivities.update(count: record.state.count, completedAt: nil)
+            await liveActivities.update(sessionID: record.id, count: record.state.count, completedAt: nil)
         } catch {
             logger.error("Undo failed: \(error.localizedDescription)")
             failure = .saveFailed
@@ -111,7 +154,7 @@ public final class KickCoordinator {
             guard let record = try store.cancelActive(at: now()) else { return }
             notifications.cancelOverdueAlert(sessionID: record.id)
             publish(nil)
-            await liveActivities.end(dismissAfter: 0)
+            await liveActivities.end(sessionID: record.id, dismissAfter: 0)
         } catch {
             logger.error("Cancel failed: \(error.localizedDescription)")
             failure = .saveFailed
@@ -156,14 +199,31 @@ public final class KickCoordinator {
     }
 
     private func startSideEffects(for record: SessionRecord, at time: Date) async {
+        let sessionID = record.id
+
         if liveActivities.isAvailable {
-            await liveActivities.start(sessionID: record.id, startedAt: record.state.startedAt, count: record.state.count)
+            startingSessionID = sessionID
+            await liveActivities.start(sessionID: sessionID, startedAt: record.state.startedAt, count: record.state.count)
+            if startingSessionID == sessionID { startingSessionID = nil }
+
+            // A later kick may have landed while `start` was in flight; the Live
+            // Activity was requested with a stale count, so push the real one.
+            if activeSessionID == sessionID, let current = activeSession?.count, current != record.state.count {
+                await liveActivities.update(sessionID: sessionID, count: current, completedAt: nil)
+            }
         }
+
         guard await notifications.requestAuthorizationIfNeeded() else { return }
+        // The session may have completed or been cancelled while we waited on
+        // (possibly user-facing) authorization; don't schedule a false alert.
+        guard activeSessionID == sessionID else { return }
         do {
             try await notifications.scheduleOverdueAlert(
-                sessionID: record.id, startedAt: record.state.startedAt, now: time, text: overdueText
+                sessionID: sessionID, startedAt: record.state.startedAt, now: time, text: overdueText
             )
+            if activeSessionID != sessionID {
+                notifications.cancelOverdueAlert(sessionID: sessionID)
+            }
         } catch {
             logger.error("Scheduling overdue alert failed: \(error.localizedDescription)")
         }

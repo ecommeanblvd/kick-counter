@@ -56,6 +56,31 @@ struct NotificationSchedulerTests {
         #expect(center.removed == ["overdue-\(id.uuidString)"])
     }
 
+    @Test func cancelOverdueAlertsExceptKeepsOneAndRemovesOthers() async throws {
+        let keep = UUID()
+        let stale1 = UUID()
+        let stale2 = UUID()
+        let start = date("2026-09-01T20:00:00Z")
+        for id in [keep, stale1, stale2] {
+            try await scheduler.scheduleOverdueAlert(sessionID: id, startedAt: start, now: start, text: text)
+        }
+
+        await scheduler.cancelOverdueAlerts(except: keep)
+
+        #expect(center.added.map(\.identifier) == [NotificationScheduler.overdueID(for: keep)])
+        #expect(Set(center.removed) == [NotificationScheduler.overdueID(for: stale1), NotificationScheduler.overdueID(for: stale2)])
+    }
+
+    @Test func cancelOverdueAlertsExceptNilRemovesAllOverdueAlerts() async throws {
+        let start = date("2026-09-01T20:00:00Z")
+        try await scheduler.scheduleOverdueAlert(sessionID: UUID(), startedAt: start, now: start, text: text)
+        try await scheduler.scheduleDailyReminder(hour: 20, minute: 0, text: text)
+
+        await scheduler.cancelOverdueAlerts(except: nil)
+
+        #expect(center.added.map(\.identifier) == [NotificationScheduler.dailyReminderID])
+    }
+
     @Test func requestsAuthorizationOnlyWhenUndetermined() async {
         center.status = .notDetermined
         #expect(await scheduler.requestAuthorizationIfNeeded())
