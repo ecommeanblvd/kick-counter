@@ -1,8 +1,8 @@
 import ActivityKit
 import Foundation
 
-struct KickActivityAttributes: ActivityAttributes {
-    struct ContentState: Codable, Hashable {
+struct KickActivityAttributes: ActivityAttributes, Sendable {
+    struct ContentState: Codable, Hashable, Sendable {
         var count: Int
         var completedAt: Date?
     }
