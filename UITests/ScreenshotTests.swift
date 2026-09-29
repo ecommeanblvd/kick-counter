@@ -108,15 +108,12 @@ final class ScreenshotTests: XCTestCase {
         snap(app, "settings")
         let dueDateToggle = app.switches["settingsDueDateToggle"] // "Đặt ngày dự sinh"
         XCTAssertTrue(dueDateToggle.waitForExistence(timeout: 5))
-        dueDateToggle.tap()
+        // SwiftUI reports one Switch accessibility element for the whole Form row, so its
+        // frame center falls on the row label rather than the actual UISwitch, which sits
+        // near the trailing edge. Tap a coordinate close to the real control instead.
+        dueDateToggle.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
         let dueDateOn = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: dueDateToggle)
-        let waitResult = XCTWaiter().wait(for: [dueDateOn], timeout: 5)
-        if waitResult != .completed {
-            let attachment = XCTAttachment(string: app.debugDescription)
-            attachment.name = "settings-due-date-debug"
-            attachment.lifetime = .keepAlways
-            add(attachment)
-        }
+        XCTAssertEqual(XCTWaiter().wait(for: [dueDateOn], timeout: 5), .completed)
         snap(app, "settings-due-date")
 
         app.tabBars.buttons.element(boundBy: 0).tap()
