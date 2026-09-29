@@ -26,7 +26,7 @@ struct SessionEngineTests {
         #expect(outcome == .completed(duration: 9 * 60))
         #expect(state.status == .completed)
         #expect(state.endedAt == t0.addingTimeInterval(9 * 60))
-        #expect(state.duration == 9 * 60)
+        #expect(state.duration == TimeInterval(9 * 60))
         #expect(state.exceededThreshold == false)
     }
 
