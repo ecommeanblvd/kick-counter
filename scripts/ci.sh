@@ -18,7 +18,7 @@ xcodegen generate --quiet
 DEVICE_ID="$(xcrun simctl list devices available | grep -m1 -E '^[[:space:]]+iPhone' | grep -oE '[0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12}')"
 [[ -n "$DEVICE_ID" ]] || { echo "No available iPhone simulator" >&2; exit 1; }
 
-XCODE_ACTION="build"
+XCODE_ACTION="test"
 rm -rf build && mkdir -p build/screenshots
 echo "==> xcodebuild $XCODE_ACTION on simulator $DEVICE_ID"
 STATUS=0
