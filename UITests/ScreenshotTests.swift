@@ -38,6 +38,37 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Confirms the cancel-session dialog (its destructive button comes first).
+    @MainActor
+    func confirmCancel(_ app: XCUIApplication) {
+        let sheetButton = app.sheets.buttons.element(boundBy: 0)
+        if sheetButton.waitForExistence(timeout: 2) {
+            sheetButton.tap()
+            return
+        }
+        // Newer iOS versions may show a popover: its button has the same label.
+        let label = app.buttons["cancelSessionButton"].label
+        app.buttons.matching(NSPredicate(format: "label == %@", label)).element(boundBy: 1).tap()
+    }
+
+    @MainActor
+    func testHistoryScreens() {
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let app = launch(dark: dark)
+            tapKick(app, times: 10)
+            XCTAssertTrue(app.buttons["completionDone"].waitForExistence(timeout: 5))
+            app.buttons["completionDone"].tap()
+            tapKick(app, times: 2)
+            app.buttons["cancelSessionButton"].tap()
+            confirmCancel(app)
+            app.tabBars.buttons.element(boundBy: 1).tap()
+            XCTAssertTrue(app.descendants(matching: .any)["sessionRow"].firstMatch.waitForExistence(timeout: 5))
+            snap(app, "history-\(suffix)")
+            app.terminate()
+        }
+    }
+
     @MainActor
     func testCounterScreens() {
         for dark in [false, true] {

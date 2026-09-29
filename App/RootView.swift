@@ -11,7 +11,7 @@ struct RootView: View {
         TabView {
             CounterView()
                 .tabItem { Label(L10n.tabCounter, systemImage: "hand.tap.fill") }
-            Text(L10n.historyTitle) // replaced by HistoryView in Task 9
+            HistoryView()
                 .tabItem { Label(L10n.tabHistory, systemImage: "chart.bar.fill") }
             Text(L10n.settingsTitle) // replaced by SettingsView in Task 10
                 .tabItem { Label(L10n.tabSettings, systemImage: "gearshape.fill") }
