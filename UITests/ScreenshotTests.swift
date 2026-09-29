@@ -109,6 +109,14 @@ final class ScreenshotTests: XCTestCase {
         let dueDateToggle = app.switches["settingsDueDateToggle"] // "Đặt ngày dự sinh"
         XCTAssertTrue(dueDateToggle.waitForExistence(timeout: 5))
         dueDateToggle.tap()
+        let dueDateOn = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: dueDateToggle)
+        let waitResult = XCTWaiter().wait(for: [dueDateOn], timeout: 5)
+        if waitResult != .completed {
+            let attachment = XCTAttachment(string: app.debugDescription)
+            attachment.name = "settings-due-date-debug"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
         snap(app, "settings-due-date")
 
         app.tabBars.buttons.element(boundBy: 0).tap()
