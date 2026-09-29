@@ -4,26 +4,41 @@
 
 **Goal:** Ứng dụng iPhone (SwiftUI, iOS 17+) giúp mẹ bầu đếm 10 cử động thai (phương pháp Cardiff), có Live Activity với nút "+1" trên màn hình khóa, lịch sử + biểu đồ 14 ngày, nhắc giờ hằng ngày, song ngữ Anh/Việt.
 
-**Architecture:** Toàn bộ logic nằm trong Swift package cục bộ `KickCore`: engine đếm thuần, model SwiftData, store, scheduler thông báo, và `KickCoordinator` là facade `@Observable` duy nhất mà cả UI lẫn `AddKickIntent` gọi vào. Phần này test được bằng `swift test`. App SwiftUI và Widget Extension chỉ là lớp giao diện mỏng. Thư mục `Shared/` được biên dịch vào cả hai target, chứa `KickActivityAttributes`, `AddKickIntent`, `L10n` và String Catalog. Dự án Xcode được sinh từ `project.yml` bằng XcodeGen và không commit.
+**Architecture:** Logic nằm trong hai Swift package cục bộ:
+- **`KickCore`**: Swift thuần gồm engine đếm, tóm tắt lịch sử, scheduler thông báo, protocol `SessionRepository` và `KickCoordinator` (facade `@Observable` duy nhất mà UI và `AddKickIntent` gọi vào). Package này build và test được trên máy dev chỉ với Command Line Tools.
+- **`KickData`**: model SwiftData và `KickStore: SessionRepository`. Package này cần macro SwiftData có trong Xcode, nên chỉ build/test trên GitHub Actions.
 
-**Tech Stack:** Swift 6, SwiftUI, SwiftData (+ CloudKit private DB), ActivityKit, AppIntents, WidgetKit, UserNotifications, Swift Charts, Swift Testing, XCTest (UI), XcodeGen.
+App SwiftUI và Widget Extension chỉ là lớp giao diện mỏng. Thư mục `Shared/` được biên dịch vào cả hai target. Dự án Xcode được sinh từ `project.yml` bằng XcodeGen.
+
+**Máy dev không có Xcode** vì không đủ dung lượng. Mọi bản build iOS, UI test và ảnh chụp simulator chạy trên GitHub Actions (`.github/workflows/ci.yml`, repo public nên macOS runner miễn phí). Bản TestFlight được đẩy lên qua `.github/workflows/testflight.yml`, dùng App Store Connect API key (ký bằng cloud signing).
+
+**Tech Stack:** Swift 6, SwiftUI, SwiftData (+ CloudKit private DB), ActivityKit, AppIntents, WidgetKit, UserNotifications, Swift Charts, Swift Testing, XCTest (UI), XcodeGen, GitHub Actions.
 
 **Spec:** `docs/superpowers/specs/2026-09-29-fetal-kick-counter-design.md`
 
 ## Global Constraints
 
-- iOS deployment target: `17.0`; package platforms: `.iOS(.v17), .macOS(.v14)` (macOS chỉ để chạy `swift test`).
-- Swift language mode 6 cho package và các target.
-- Bundle ID: `com.lmtiep.kickcounter` (app), `com.lmtiep.kickcounter.widgets` (extension).
+- iOS deployment target: `17.0`. Package platforms: `.iOS(.v17), .macOS(.v14)`; macOS chỉ dùng để chạy `swift test`.
+- Swift language mode 6 cho các package và các target.
+- Bundle ID: `com.lmtiep.kickcounter` (app), `com.lmtiep.kickcounter.widgets` (extension), `com.lmtiep.kickcounter.uitests` (UI test).
 - App Group: `group.com.lmtiep.kickcounter`. iCloud container: `iCloud.com.lmtiep.kickcounter`.
 - Luật đếm: mục tiêu `10`, ngưỡng cảnh báo `7200` giây (2 giờ), debounce `0.5` giây.
-- Model SwiftData tương thích CloudKit: mọi thuộc tính có default hoặc optional, quan hệ optional, **không** dùng `@Attribute(.unique)`.
-- Tại mọi thời điểm tối đa **một** `KickSession` có `statusRaw == "active"`.
-- Chỉ tiến trình app chính ghi SwiftData (intent chạy trong tiến trình app).
-- Mọi chuỗi hiển thị đi qua `L10n` (Shared/L10n.swift) → `Shared/Localizable.xcstrings`, có đủ `en` và `vi`.
-- Không thu thập dữ liệu; không server; không SDK bên thứ ba.
-- Không crash khi lỗi lưu trữ / quyền bị từ chối — xem bảng lỗi trong spec §5.
-- Accessibility identifiers cố định (dùng trong UI test): `kickButton`, `undoButton`, `cancelSessionButton`, `completionTitle`, `completionDone`, `onboardingNext`, `onboardingAgree`, `sessionRow`.
+- **`KickCore` không được import SwiftData.** Mọi thứ dùng `@Model` nằm trong `KickData`.
+- Model SwiftData phải tương thích CloudKit: mọi thuộc tính có default hoặc optional, quan hệ optional, **không** dùng `@Attribute(.unique)`.
+- Tại mọi thời điểm có tối đa **một** session với `statusRaw == "active"`.
+- Chỉ tiến trình app chính ghi vào SwiftData. Intent chạy trong tiến trình app.
+- Mọi chuỗi hiển thị phải đi qua `L10n` (`Shared/L10n.swift`) và có trong `Shared/Localizable.xcstrings` với đủ `en` và `vi`.
+- Không thu thập dữ liệu, không server, không dùng SDK bên thứ ba.
+- Không crash khi lỗi lưu trữ hoặc khi quyền bị từ chối. Xem bảng lỗi trong spec §5.
+- Accessibility identifiers cố định, dùng trong UI test: `kickButton`, `undoButton`, `cancelSessionButton`, `completionTitle`, `completionDone`, `onboardingNext`, `onboardingAgree`, `sessionRow`.
+- Launch arguments cho UI test: `-uiTesting` (store trong bộ nhớ, tắt thông báo và Live Activity, xóa cài đặt), `-skipOnboarding`, `-forceDarkMode`.
+- Repo GitHub **public**: không commit bí mật. Secrets gồm `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8_BASE64`. Repository variable: `DEVELOPMENT_TEAM`.
+
+## Quy trình xác minh
+
+- **Local** (mỗi task có code KickCore): `scripts/test-core.sh`. Đây cũng là nội dung của pre-push hook, vì là kiểm tra duy nhất chạy được trên máy không có Xcode.
+- **CI** (điều kiện hoàn thành của **mọi** task từ Task 1): commit, `git push`, rồi `scripts/ci-wait.sh`. Script chờ run CI của commit HEAD, in log lỗi nếu fail, và tải artifact về `ci-artifacts/` (ảnh chụp ở `ci-artifacts/screenshots/`). Khi task yêu cầu xác minh trực quan, dùng Read tool mở từng file PNG và đối chiếu với danh sách kiểm tra của task.
+- CI fail thì dùng `superpowers:systematic-debugging`, sửa, commit và push lại. Không được đánh dấu task hoàn thành khi CI còn đỏ.
 
 ## File Structure
 
@@ -32,105 +47,85 @@ kick-counter/
 ├── project.yml                       # XcodeGen spec (nguồn sự thật của dự án Xcode)
 ├── .gitignore
 ├── README.md
-├── scripts/test.sh                   # swift test + xcodebuild; dùng bởi pre-push
+├── .github/workflows/ci.yml          # test + build + UI test + ảnh chụp
+├── .github/workflows/testflight.yml  # archive + upload TestFlight (chạy tay)
+├── scripts/test-core.sh              # local: swift test KickCore (không cần Xcode)
+├── scripts/ci.sh                     # CI: toàn bộ cổng kiểm tra
+├── scripts/ci-wait.sh                # local: chờ CI của HEAD, tải artifact
+├── scripts/release.sh                # CI: archive + upload
 ├── .githooks/pre-push
-├── Packages/KickCore/
+├── Packages/KickCore/                # Swift thuần — test được local
 │   ├── Package.swift
 │   ├── Sources/KickCore/
-│   │   ├── SessionRules.swift        # hằng số luật đếm
+│   │   ├── SessionRules.swift
 │   │   ├── SessionEngine.swift       # SessionState, KickOutcome, logic thuần
-│   │   ├── Models.swift              # @Model KickSession, Kick
-│   │   ├── KickPersistence.swift     # AppGroup, ModelContainer factory
-│   │   ├── KickStore.swift           # CRUD + bất biến 1 session active
-│   │   ├── HistorySummary.swift      # dữ liệu biểu đồ 14 ngày
-│   │   ├── GestationalAge.swift      # tuần thai từ ngày dự sinh
-│   │   ├── Settings.swift            # khóa UserDefaults + giá trị mặc định
+│   │   ├── SessionRepository.swift   # protocol lưu trữ + SessionRecord, KickResult
+│   │   ├── HistorySummary.swift
+│   │   ├── GestationalAge.swift
+│   │   ├── Settings.swift            # AppGroup, khóa UserDefaults, mặc định
 │   │   ├── NotificationScheduler.swift
 │   │   ├── LiveActivityManaging.swift
-│   │   └── KickCoordinator.swift     # facade @Observable
-│   └── Tests/KickCoreTests/
-│       ├── TestSupport.swift         # date helper, fakes
-│       ├── SessionEngineTests.swift
-│       ├── KickStoreTests.swift
-│       ├── HistorySummaryTests.swift
-│       ├── GestationalAgeTests.swift
-│       ├── NotificationSchedulerTests.swift
-│       └── KickCoordinatorTests.swift
+│   │   └── KickCoordinator.swift
+│   └── Tests/KickCoreTests/          # TestSupport (fakes) + test từng file
+├── Packages/KickData/                # SwiftData — chỉ build trên CI
+│   ├── Package.swift
+│   ├── Sources/KickData/{Models,KickPersistence,KickStore}.swift
+│   └── Tests/KickDataTests/{TestSupport,KickStoreTests}.swift
 ├── Shared/                           # biên dịch vào cả App và Widgets
-│   ├── L10n.swift
-│   ├── Localizable.xcstrings
-│   ├── InfoPlist.xcstrings
+│   ├── L10n.swift, Localizable.xcstrings, InfoPlist.xcstrings
 │   ├── KickActivityAttributes.swift
 │   └── AddKickIntent.swift
-├── App/
-│   ├── KickCounterApp.swift          # @main, AppEnvironment, wiring intent bridge
-│   ├── AppEnvironment.swift
-│   ├── TestDoubles.swift             # Disabled/Noop implementations cho -uiTesting
-│   ├── SystemLiveActivityManager.swift
-│   ├── RootView.swift
-│   ├── StoreErrorView.swift
-│   ├── Counter/CounterView.swift
-│   ├── Counter/KickButton.swift
-│   ├── Counter/OverdueBanner.swift
-│   ├── Counter/CompletionView.swift
-│   ├── History/HistoryView.swift
-│   ├── History/HistoryChart.swift
-│   ├── History/SessionRow.swift
-│   ├── Settings/SettingsView.swift
-│   ├── Settings/MedicalInfoView.swift
-│   ├── Onboarding/OnboardingView.swift
-│   ├── Formatting.swift              # định dạng thời lượng
-│   ├── PrivacyInfo.xcprivacy
-│   └── Assets.xcassets/
-├── Widgets/
-│   ├── KickCounterWidgetsBundle.swift
-│   └── KickLiveActivityWidget.swift
-└── UITests/KickCounterUITests.swift
+├── App/                              # SwiftUI app (xem từng task)
+├── Widgets/                          # Live Activity
+└── UITests/
+    ├── ScreenshotTests.swift         # ảnh chụp để xác minh trực quan trên CI
+    └── KickCounterUITests.swift      # luồng chức năng
 ```
 
 ---
 
-### Task 0: Chuẩn bị môi trường (người dùng làm thủ công)
+### Task 0: Chuẩn bị tài khoản Apple và GitHub (người dùng làm thủ công)
 
-Máy hiện chỉ có Command Line Tools. Macro `@Model` của SwiftData cần plugin đi kèm Xcode, nên **mọi task sau đều cần Xcode**.
+Không cài Xcode. Các bước dưới đây làm trên web. Riêng bước đặt secret, **người dùng tự chạy lệnh**, vì agent không được xử lý khóa bí mật.
 
-- [ ] **Step 1: Cài Xcode** từ Mac App Store (bản mới nhất). Mở Xcode một lần, đồng ý license.
-- [ ] **Step 2: Trỏ developer dir và tải runtime iOS** (cần mật khẩu admin, người dùng tự chạy):
+- [ ] **Step 1: Đăng ký định danh** tại developer.apple.com → Certificates, Identifiers & Profiles → Identifiers:
+  - App Group: `group.com.lmtiep.kickcounter`
+  - iCloud Container: `iCloud.com.lmtiep.kickcounter`
+  - App ID `com.lmtiep.kickcounter`, bật các capability: App Groups (gán group trên), iCloud → CloudKit (gán container trên), Push Notifications.
+  - App ID `com.lmtiep.kickcounter.widgets`, bật App Groups (gán group trên).
 
-```bash
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-```
-```bash
-xcodebuild -runFirstLaunch
-```
-```bash
-xcodebuild -downloadPlatform iOS
-```
+- [ ] **Step 2: Tạo app trên App Store Connect**: My Apps → "+" → New App. Platform iOS, bundle ID `com.lmtiep.kickcounter`, SKU `kickcounter`. Tên hiển thị trên App Store phải là duy nhất toàn cầu, ví dụ "Đếm Thai Máy – Kick Counter".
 
-- [ ] **Step 3: Cài XcodeGen**
+- [ ] **Step 3: Tạo API key**: App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys → "+". Chọn quyền **Admin** (cloud signing yêu cầu quyền này). Tải file `AuthKey_XXXX.p8` (chỉ tải được một lần), ghi lại **Key ID** và **Issuer ID**. Lấy **Team ID** ở developer.apple.com → Membership.
+
+- [ ] **Step 4 (sau khi Task 1 đã tạo repo): đặt secrets**. Người dùng tự chạy trong thư mục dự án:
 
 ```bash
-brew install xcodegen
+gh secret set ASC_KEY_ID --body "<Key ID>"
+```
+```bash
+gh secret set ASC_ISSUER_ID --body "<Issuer ID>"
+```
+```bash
+base64 -i ~/Downloads/AuthKey_<Key ID>.p8 | gh secret set ASC_KEY_P8_BASE64
+```
+```bash
+gh variable set DEVELOPMENT_TEAM --body "<Team ID>"
 ```
 
-- [ ] **Step 4: Xác minh**
-
-Run: `xcodebuild -version && xcodegen --version && xcrun simctl list devices available | grep -m1 iPhone`
-Expected: in ra phiên bản Xcode, XcodeGen, và ít nhất một simulator iPhone.
-
-- [ ] **Step 5 (trước Task 11 / phát hành):** Đăng ký Apple Developer Program. Lấy Team ID (developer.apple.com → Membership). Team ID sẽ điền vào `DEVELOPMENT_TEAM` trong `project.yml` khi chạy trên máy thật. Không cần cho simulator/test.
+Xác minh: `gh secret list && gh variable list` phải liệt kê đủ 3 secret và 1 variable. Chỉ cần xong bước này trước Task 13.
 
 ---
 
-### Task 1: Khung dự án (package + app shell + script test + pre-push hook)
+### Task 1: Khung dự án, cổng kiểm tra local + CI, repo GitHub
 
 **Files:**
 - Create: `Packages/KickCore/Package.swift`, `Packages/KickCore/Sources/KickCore/SessionRules.swift`, `Packages/KickCore/Tests/KickCoreTests/SessionRulesTests.swift`
 - Create: `project.yml`, `App/KickCounterApp.swift`, `App/Assets.xcassets/Contents.json`, `App/Assets.xcassets/AccentColor.colorset/Contents.json`, `App/Assets.xcassets/AppIcon.appiconset/Contents.json`
-- Create: `.gitignore`, `scripts/test.sh`, `.githooks/pre-push`, `README.md`
+- Create: `.gitignore`, `README.md`, `.githooks/pre-push`, `scripts/test-core.sh`, `scripts/ci.sh`, `scripts/ci-wait.sh`, `.github/workflows/ci.yml`
 
 **Interfaces:**
-- Produces: module `KickCore`; `public enum SessionRules { targetCount: Int = 10; overdueThreshold: TimeInterval = 7200; debounceInterval: TimeInterval = 0.5 }`; lệnh `scripts/test.sh`.
+- Produces: module `KickCore`. `public enum SessionRules` gồm `targetCount: Int = 10`, `overdueThreshold: TimeInterval = 7200`, `debounceInterval: TimeInterval = 0.5`. Các script `scripts/test-core.sh [swift test args]`, `scripts/ci.sh`, `scripts/ci-wait.sh`. Biến `XCODE_ACTION` trong `ci.sh` (Task 1 dùng `build`, từ Task 8 chuyển sang `test`).
 
 - [ ] **Step 1: Viết test trước**
 
@@ -153,7 +148,6 @@ import PackageDescription
 
 let package = Package(
     name: "KickCore",
-    defaultLocalization: "en",
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [.library(name: "KickCore", targets: ["KickCore"])],
     targets: [
@@ -163,10 +157,34 @@ let package = Package(
 )
 ```
 
-- [ ] **Step 2: Chạy test để thấy fail**
+`scripts/test-core.sh`:
+```bash
+#!/usr/bin/env bash
+# Local gate that works without Xcode: KickCore unit tests.
+# Extra arguments are passed to `swift test` (e.g. --filter SessionEngineTests).
+set -euo pipefail
+cd "$(dirname "$0")/../Packages/KickCore"
 
-Run: `cd Packages/KickCore && swift test`
-Expected: FAIL — `cannot find 'SessionRules' in scope` (hoặc lỗi không có source trong target).
+DEV_DIR="$(xcode-select -p)"
+if [[ "$DEV_DIR" == *CommandLineTools* ]]; then
+  # Command Line Tools ship Swift Testing, but SwiftPM doesn't find it by default.
+  FRAMEWORKS="$DEV_DIR/Library/Developer/Frameworks"
+  LIBS="$DEV_DIR/Library/Developer/usr/lib"
+  swift test \
+    -Xswiftc -F -Xswiftc "$FRAMEWORKS" \
+    -Xlinker -F -Xlinker "$FRAMEWORKS" \
+    -Xlinker -rpath -Xlinker "$FRAMEWORKS" \
+    -Xlinker -rpath -Xlinker "$LIBS" \
+    "$@"
+else
+  swift test "$@"
+fi
+```
+
+- [ ] **Step 2: Chạy để thấy fail**
+
+Run: `chmod +x scripts/test-core.sh && scripts/test-core.sh`
+Expected: FAIL. Lỗi `cannot find 'SessionRules' in scope`, hoặc target không có source.
 
 - [ ] **Step 3: Cài đặt tối thiểu**
 
@@ -183,14 +201,14 @@ public enum SessionRules {
 }
 ```
 
-- [ ] **Step 4: Chạy test để thấy pass**
+- [ ] **Step 4: Chạy để thấy pass**
 
-Run: `cd Packages/KickCore && swift test`
-Expected: PASS, `1 test passed`.
+Run: `scripts/test-core.sh`
+Expected: `Test run with 1 test ... passed`.
 
-- [ ] **Step 5: Tạo app shell và project.yml**
+- [ ] **Step 5: App shell, assets, project.yml**
 
-`App/KickCounterApp.swift` (sẽ thay ở Task 8):
+`App/KickCounterApp.swift` (thay thế ở Task 8):
 ```swift
 import SwiftUI
 import KickCore
@@ -224,7 +242,7 @@ struct KickCounterApp: App {
 }
 ```
 
-`App/Assets.xcassets/AppIcon.appiconset/Contents.json` (ảnh icon 1024×1024 thêm ở Task 13):
+`App/Assets.xcassets/AppIcon.appiconset/Contents.json` (ảnh icon 1024×1024 thêm ở Task 14):
 ```json
 {
   "images" : [ { "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" } ],
@@ -246,7 +264,6 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""   # điền Team ID khi chạy trên máy thật (Task 0 step 5)
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
 packages:
@@ -281,41 +298,136 @@ schemes:
         KickCounter: all
 ```
 
-- [ ] **Step 6: Script test, hook, gitignore, README**
+- [ ] **Step 6: Script CI, workflow, hook, gitignore, README**
 
-`scripts/test.sh`:
+`scripts/ci.sh`:
 ```bash
 #!/usr/bin/env bash
-# Local quality gate: KickCore unit tests + iOS build/test on a simulator.
+# Full quality gate. Runs on GitHub Actions (requires Xcode + XcodeGen).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 echo "==> KickCore unit tests"
-(cd Packages/KickCore && swift test)
+scripts/test-core.sh
+
+if [[ -d Packages/KickData ]]; then
+  echo "==> KickData unit tests"
+  (cd Packages/KickData && swift test)
+fi
 
 echo "==> Generating Xcode project"
 xcodegen generate --quiet
 
 DEVICE_ID="$(xcrun simctl list devices available | grep -m1 -E '^[[:space:]]+iPhone' | grep -oE '[0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12}')"
-if [[ -z "$DEVICE_ID" ]]; then
-  echo "No available iPhone simulator found" >&2
-  exit 1
-fi
+[[ -n "$DEVICE_ID" ]] || { echo "No available iPhone simulator" >&2; exit 1; }
 
 XCODE_ACTION="build"
+rm -rf build && mkdir -p build/screenshots
 echo "==> xcodebuild $XCODE_ACTION on simulator $DEVICE_ID"
+STATUS=0
 xcodebuild -project KickCounter.xcodeproj -scheme KickCounter \
   -destination "id=$DEVICE_ID" \
-  CODE_SIGNING_ALLOWED=NO -quiet "$XCODE_ACTION"
-echo "==> All checks passed"
+  -resultBundlePath build/KickCounter.xcresult \
+  CODE_SIGNING_ALLOWED=NO -quiet "$XCODE_ACTION" || STATUS=$?
+
+if [[ "$XCODE_ACTION" == "test" ]]; then
+  echo "==> Exporting screenshots"
+  xcrun xcresulttool export attachments --path build/KickCounter.xcresult --output-path build/screenshots || true
+  python3 - <<'PY'
+import json, os
+d = "build/screenshots"
+manifest = os.path.join(d, "manifest.json")
+if os.path.exists(manifest):
+    for test in json.load(open(manifest)):
+        for a in test.get("attachments", []):
+            src = os.path.join(d, a["exportedFileName"])
+            name = a.get("suggestedHumanReadableName") or a["exportedFileName"]
+            if os.path.exists(src):
+                os.rename(src, os.path.join(d, name))
+PY
+fi
+
+[[ $STATUS -eq 0 ]] && echo "==> All checks passed"
+exit $STATUS
+```
+
+`scripts/ci-wait.sh`:
+```bash
+#!/usr/bin/env bash
+# Waits for the CI run of HEAD, prints failed logs, downloads artifacts to ci-artifacts/.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+SHA="$(git rev-parse HEAD)"
+RUN_ID=""
+for _ in $(seq 1 30); do
+  RUN_ID="$(gh run list --workflow ci.yml --commit "$SHA" --limit 1 --json databaseId -q '.[0].databaseId')"
+  [[ -n "$RUN_ID" ]] && break
+  sleep 5
+done
+[[ -n "$RUN_ID" ]] || { echo "No CI run found for $SHA — was it pushed?" >&2; exit 1; }
+
+STATUS=0
+gh run watch "$RUN_ID" --exit-status --interval 20 > /dev/null || STATUS=$?
+rm -rf ci-artifacts && mkdir -p ci-artifacts
+gh run download "$RUN_ID" --dir ci-artifacts 2>/dev/null || true
+if [[ $STATUS -ne 0 ]]; then
+  gh run view "$RUN_ID" --log-failed | tail -150
+  echo "CI FAILED: $(gh run view "$RUN_ID" --json url -q .url)" >&2
+else
+  echo "CI PASSED: $(gh run view "$RUN_ID" --json url -q .url)"
+fi
+exit $STATUS
+```
+
+`.github/workflows/ci.yml`:
+```yaml
+name: CI
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select latest stable Xcode
+        run: |
+          XCODE="$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)"
+          sudo xcode-select -s "$XCODE/Contents/Developer"
+          xcodebuild -version
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Run quality gate
+        run: scripts/ci.sh
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: build/screenshots
+          if-no-files-found: ignore
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresult
+          path: build/KickCounter.xcresult
+          if-no-files-found: ignore
 ```
 
 `.githooks/pre-push`:
 ```bash
 #!/usr/bin/env bash
-# Blocks the push if type-check/build or tests fail.
-exec "$(git rev-parse --show-toplevel)/scripts/test.sh"
+# Local gate before push. The dev Mac has no Xcode, so only KickCore can be
+# checked here; the iOS build, KickData and UI tests are gated by CI.
+exec "$(git rev-parse --show-toplevel)/scripts/test-core.sh"
 ```
 
 `.gitignore`:
@@ -324,11 +436,14 @@ exec "$(git rev-parse --show-toplevel)/scripts/test.sh"
 *.xcodeproj/
 App/Info.plist
 Widgets/Info.plist
+build/
+ci-artifacts/
 DerivedData/
 .build/
 .swiftpm/
 xcuserdata/
 *.xcuserstate
+*.p8
 ```
 
 `README.md`:
@@ -337,40 +452,41 @@ xcuserdata/
 
 App iPhone đếm cử động thai theo phương pháp đếm đến 10.
 
-## Yêu cầu
-- Xcode (bản mới nhất), XcodeGen (`brew install xcodegen`)
+## Phát triển không cần Xcode
+- Logic (`Packages/KickCore`) test local: `scripts/test-core.sh`
+- Mọi thứ khác (SwiftData, build iOS, UI test, ảnh chụp) chạy trên GitHub Actions:
+  push rồi chạy `scripts/ci-wait.sh`; ảnh chụp nằm ở `ci-artifacts/screenshots/`.
+- Bật pre-push hook (mỗi bản clone một lần): `git config core.hooksPath .githooks`
 
-## Bắt đầu
-    xcodegen generate
-    open KickCounter.xcodeproj
-
-## Kiểm tra
-    scripts/test.sh
-
-Bật pre-push hook (mỗi bản clone chạy một lần):
-
-    git config core.hooksPath .githooks
+## Có Xcode
+    brew install xcodegen && xcodegen generate && open KickCounter.xcodeproj
 
 Dự án Xcode được sinh từ `project.yml` — sửa `project.yml`, không sửa `.xcodeproj`.
+
+## Phát hành TestFlight
+    gh workflow run testflight.yml
 ```
 
 Run:
 ```bash
-chmod +x scripts/test.sh .githooks/pre-push
+chmod +x scripts/*.sh .githooks/pre-push
 git config core.hooksPath .githooks
 ```
 
-- [ ] **Step 7: Chạy toàn bộ cổng kiểm tra**
-
-Run: `scripts/test.sh`
-Expected: `1 test passed`, build thành công, dòng cuối `==> All checks passed`.
-
-- [ ] **Step 8: Commit**
+- [ ] **Step 7: Tạo repo GitHub public và push. HỎI NGƯỜI DÙNG XÁC NHẬN TRƯỚC**, vì đây là hành động công khai ra bên ngoài. Nói rõ tên repo `kick-counter`, tài khoản đang đăng nhập `gh`, chế độ public. Chỉ chạy khi người dùng đồng ý:
 
 ```bash
 git add .
-git commit -m "chore: scaffold KickCore package, app shell, test script and pre-push hook"
+git commit -m "chore: scaffold KickCore, app shell, local and CI quality gates"
+gh repo create kick-counter --public --source . --remote origin --push
 ```
+
+- [ ] **Step 8: Xác minh CI**
+
+Run: `scripts/ci-wait.sh`
+Expected: `CI PASSED: <url>`. Log CI có `Test run with 1 test ... passed` và `==> All checks passed`.
+
+Sau đó nhắc người dùng làm Task 0 Step 4 (đặt secrets) khi thuận tiện. Chỉ cần xong trước Task 13.
 
 ---
 
@@ -514,7 +630,7 @@ struct SessionEngineTests {
 
 - [ ] **Step 2: Chạy để thấy fail**
 
-Run: `cd Packages/KickCore && swift test --filter SessionEngineTests`
+Run: `scripts/test-core.sh --filter SessionEngineTests`
 Expected: FAIL — `cannot find 'SessionState' in scope`.
 
 - [ ] **Step 3: Cài đặt**
@@ -604,7 +720,7 @@ public enum SessionEngine {
 
 - [ ] **Step 4: Chạy để thấy pass**
 
-Run: `cd Packages/KickCore && swift test --filter SessionEngineTests`
+Run: `scripts/test-core.sh --filter SessionEngineTests`
 Expected: PASS, 12 tests.
 
 - [ ] **Step 5: Commit**
@@ -612,36 +728,141 @@ Expected: PASS, 12 tests.
 ```bash
 git add Packages/KickCore
 git commit -m "feat(core): add SessionEngine with count-to-10, debounce, undo and 2h threshold"
+git push
+scripts/ci-wait.sh
 ```
 
 ---
 
-### Task 3: Model SwiftData, KickPersistence, KickStore
+### Task 3: SessionRepository (KickCore) + package KickData (SwiftData, KickStore)
 
 **Files:**
-- Create: `Packages/KickCore/Sources/KickCore/Models.swift`
-- Create: `Packages/KickCore/Sources/KickCore/KickPersistence.swift`
-- Create: `Packages/KickCore/Sources/KickCore/KickStore.swift`
-- Test: `Packages/KickCore/Tests/KickCoreTests/KickStoreTests.swift`
+- Create: `Packages/KickCore/Sources/KickCore/SessionRepository.swift`, `Packages/KickCore/Sources/KickCore/Settings.swift`
+- Create: `Packages/KickData/Package.swift`
+- Create: `Packages/KickData/Sources/KickData/Models.swift`, `Packages/KickData/Sources/KickData/KickPersistence.swift`, `Packages/KickData/Sources/KickData/KickStore.swift`
+- Test: `Packages/KickData/Tests/KickDataTests/TestSupport.swift`, `Packages/KickData/Tests/KickDataTests/KickStoreTests.swift`
+- Modify: `project.yml` (thêm package `KickData` + dependency của app)
 
 **Interfaces:**
 - Consumes: `SessionState`, `SessionStatus`, `KickOutcome`, `SessionEngine`, `SessionRules`
 - Produces:
-  - `@Model public final class KickSession { id: UUID; startedAt: Date; endedAt: Date?; targetCount: Int; statusRaw: String; exceededThreshold: Bool; kicks: [Kick]?; var status: SessionStatus; var state: SessionState; init(id: UUID = UUID(), startedAt: Date) }`
-  - `@Model public final class Kick { timestamp: Date; session: KickSession?; init(timestamp: Date) }`
-  - `public enum AppGroup { static let identifier = "group.com.lmtiep.kickcounter"; static var defaults: UserDefaults }`
-  - `public enum KickPersistence { static let schema: Schema; static func makeContainer(inMemory: Bool) throws -> ModelContainer }`
-  - `public struct KickResult { session: KickSession; outcome: KickOutcome; didStartSession: Bool }`
-  - `@MainActor public final class KickStore { init(context: ModelContext); func activeSession() throws -> KickSession?; func addKick(at: Date) throws -> KickResult; func undoLastKick() throws -> KickSession?; func cancelActive(at: Date) throws -> KickSession? }`
+  - (KickCore) `public struct SessionRecord: Equatable, Sendable { id: UUID; state: SessionState }`
+  - (KickCore) `public struct KickResult: Equatable, Sendable { record: SessionRecord; outcome: KickOutcome; didStartSession: Bool }`
+  - (KickCore) `public enum AppGroup { static let identifier = "group.com.lmtiep.kickcounter"; static var defaults: UserDefaults }`, `public enum SettingsKey { reminderEnabled, reminderHour, reminderMinute, dueDate, hasCompletedOnboarding }` (hằng String), `public enum SettingsDefault { reminderHour = 20; reminderMinute = 0 }`
+  - (KickCore) `@MainActor public protocol SessionRepository: AnyObject { func activeSession() throws -> SessionRecord?; func addKick(at: Date) throws -> KickResult; func undoLastKick() throws -> SessionRecord?; func cancelActive(at: Date) throws -> SessionRecord? }`
+  - (KickData) `@Model public final class KickSession { id; startedAt; endedAt; targetCount; statusRaw; exceededThreshold; kicks: [Kick]?; var status: SessionStatus; var state: SessionState; var record: SessionRecord; init(id:startedAt:) }`
+  - (KickData) `@Model public final class Kick { timestamp: Date; session: KickSession?; init(timestamp:) }`
+  - (KickData) `public enum KickPersistence { static let schema: Schema; static func makeContainer(inMemory: Bool) throws -> ModelContainer }`
+  - (KickData) `@MainActor public final class KickStore: SessionRepository { init(context: ModelContext) }`
 
-- [ ] **Step 1: Viết test fail**
+- [ ] **Step 1: Protocol và khóa cài đặt trong KickCore.** Chỉ có khai báo, không có logic nên không cần test riêng. Protocol được kiểm qua fake ở Task 6 và qua KickStore ở các bước sau.
 
-`Packages/KickCore/Tests/KickCoreTests/KickStoreTests.swift`:
+`Packages/KickCore/Sources/KickCore/SessionRepository.swift`:
 ```swift
 import Foundation
+
+/// A stored session: its identity plus a value snapshot of its state.
+public struct SessionRecord: Equatable, Sendable {
+    public let id: UUID
+    public let state: SessionState
+
+    public init(id: UUID, state: SessionState) {
+        self.id = id
+        self.state = state
+    }
+}
+
+public struct KickResult: Equatable, Sendable {
+    public let record: SessionRecord
+    public let outcome: KickOutcome
+    public let didStartSession: Bool
+
+    public init(record: SessionRecord, outcome: KickOutcome, didStartSession: Bool) {
+        self.record = record
+        self.outcome = outcome
+        self.didStartSession = didStartSession
+    }
+}
+
+/// Persistence for counting sessions. Implementations must keep at most one
+/// active session and apply `SessionEngine` rules to every change.
+@MainActor
+public protocol SessionRepository: AnyObject {
+    func activeSession() throws -> SessionRecord?
+    /// Adds a kick to the active session, starting a new session if none is active.
+    func addKick(at now: Date) throws -> KickResult
+    func undoLastKick() throws -> SessionRecord?
+    func cancelActive(at now: Date) throws -> SessionRecord?
+}
+```
+
+`Packages/KickCore/Sources/KickCore/Settings.swift`:
+```swift
+import Foundation
+
+public enum AppGroup {
+    public static let identifier = "group.com.lmtiep.kickcounter"
+
+    public static var defaults: UserDefaults {
+        UserDefaults(suiteName: identifier) ?? .standard
+    }
+}
+
+/// Keys for preferences stored in `AppGroup.defaults` (read via @AppStorage).
+public enum SettingsKey {
+    public static let reminderEnabled = "reminderEnabled"
+    public static let reminderHour = "reminderHour"
+    public static let reminderMinute = "reminderMinute"
+    /// `timeIntervalSince1970`; 0 means "not set".
+    public static let dueDate = "dueDate"
+    public static let hasCompletedOnboarding = "hasCompletedOnboarding"
+}
+
+public enum SettingsDefault {
+    public static let reminderHour = 20
+    public static let reminderMinute = 0
+}
+```
+
+Run: `scripts/test-core.sh`
+Expected: PASS. Mọi test hiện có vẫn xanh, KickCore biên dịch được.
+
+- [ ] **Step 2: Viết test fail cho KickStore**
+
+`Packages/KickData/Package.swift`:
+```swift
+// swift-tools-version: 6.0
+import PackageDescription
+
+// Requires Xcode (SwiftData macros); built and tested on CI only.
+let package = Package(
+    name: "KickData",
+    platforms: [.iOS(.v17), .macOS(.v14)],
+    products: [.library(name: "KickData", targets: ["KickData"])],
+    dependencies: [.package(path: "../KickCore")],
+    targets: [
+        .target(name: "KickData", dependencies: ["KickCore"]),
+        .testTarget(name: "KickDataTests", dependencies: ["KickData"]),
+    ]
+)
+```
+
+`Packages/KickData/Tests/KickDataTests/TestSupport.swift`:
+```swift
+import Foundation
+
+func date(_ iso: String) -> Date {
+    try! Date(iso, strategy: .iso8601)
+}
+```
+
+`Packages/KickData/Tests/KickDataTests/KickStoreTests.swift`:
+```swift
+import Foundation
+import KickCore
 import SwiftData
 import Testing
-@testable import KickCore
+@testable import KickData
 
 @MainActor
 struct KickStoreTests {
@@ -662,15 +883,15 @@ struct KickStoreTests {
         let result = try store.addKick(at: t0)
         #expect(result.didStartSession)
         #expect(result.outcome == .added(count: 1))
-        #expect(result.session.startedAt == t0)
-        #expect(try store.activeSession()?.id == result.session.id)
+        #expect(result.record.state.startedAt == t0)
+        #expect(try store.activeSession()?.id == result.record.id)
     }
 
     @Test func subsequentKicksReuseActiveSession() throws {
         let first = try store.addKick(at: t0)
         let second = try store.addKick(at: t0.addingTimeInterval(30))
         #expect(second.didStartSession == false)
-        #expect(second.session.id == first.session.id)
+        #expect(second.record.id == first.record.id)
         #expect(second.outcome == .added(count: 2))
     }
 
@@ -697,8 +918,8 @@ struct KickStoreTests {
     @Test func undoRemovesPersistedKick() throws {
         _ = try store.addKick(at: t0)
         _ = try store.addKick(at: t0.addingTimeInterval(10))
-        let session = try store.undoLastKick()
-        #expect(session?.state.kicks == [t0])
+        let record = try store.undoLastKick()
+        #expect(record?.state.kicks == [t0])
         #expect(try container.mainContext.fetchCount(FetchDescriptor<Kick>()) == 1)
     }
 
@@ -709,8 +930,8 @@ struct KickStoreTests {
     @Test func cancelMarksSessionCancelled() throws {
         _ = try store.addKick(at: t0)
         let cancelled = try store.cancelActive(at: t0.addingTimeInterval(120))
-        #expect(cancelled?.status == .cancelled)
-        #expect(cancelled?.endedAt == t0.addingTimeInterval(120))
+        #expect(cancelled?.state.status == .cancelled)
+        #expect(cancelled?.state.endedAt == t0.addingTimeInterval(120))
         #expect(try store.activeSession() == nil)
     }
 
@@ -728,16 +949,12 @@ struct KickStoreTests {
 }
 ```
 
-- [ ] **Step 2: Chạy để thấy fail**
-
-Run: `cd Packages/KickCore && swift test --filter KickStoreTests`
-Expected: FAIL — `cannot find 'KickPersistence' in scope`.
-
 - [ ] **Step 3: Cài đặt**
 
-`Packages/KickCore/Sources/KickCore/Models.swift`:
+`Packages/KickData/Sources/KickData/Models.swift`:
 ```swift
 import Foundation
+import KickCore
 import SwiftData
 
 // CloudKit-compatible: every attribute has a default or is optional,
@@ -773,6 +990,10 @@ public final class KickSession {
             exceededThreshold: exceededThreshold
         )
     }
+
+    public var record: SessionRecord {
+        SessionRecord(id: id, state: state)
+    }
 }
 
 @Model
@@ -786,18 +1007,11 @@ public final class Kick {
 }
 ```
 
-`Packages/KickCore/Sources/KickCore/KickPersistence.swift`:
+`Packages/KickData/Sources/KickData/KickPersistence.swift`:
 ```swift
 import Foundation
+import KickCore
 import SwiftData
-
-public enum AppGroup {
-    public static let identifier = "group.com.lmtiep.kickcounter"
-
-    public static var defaults: UserDefaults {
-        UserDefaults(suiteName: identifier) ?? .standard
-    }
-}
 
 public enum KickPersistence {
     public static let schema = Schema([KickSession.self, Kick.self])
@@ -820,27 +1034,62 @@ public enum KickPersistence {
 }
 ```
 
-`Packages/KickCore/Sources/KickCore/KickStore.swift`:
+`Packages/KickData/Sources/KickData/KickStore.swift`:
 ```swift
 import Foundation
+import KickCore
 import SwiftData
 
-public struct KickResult {
-    public let session: KickSession
-    public let outcome: KickOutcome
-    public let didStartSession: Bool
-}
-
-/// Persists sessions and enforces "at most one active session".
+/// SwiftData-backed SessionRepository. Enforces "at most one active session".
 @MainActor
-public final class KickStore {
+public final class KickStore: SessionRepository {
     private let context: ModelContext
 
     public init(context: ModelContext) {
         self.context = context
     }
 
-    public func activeSession() throws -> KickSession? {
+    public func activeSession() throws -> SessionRecord? {
+        try activeModel()?.record
+    }
+
+    public func addKick(at now: Date) throws -> KickResult {
+        let session: KickSession
+        let didStart: Bool
+        if let existing = try activeModel() {
+            session = existing
+            didStart = false
+        } else {
+            session = KickSession(startedAt: now)
+            context.insert(session)
+            didStart = true
+        }
+        var state = session.state
+        let outcome = SessionEngine.addKick(to: &state, at: now)
+        apply(state, to: session)
+        try context.save()
+        return KickResult(record: session.record, outcome: outcome, didStartSession: didStart)
+    }
+
+    public func undoLastKick() throws -> SessionRecord? {
+        guard let session = try activeModel() else { return nil }
+        var state = session.state
+        guard SessionEngine.undoLastKick(&state) else { return session.record }
+        apply(state, to: session)
+        try context.save()
+        return session.record
+    }
+
+    public func cancelActive(at now: Date) throws -> SessionRecord? {
+        guard let session = try activeModel() else { return nil }
+        var state = session.state
+        SessionEngine.cancel(&state, at: now)
+        apply(state, to: session)
+        try context.save()
+        return session.record
+    }
+
+    private func activeModel() throws -> KickSession? {
         let active = SessionStatus.active.rawValue
         let descriptor = FetchDescriptor<KickSession>(
             predicate: #Predicate { $0.statusRaw == active },
@@ -856,42 +1105,6 @@ public final class KickStore {
             try context.save()
         }
         return newest
-    }
-
-    public func addKick(at now: Date) throws -> KickResult {
-        let session: KickSession
-        let didStart: Bool
-        if let existing = try activeSession() {
-            session = existing
-            didStart = false
-        } else {
-            session = KickSession(startedAt: now)
-            context.insert(session)
-            didStart = true
-        }
-        var state = session.state
-        let outcome = SessionEngine.addKick(to: &state, at: now)
-        apply(state, to: session)
-        try context.save()
-        return KickResult(session: session, outcome: outcome, didStartSession: didStart)
-    }
-
-    public func undoLastKick() throws -> KickSession? {
-        guard let session = try activeSession() else { return nil }
-        var state = session.state
-        guard SessionEngine.undoLastKick(&state) else { return session }
-        apply(state, to: session)
-        try context.save()
-        return session
-    }
-
-    public func cancelActive(at now: Date) throws -> KickSession? {
-        guard let session = try activeSession() else { return nil }
-        var state = session.state
-        SessionEngine.cancel(&state, at: now)
-        apply(state, to: session)
-        try context.save()
-        return session
     }
 
     /// Writes an engine state back onto the model, adding/removing Kick rows
@@ -916,26 +1129,38 @@ public final class KickStore {
 }
 ```
 
-- [ ] **Step 4: Chạy để thấy pass**
+- [ ] **Step 4: Nối KickData vào project**
 
-Run: `cd Packages/KickCore && swift test`
-Expected: PASS, toàn bộ test (bao gồm 9 test `KickStoreTests`).
+Trong `project.yml`, thêm vào `packages:`:
+```yaml
+  KickData:
+    path: Packages/KickData
+```
+và thêm vào `targets.KickCounter.dependencies`:
+```yaml
+      - package: KickData
+```
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Commit, push, xác minh trên CI**
+
+Không chạy được KickData ở local. `scripts/ci.sh` tự chạy `swift test` cho KickData khi thư mục tồn tại.
 
 ```bash
-git add Packages/KickCore
-git commit -m "feat(core): add CloudKit-compatible SwiftData models and KickStore"
+scripts/test-core.sh
+git add Packages project.yml
+git commit -m "feat(data): add SessionRepository and SwiftData-backed KickStore package"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`. Log có bước `==> KickData unit tests` với 9 test pass.
 
 ---
 
-### Task 4: HistorySummary, GestationalAge, khóa cài đặt
+### Task 4: HistorySummary, GestationalAge
 
 **Files:**
 - Create: `Packages/KickCore/Sources/KickCore/HistorySummary.swift`
 - Create: `Packages/KickCore/Sources/KickCore/GestationalAge.swift`
-- Create: `Packages/KickCore/Sources/KickCore/Settings.swift`
 - Test: `Packages/KickCore/Tests/KickCoreTests/HistorySummaryTests.swift`, `Packages/KickCore/Tests/KickCoreTests/GestationalAgeTests.swift`
 
 **Interfaces:**
@@ -944,7 +1169,6 @@ git commit -m "feat(core): add CloudKit-compatible SwiftData models and KickStor
   - `public struct DailySummary: Equatable, Identifiable, Sendable { day: Date; minutesToTarget: Double; exceededThreshold: Bool; var id: Date }`
   - `public enum HistorySummary { static let defaultDays = 14; static func daily(_ sessions: [SessionState], endingAt now: Date, days: Int = 14, calendar: Calendar = .current) -> [DailySummary] }`
   - `public struct GestationalWeek: Equatable, Sendable { weeks: Int; days: Int }`, `public enum GestationalAge { static func week(dueDate: Date, now: Date, calendar: Calendar = .current) -> GestationalWeek? }`
-  - `public enum SettingsKey { reminderEnabled, reminderHour, reminderMinute, dueDate, hasCompletedOnboarding }` (String constants), `public enum SettingsDefault { reminderHour = 20; reminderMinute = 0 }`
 
 - [ ] **Step 1: Viết test fail**
 
@@ -1029,7 +1253,7 @@ struct GestationalAgeTests {
 
 - [ ] **Step 2: Chạy để thấy fail**
 
-Run: `cd Packages/KickCore && swift test --filter "HistorySummaryTests|GestationalAgeTests"`
+Run: `scripts/test-core.sh --filter "HistorySummaryTests|GestationalAgeTests"`
 Expected: FAIL — `cannot find 'HistorySummary' in scope`.
 
 - [ ] **Step 3: Cài đặt**
@@ -1117,36 +1341,18 @@ public enum GestationalAge {
 }
 ```
 
-`Packages/KickCore/Sources/KickCore/Settings.swift`:
-```swift
-import Foundation
-
-/// Keys for preferences stored in `AppGroup.defaults` (read via @AppStorage).
-public enum SettingsKey {
-    public static let reminderEnabled = "reminderEnabled"
-    public static let reminderHour = "reminderHour"
-    public static let reminderMinute = "reminderMinute"
-    /// `timeIntervalSince1970`; 0 means "not set".
-    public static let dueDate = "dueDate"
-    public static let hasCompletedOnboarding = "hasCompletedOnboarding"
-}
-
-public enum SettingsDefault {
-    public static let reminderHour = 20
-    public static let reminderMinute = 0
-}
-```
-
 - [ ] **Step 4: Chạy để thấy pass**
 
-Run: `cd Packages/KickCore && swift test`
+Run: `scripts/test-core.sh`
 Expected: PASS, tất cả test.
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add Packages/KickCore
-git commit -m "feat(core): add 14-day history summary, gestational age and settings keys"
+git commit -m "feat(core): add 14-day history summary and gestational age"
+git push
+scripts/ci-wait.sh
 ```
 
 ---
@@ -1280,7 +1486,7 @@ struct NotificationSchedulerTests {
 
 - [ ] **Step 2: Chạy để thấy fail**
 
-Run: `cd Packages/KickCore && swift test --filter NotificationSchedulerTests`
+Run: `scripts/test-core.sh --filter NotificationSchedulerTests`
 Expected: FAIL — `cannot find type 'NotificationCenterClient' in scope`.
 
 - [ ] **Step 3: Cài đặt**
@@ -1403,7 +1609,7 @@ public final class NotificationScheduler {
 
 - [ ] **Step 4: Chạy để thấy pass**
 
-Run: `cd Packages/KickCore && swift test`
+Run: `scripts/test-core.sh`
 Expected: PASS, tất cả test.
 
 - [ ] **Step 5: Commit**
@@ -1411,6 +1617,8 @@ Expected: PASS, tất cả test.
 ```bash
 git add Packages/KickCore
 git commit -m "feat(core): add NotificationScheduler for daily reminder and 2h overdue alert"
+git push
+scripts/ci-wait.sh
 ```
 
 ---
@@ -1420,24 +1628,75 @@ git commit -m "feat(core): add NotificationScheduler for daily reminder and 2h o
 **Files:**
 - Create: `Packages/KickCore/Sources/KickCore/LiveActivityManaging.swift`
 - Create: `Packages/KickCore/Sources/KickCore/KickCoordinator.swift`
-- Modify: `Packages/KickCore/Tests/KickCoreTests/TestSupport.swift` (thêm `FakeLiveActivities`, `TestClock`)
+- Modify: `Packages/KickCore/Tests/KickCoreTests/TestSupport.swift` (thêm `FakeSessionRepository`, `FakeLiveActivities`, `TestClock`)
 - Test: `Packages/KickCore/Tests/KickCoreTests/KickCoordinatorTests.swift`
 
 **Interfaces:**
-- Consumes: `KickStore`, `KickResult`, `NotificationScheduler`, `NotificationText`, `SessionEngine`, `SessionState`, `KickOutcome`, `SessionRules`
+- Consumes: `SessionRepository`, `SessionRecord`, `KickResult`, `NotificationScheduler`, `NotificationText`, `SessionEngine`, `SessionState`, `KickOutcome`, `SessionRules`
 - Produces:
   - `@MainActor public protocol LiveActivityManaging: AnyObject { var isAvailable: Bool { get }; func hasActivity(for: UUID) -> Bool; func start(sessionID: UUID, startedAt: Date, count: Int) async; func update(count: Int, completedAt: Date?) async; func end(dismissAfter: TimeInterval) async; func endAll() async }`
   - `public enum KickFailure: Equatable, Sendable { case loadFailed, saveFailed }`
   - `@MainActor @Observable public final class KickCoordinator` với:
     - `private(set) var activeSession: SessionState?`, `activeSessionID: UUID?`, `completedSession: SessionState?`, `failure: KickFailure?`
-    - `init(store:notifications:liveActivities:overdueText:now:)` (`now: @escaping @MainActor () -> Date = { Date() }`)
+    - `init(store: SessionRepository, notifications: NotificationScheduler, liveActivities: LiveActivityManaging, overdueText: NotificationText, now: @escaping @MainActor () -> Date = { Date() })`
     - `func load() async`, `@discardableResult func recordKick() async -> KickOutcome`, `func undo() async`, `func cancelSession() async`, `func dismissCompletion()`, `func clearFailure()`, `func isOverdue(at: Date) -> Bool`
     - `func setDailyReminder(enabled: Bool, hour: Int, minute: Int, text: NotificationText) async -> Bool`, `func notificationsAuthorized() async -> Bool`, `var liveActivitiesAvailable: Bool`
+    - `static let completedActivityLinger: TimeInterval = 900`
 
 - [ ] **Step 1: Viết test fail**
 
-Thêm vào cuối `TestSupport.swift`:
+Thêm vào cuối `Packages/KickCore/Tests/KickCoreTests/TestSupport.swift`:
 ```swift
+/// In-memory SessionRepository with the same rules as KickStore.
+@MainActor
+final class FakeSessionRepository: SessionRepository {
+    struct WriteFailed: Error {}
+
+    private(set) var sessions: [UUID: SessionState] = [:]
+    private var activeID: UUID?
+    var failNextWrite = false
+
+    func activeSession() throws -> SessionRecord? {
+        guard let id = activeID, let state = sessions[id] else { return nil }
+        return SessionRecord(id: id, state: state)
+    }
+
+    func addKick(at now: Date) throws -> KickResult {
+        if failNextWrite {
+            failNextWrite = false
+            throw WriteFailed()
+        }
+        var didStart = false
+        if activeID == nil {
+            let id = UUID()
+            sessions[id] = SessionState(startedAt: now)
+            activeID = id
+            didStart = true
+        }
+        let id = activeID!
+        var state = sessions[id]!
+        let outcome = SessionEngine.addKick(to: &state, at: now)
+        sessions[id] = state
+        if state.status != .active { activeID = nil }
+        return KickResult(record: SessionRecord(id: id, state: state), outcome: outcome, didStartSession: didStart)
+    }
+
+    func undoLastKick() throws -> SessionRecord? {
+        guard let id = activeID, var state = sessions[id] else { return nil }
+        SessionEngine.undoLastKick(&state)
+        sessions[id] = state
+        return SessionRecord(id: id, state: state)
+    }
+
+    func cancelActive(at now: Date) throws -> SessionRecord? {
+        guard let id = activeID, var state = sessions[id] else { return nil }
+        SessionEngine.cancel(&state, at: now)
+        sessions[id] = state
+        activeID = nil
+        return SessionRecord(id: id, state: state)
+    }
+}
+
 @MainActor
 final class FakeLiveActivities: LiveActivityManaging {
     var isAvailable = true
@@ -1478,7 +1737,6 @@ final class TestClock {
 `Packages/KickCore/Tests/KickCoreTests/KickCoordinatorTests.swift`:
 ```swift
 import Foundation
-import SwiftData
 import Testing
 @preconcurrency import UserNotifications
 @testable import KickCore
@@ -1486,24 +1744,37 @@ import Testing
 @MainActor
 struct KickCoordinatorTests {
     let t0 = date("2026-09-01T20:00:00Z")
-    let container: ModelContainer
-    let center = FakeNotificationCenter()
-    let live = FakeLiveActivities()
+    let overdueText = NotificationText(title: "Overdue", body: "Call your doctor")
+    let repository: FakeSessionRepository
+    let center: FakeNotificationCenter
+    let live: FakeLiveActivities
     let clock: TestClock
     let coordinator: KickCoordinator
-    let overdueText = NotificationText(title: "Overdue", body: "Call your doctor")
 
-    init() throws {
-        let container = try KickPersistence.makeContainer(inMemory: true)
-        let testClock = TestClock(date("2026-09-01T20:00:00Z"))
-        self.container = container
-        self.clock = testClock
-        coordinator = KickCoordinator(
-            store: KickStore(context: container.mainContext),
+    init() {
+        let repository = FakeSessionRepository()
+        let center = FakeNotificationCenter()
+        let live = FakeLiveActivities()
+        let clock = TestClock(date("2026-09-01T20:00:00Z"))
+        self.repository = repository
+        self.center = center
+        self.live = live
+        self.clock = clock
+        coordinator = Self.makeCoordinator(repository, center, live, clock)
+    }
+
+    private static func makeCoordinator(
+        _ repository: FakeSessionRepository,
+        _ center: FakeNotificationCenter,
+        _ live: FakeLiveActivities,
+        _ clock: TestClock
+    ) -> KickCoordinator {
+        KickCoordinator(
+            store: repository,
             notifications: NotificationScheduler(center: center),
             liveActivities: live,
-            overdueText: overdueText,
-            now: { testClock.now }
+            overdueText: NotificationText(title: "Overdue", body: "Call your doctor"),
+            now: { clock.now }
         )
     }
 
@@ -1556,7 +1827,7 @@ struct KickCoordinatorTests {
         #expect(center.removed.contains(NotificationScheduler.overdueID(for: id)))
         #expect(live.updates.last?.count == 10)
         #expect(live.updates.last?.completedAt == t0.addingTimeInterval(9 * 60))
-        #expect(live.ended == [15 * 60])
+        #expect(live.ended == [KickCoordinator.completedActivityLinger])
     }
 
     @Test func debouncedTapChangesNothing() async {
@@ -1565,6 +1836,14 @@ struct KickCoordinatorTests {
         #expect(await coordinator.recordKick() == .ignoredDebounce)
         #expect(coordinator.activeSession?.count == 1)
         #expect(live.updates.isEmpty)
+    }
+
+    @Test func saveFailureIsReported() async {
+        repository.failNextWrite = true
+        #expect(await coordinator.recordKick() == .ignoredInactive)
+        #expect(coordinator.failure == .saveFailed)
+        coordinator.clearFailure()
+        #expect(coordinator.failure == nil)
     }
 
     @Test func undoUpdatesStateAndLiveActivity() async {
@@ -1583,17 +1862,11 @@ struct KickCoordinatorTests {
         #expect(live.ended == [0])
     }
 
-    @Test func loadRestoresActiveSessionAndRestartsMissingLiveActivity() async throws {
+    @Test func loadRestoresActiveSessionAndRestartsMissingLiveActivity() async {
         await kick(times: 2)
         live.activeIDs.removeAll()   // e.g. user dismissed it, or the app was killed
 
-        let restored = KickCoordinator(
-            store: KickStore(context: container.mainContext),
-            notifications: NotificationScheduler(center: center),
-            liveActivities: live,
-            overdueText: overdueText,
-            now: { [clock] in clock.now }
-        )
+        let restored = Self.makeCoordinator(repository, center, live, clock)
         await restored.load()
         #expect(restored.activeSession?.count == 2)
         #expect(live.started.count == 2)
@@ -1630,8 +1903,8 @@ struct KickCoordinatorTests {
 
 - [ ] **Step 2: Chạy để thấy fail**
 
-Run: `cd Packages/KickCore && swift test --filter KickCoordinatorTests`
-Expected: FAIL — `cannot find type 'LiveActivityManaging' in scope`.
+Run: `scripts/test-core.sh --filter KickCoordinatorTests`
+Expected: FAIL. Lỗi `cannot find type 'LiveActivityManaging' in scope`.
 
 - [ ] **Step 3: Cài đặt**
 
@@ -1668,7 +1941,7 @@ public enum KickFailure: Equatable, Sendable {
 }
 
 /// Single entry point for counting actions, used by the UI and by AddKickIntent.
-/// Keeps SwiftData, the overdue notification and the Live Activity in step.
+/// Keeps the repository, the overdue notification and the Live Activity in step.
 @MainActor
 @Observable
 public final class KickCoordinator {
@@ -1679,14 +1952,14 @@ public final class KickCoordinator {
     public private(set) var completedSession: SessionState?
     public private(set) var failure: KickFailure?
 
-    private let store: KickStore
+    private let store: SessionRepository
     private let notifications: NotificationScheduler
     private let liveActivities: LiveActivityManaging
     private let overdueText: NotificationText
     private let now: @MainActor () -> Date
 
     public init(
-        store: KickStore,
+        store: SessionRepository,
         notifications: NotificationScheduler,
         liveActivities: LiveActivityManaging,
         overdueText: NotificationText,
@@ -1705,11 +1978,11 @@ public final class KickCoordinator {
     /// Call on launch and whenever the app becomes active.
     public func load() async {
         do {
-            let session = try store.activeSession()
-            publish(session)
-            if let session {
-                if liveActivities.isAvailable, !liveActivities.hasActivity(for: session.id) {
-                    await liveActivities.start(sessionID: session.id, startedAt: session.startedAt, count: session.state.count)
+            let record = try store.activeSession()
+            publish(record)
+            if let record {
+                if liveActivities.isAvailable, !liveActivities.hasActivity(for: record.id) {
+                    await liveActivities.start(sessionID: record.id, startedAt: record.state.startedAt, count: record.state.count)
                 }
             } else {
                 await liveActivities.endAll()
@@ -1732,23 +2005,20 @@ public final class KickCoordinator {
             return .ignoredInactive
         }
 
-        let session = result.session
-        let state = session.state
-
+        let record = result.record
         switch result.outcome {
         case .added(let count):
-            publish(session)
+            publish(record)
             if result.didStartSession {
-                await startSideEffects(for: session, at: time)
+                await startSideEffects(for: record, at: time)
             } else {
                 await liveActivities.update(count: count, completedAt: nil)
             }
         case .completed:
-            activeSession = nil
-            activeSessionID = nil
-            completedSession = state
-            notifications.cancelOverdueAlert(sessionID: session.id)
-            await liveActivities.update(count: state.count, completedAt: state.endedAt)
+            publish(nil)
+            completedSession = record.state
+            notifications.cancelOverdueAlert(sessionID: record.id)
+            await liveActivities.update(count: record.state.count, completedAt: record.state.endedAt)
             await liveActivities.end(dismissAfter: Self.completedActivityLinger)
         case .ignoredDebounce, .ignoredInactive:
             break
@@ -1758,9 +2028,9 @@ public final class KickCoordinator {
 
     public func undo() async {
         do {
-            guard let session = try store.undoLastKick() else { return }
-            publish(session)
-            await liveActivities.update(count: session.state.count, completedAt: nil)
+            guard let record = try store.undoLastKick() else { return }
+            publish(record)
+            await liveActivities.update(count: record.state.count, completedAt: nil)
         } catch {
             logger.error("Undo failed: \(error.localizedDescription)")
             failure = .saveFailed
@@ -1769,8 +2039,8 @@ public final class KickCoordinator {
 
     public func cancelSession() async {
         do {
-            guard let session = try store.cancelActive(at: now()) else { return }
-            notifications.cancelOverdueAlert(sessionID: session.id)
+            guard let record = try store.cancelActive(at: now()) else { return }
+            notifications.cancelOverdueAlert(sessionID: record.id)
             publish(nil)
             await liveActivities.end(dismissAfter: 0)
         } catch {
@@ -1811,18 +2081,20 @@ public final class KickCoordinator {
         await notifications.isAuthorized()
     }
 
-    private func publish(_ session: KickSession?) {
-        activeSession = session?.state
-        activeSessionID = session?.id
+    private func publish(_ record: SessionRecord?) {
+        activeSession = record?.state
+        activeSessionID = record?.id
     }
 
-    private func startSideEffects(for session: KickSession, at time: Date) async {
+    private func startSideEffects(for record: SessionRecord, at time: Date) async {
         if liveActivities.isAvailable {
-            await liveActivities.start(sessionID: session.id, startedAt: session.startedAt, count: session.state.count)
+            await liveActivities.start(sessionID: record.id, startedAt: record.state.startedAt, count: record.state.count)
         }
         guard await notifications.requestAuthorizationIfNeeded() else { return }
         do {
-            try await notifications.scheduleOverdueAlert(sessionID: session.id, startedAt: session.startedAt, now: time, text: overdueText)
+            try await notifications.scheduleOverdueAlert(
+                sessionID: record.id, startedAt: record.state.startedAt, now: time, text: overdueText
+            )
         } catch {
             logger.error("Scheduling overdue alert failed: \(error.localizedDescription)")
         }
@@ -1832,15 +2104,18 @@ public final class KickCoordinator {
 
 - [ ] **Step 4: Chạy để thấy pass**
 
-Run: `cd Packages/KickCore && swift test`
-Expected: PASS, tất cả test (bao gồm 14 test `KickCoordinatorTests`).
+Run: `scripts/test-core.sh`
+Expected: PASS, tất cả test (trong đó có 14 test `KickCoordinatorTests`).
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Commit, push, CI**
 
 ```bash
 git add Packages/KickCore
-git commit -m "feat(core): add KickCoordinator facade syncing store, notifications and Live Activity"
+git commit -m "feat(core): add KickCoordinator facade syncing repository, notifications and Live Activity"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`.
 
 ---
 
@@ -2050,20 +2325,21 @@ Sửa `project.yml`, trong `targets.KickCounter.sources`:
       - Shared
 ```
 
-- [ ] **Step 4: Xác minh build + kiểm tra catalog có đủ bản dịch**
+- [ ] **Step 4: Kiểm tra catalog có đủ bản dịch**
 
 Run:
 ```bash
 python3 -c "import json;d=json.load(open('Shared/Localizable.xcstrings'));m=[k for k,v in d['strings'].items() if set(v['localizations'])!={'en','vi'}];print('missing:',m);assert not m"
-scripts/test.sh
 ```
-Expected: `missing: []`, sau đó `==> All checks passed`.
+Expected: `missing: []`. Việc build app với catalog được CI kiểm tra sau khi commit.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Commit, push, CI**
 
 ```bash
 git add Shared project.yml
 git commit -m "feat(l10n): add English and Vietnamese string catalogs with typed L10n accessors"
+git push
+scripts/ci-wait.sh
 ```
 
 ---
@@ -2073,12 +2349,14 @@ git commit -m "feat(l10n): add English and Vietnamese string catalogs with typed
 **Files:**
 - Create: `App/AppEnvironment.swift`, `App/TestDoubles.swift`, `App/RootView.swift`, `App/StoreErrorView.swift`, `App/Formatting.swift`
 - Create: `App/Counter/CounterView.swift`, `App/Counter/KickButton.swift`, `App/Counter/OverdueBanner.swift`, `App/Counter/CompletionView.swift`
-- Modify: `App/KickCounterApp.swift` (thay toàn bộ)
+- Modify: `App/KickCounterApp.swift` (thay toàn bộ), `project.yml` (thêm target UI test), `scripts/ci.sh` (`build` → `test`)
+- Test: `UITests/ScreenshotTests.swift`
 
 **Interfaces:**
-- Consumes: `KickCoordinator`, `KickStore`, `KickPersistence`, `NotificationScheduler`, `SystemNotificationCenter`, `NotificationCenterClient`, `LiveActivityManaging`, `AppGroup`, `SettingsKey`, `GestationalAge`, `SessionRules`, `L10n`
+- Consumes: `KickCoordinator`, `KickStore` + `KickPersistence` (KickData), `NotificationScheduler`, `SystemNotificationCenter`, `NotificationCenterClient`, `LiveActivityManaging`, `AppGroup`, `SettingsKey`, `GestationalAge`, `SessionRules`, `L10n`
 - Produces:
-  - `@MainActor struct AppEnvironment { container: ModelContainer; coordinator: KickCoordinator; static let isUITesting: Bool; static func make() throws -> AppEnvironment }`
+  - `@MainActor struct AppEnvironment { container: ModelContainer; coordinator: KickCoordinator; static let isUITesting: Bool; static let forceDarkMode: Bool; static func make() throws -> AppEnvironment }`
+  - `final class ScreenshotTests: XCTestCase` với helper `launch(language:dark:)`, `snap(_:_:)`, `tapKick(_:times:)`. Task 9 và 10 thêm method vào class này.
   - `final class DisabledNotificationCenter: NotificationCenterClient`, `final class NoopLiveActivityManager: LiveActivityManaging`
   - `enum Formatting { static func duration(_ seconds: TimeInterval) -> String }`
   - `RootView` (TabView; tab History/Settings là placeholder cho tới Task 9–10), `CounterView`, `KickButton`, `CompletionView`, `OverdueBanner`, `StoreErrorView`
@@ -2115,6 +2393,7 @@ final class NoopLiveActivityManager: LiveActivityManaging {
 ```swift
 import Foundation
 import KickCore
+import KickData
 import SwiftData
 
 @MainActor
@@ -2122,11 +2401,16 @@ struct AppEnvironment {
     let container: ModelContainer
     let coordinator: KickCoordinator
 
-    static let isUITesting = ProcessInfo.processInfo.arguments.contains("-uiTesting")
+    private static let arguments = ProcessInfo.processInfo.arguments
+    static let isUITesting = arguments.contains("-uiTesting")
+    static let forceDarkMode = arguments.contains("-forceDarkMode")
 
     static func make() throws -> AppEnvironment {
         if isUITesting {
             AppGroup.defaults.removePersistentDomain(forName: AppGroup.identifier)
+            if arguments.contains("-skipOnboarding") {
+                AppGroup.defaults.set(true, forKey: SettingsKey.hasCompletedOnboarding)
+            }
         }
         let container = try KickPersistence.makeContainer(inMemory: isUITesting)
         let notificationCenter: NotificationCenterClient = isUITesting ? DisabledNotificationCenter() : SystemNotificationCenter()
@@ -2169,6 +2453,7 @@ struct KickCounterApp: App {
                 RootView()
                     .environment(env.coordinator)
                     .modelContainer(env.container)
+                    .preferredColorScheme(AppEnvironment.forceDarkMode ? .dark : nil)
             case .failure:
                 StoreErrorView()
             }
@@ -2481,22 +2766,117 @@ struct CounterView: View {
 }
 ```
 
-- [ ] **Step 4: Build + chạy thử trên simulator**
+- [ ] **Step 4: Target UI test + test chụp màn hình**
 
-Run: `scripts/test.sh`
-Expected: `==> All checks passed`.
+`UITests/ScreenshotTests.swift`:
+```swift
+import XCTest
 
-Sau đó chạy app bằng skill `run` (hoặc Xcode ⌘R) với launch argument `-uiTesting`. Chụp màn hình và xác nhận:
-- Nút tròn hiện "0" + "Chạm để bắt đầu" (máy ngôn ngữ vi) hoặc "Tap to start".
-- Chạm 10 lần (cách nhau > 0,5 giây) thì vòng tiến độ đầy dần, rồi sheet "Đủ 10 cử động!" hiện ra.
-- Nút Hoàn tác giảm số đếm; nút Hủy hiện hộp xác nhận.
+/// Captures screenshots for visual review. CI exports them to build/screenshots,
+/// and `scripts/ci-wait.sh` downloads them to ci-artifacts/screenshots.
+final class ScreenshotTests: XCTestCase {
+    override func setUp() {
+        continueAfterFailure = false
+    }
 
-- [ ] **Step 5: Commit**
+    @MainActor
+    func launch(language: String = "vi", dark: Bool = false) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "-uiTesting", "-skipOnboarding",
+            "-AppleLanguages", "(\(language))",
+            "-AppleLocale", language == "vi" ? "vi_VN" : "en_US",
+        ]
+        if dark { app.launchArguments.append("-forceDarkMode") }
+        app.launch()
+        return app
+    }
+
+    @MainActor
+    func snap(_ app: XCUIApplication, _ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    @MainActor
+    func tapKick(_ app: XCUIApplication, times: Int) {
+        let kick = app.buttons["kickButton"]
+        XCTAssertTrue(kick.waitForExistence(timeout: 10))
+        for _ in 0..<times {
+            kick.tap()
+            Thread.sleep(forTimeInterval: 0.6) // stay above the 0.5 s debounce
+        }
+    }
+
+    @MainActor
+    func testCounterScreens() {
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let app = launch(dark: dark)
+            tapKick(app, times: 0)
+            snap(app, "counter-empty-\(suffix)")
+            tapKick(app, times: 3)
+            snap(app, "counter-3-\(suffix)")
+            tapKick(app, times: 7)
+            XCTAssertTrue(app.staticTexts["completionTitle"].waitForExistence(timeout: 5))
+            snap(app, "completion-\(suffix)")
+            app.terminate()
+        }
+        let app = launch(language: "en")
+        tapKick(app, times: 2)
+        snap(app, "counter-2-en")
+    }
+}
+```
+
+Trong `project.yml`, thêm vào `targets:`:
+```yaml
+  KickCounterUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: KickCounter
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lmtiep.kickcounter.uitests
+```
+và thay khối `schemes:` bằng:
+```yaml
+schemes:
+  KickCounter:
+    build:
+      targets:
+        KickCounter: all
+        KickCounterUITests: [test]
+    test:
+      targets:
+        - KickCounterUITests
+```
+
+Trong `scripts/ci.sh` thay dòng `XCODE_ACTION="build"` bằng `XCODE_ACTION="test"`.
+
+- [ ] **Step 5: Commit, push, xác minh trên CI**
 
 ```bash
-git add App
+git add App UITests project.yml scripts/ci.sh
 git commit -m "feat(app): wire KickCoordinator and build the counting screen"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`. Thư mục `ci-artifacts/screenshots/` có các file `counter-empty-light…png`, `counter-3-…`, `completion-…`, `counter-2-en…`.
+
+Mở từng ảnh bằng Read tool và xác nhận:
+- `counter-empty-*`: nút tròn lớn hiện "0" và "Chạm để bắt đầu", có dòng gợi ý bên dưới, không bị tràn chữ.
+- `counter-3-*`: vòng tiến độ đầy khoảng 30%, hiện "3 trên 10", có đồng hồ "Đã trôi qua", có nút Hoàn tác và Hủy lượt đếm.
+- `completion-*`: sheet "Đủ 10 cử động!" với dòng "Hoàn thành trong …" và nút "Xong".
+- `*-dark`: nền tối, chữ đủ tương phản, màu nhấn hồng sáng hơn bản sáng.
+- `counter-2-en`: toàn bộ chữ là tiếng Anh ("2 of 10").
+
+Nếu có điểm không đạt, sửa rồi lặp lại Step 5. Có thể dùng skill `ui-ux-pro-max` để tinh chỉnh giao diện, miễn không đổi identifier hay chuỗi.
 
 ---
 
@@ -2504,10 +2884,10 @@ git commit -m "feat(app): wire KickCoordinator and build the counting screen"
 
 **Files:**
 - Create: `App/History/HistoryView.swift`, `App/History/HistoryChart.swift`, `App/History/SessionRow.swift`
-- Modify: `App/RootView.swift` (thay placeholder tab History)
+- Modify: `App/RootView.swift` (thay placeholder tab History), `UITests/ScreenshotTests.swift` (thêm test chụp Lịch sử)
 
 **Interfaces:**
-- Consumes: `KickSession` (`@Query`), `HistorySummary.daily`, `DailySummary`, `SessionRules`, `Formatting.duration`, `L10n`
+- Consumes: `KickSession` (`@Query`, từ KickData), `HistorySummary.daily`, `DailySummary`, `SessionRules`, `Formatting.duration`, `L10n`
 - Produces: `HistoryView`, `HistoryChart(summaries: [DailySummary], endingAt: Date)`, `SessionRow(session: KickSession)`
 
 - [ ] **Step 1: Viết các view**
@@ -2565,6 +2945,7 @@ struct HistoryChart: View {
 `App/History/SessionRow.swift`:
 ```swift
 import KickCore
+import KickData
 import SwiftUI
 
 struct SessionRow: View {
@@ -2611,6 +2992,7 @@ struct SessionRow: View {
 `App/History/HistoryView.swift`:
 ```swift
 import KickCore
+import KickData
 import OSLog
 import SwiftData
 import SwiftUI
@@ -2706,19 +3088,56 @@ bằng:
                 .tabItem { Label(L10n.tabHistory, systemImage: "chart.bar.fill") }
 ```
 
-- [ ] **Step 3: Build + xác minh trực quan**
+- [ ] **Step 3: Thêm test chụp màn hình Lịch sử**
 
-Run: `scripts/test.sh`
-Expected: `==> All checks passed`.
+Thêm các method sau vào class `ScreenshotTests` trong `UITests/ScreenshotTests.swift`:
+```swift
+    /// Confirms the cancel-session dialog (its destructive button comes first).
+    @MainActor
+    func confirmCancel(_ app: XCUIApplication) {
+        let sheetButton = app.sheets.buttons.element(boundBy: 0)
+        if sheetButton.waitForExistence(timeout: 2) {
+            sheetButton.tap()
+            return
+        }
+        // Newer iOS versions may show a popover: its button has the same label.
+        let label = app.buttons["cancelSessionButton"].label
+        app.buttons.matching(NSPredicate(format: "label == %@", label)).element(boundBy: 1).tap()
+    }
 
-Chạy app với `-uiTesting`, đếm xong một lượt, hủy một lượt khác, rồi mở tab Lịch sử. Chụp màn hình và xác nhận: biểu đồ có 1 cột, đường nét đứt "2 giờ", danh sách có 2 dòng (Hoàn thành, Đã hủy), vuốt trái để xóa có hộp xác nhận. Kiểm tra thêm ở chế độ tối.
+    @MainActor
+    func testHistoryScreens() {
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let app = launch(dark: dark)
+            tapKick(app, times: 10)
+            XCTAssertTrue(app.buttons["completionDone"].waitForExistence(timeout: 5))
+            app.buttons["completionDone"].tap()
+            tapKick(app, times: 2)
+            app.buttons["cancelSessionButton"].tap()
+            confirmCancel(app)
+            app.tabBars.buttons.element(boundBy: 1).tap()
+            XCTAssertTrue(app.descendants(matching: .any)["sessionRow"].firstMatch.waitForExistence(timeout: 5))
+            snap(app, "history-\(suffix)")
+            app.terminate()
+        }
+    }
+```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Commit, push, xác minh trên CI**
 
 ```bash
-git add App
+git add App UITests
 git commit -m "feat(app): add history screen with 14-day chart and session list"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`, có thêm ảnh `history-light…png` và `history-dark…png`.
+
+Mở ảnh bằng Read tool và xác nhận:
+- Biểu đồ có tiêu đề "Thời gian đạt 10 cử động · 14 ngày qua" và đường nét đứt "2 giờ". Cột của hôm nay rất thấp vì lượt test chỉ mất vài giây, như vậy là bình thường.
+- Danh sách có section theo ngày với 2 dòng: một "Hoàn thành" (dấu tích xanh) và một "Đã hủy".
+- Bản tối dễ đọc.
 
 ---
 
@@ -2726,7 +3145,7 @@ git commit -m "feat(app): add history screen with 14-day chart and session list"
 
 **Files:**
 - Create: `App/Settings/SettingsView.swift`, `App/Settings/MedicalInfoView.swift`, `App/Onboarding/OnboardingView.swift`, `App/PrivacyInfo.xcprivacy`
-- Modify: `App/RootView.swift` (tab Settings + onboarding cover)
+- Modify: `App/RootView.swift` (tab Settings + onboarding cover), `UITests/ScreenshotTests.swift` (thêm test chụp Onboarding/Cài đặt)
 
 **Interfaces:**
 - Consumes: `KickCoordinator.setDailyReminder`, `.notificationsAuthorized()`, `.liveActivitiesAvailable`, `SettingsKey`, `SettingsDefault`, `AppGroup`, `NotificationText`, `L10n`
@@ -2996,24 +3415,51 @@ và thêm modifier ngay sau `TabView { ... }` (trước `.task`):
         }
 ```
 
-- [ ] **Step 3: Build + xác minh trực quan**
+- [ ] **Step 3: Thêm test chụp màn hình Onboarding và Cài đặt**
 
-Run: `scripts/test.sh`
-Expected: `==> All checks passed`.
+Thêm method sau vào class `ScreenshotTests`:
+```swift
+    @MainActor
+    func testOnboardingAndSettingsScreens() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-AppleLanguages", "(vi)", "-AppleLocale", "vi_VN"]
+        app.launch()
 
-Chạy app với `-uiTesting`. Chụp màn hình và xác nhận:
-- Onboarding có 3 trang; "Tiếp" chuyển trang; "Tôi đã hiểu" đóng onboarding.
-- Tab Cài đặt: bật "Nhắc tôi đếm" thì hiện chọn giờ. Ở chế độ `-uiTesting` thông báo bị tắt, nên toggle tự tắt lại và mục Quyền hiện ra.
-- Đặt ngày dự sinh thì màn Đếm hiện "Tuần X + Y ngày".
-- Mở "Thông tin y tế" được.
-- Kiểm tra cả chế độ tối và Dynamic Type cỡ lớn (Accessibility XL).
+        let next = app.buttons["onboardingNext"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        snap(app, "onboarding-1")
+        next.tap()
+        snap(app, "onboarding-2")
+        next.tap()
+        snap(app, "onboarding-3")
+        app.buttons["onboardingAgree"].tap()
 
-- [ ] **Step 4: Commit**
+        app.tabBars.buttons.element(boundBy: 2).tap()
+        XCTAssertTrue(app.switches.firstMatch.waitForExistence(timeout: 5))
+        snap(app, "settings")
+        app.switches.element(boundBy: 1).tap() // "Đặt ngày dự sinh"
+        snap(app, "settings-due-date")
+
+        app.tabBars.buttons.element(boundBy: 0).tap()
+        snap(app, "counter-with-week")
+    }
+```
+
+- [ ] **Step 4: Commit, push, xác minh trên CI**
 
 ```bash
-git add App
+git add App UITests
 git commit -m "feat(app): add settings, medical info, onboarding and privacy manifest"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`, có thêm ảnh `onboarding-1/2/3`, `settings`, `settings-due-date`, `counter-with-week`.
+
+Mở ảnh bằng Read tool và xác nhận:
+- Onboarding: 3 trang có biểu tượng, tiêu đề và nội dung tiếng Việt. Trang 3 có nút "Tôi đã hiểu".
+- `settings`: có các mục Nhắc hằng ngày, Thai kỳ, Quyền (hiện ra vì thông báo bị tắt trong `-uiTesting`) và Thông tin.
+- `settings-due-date`: hiện ô chọn ngày dự sinh.
+- `counter-with-week`: màn Đếm có dòng "Tuần 27 + 1 ngày". Ngày dự sinh mặc định là +90 ngày, tức 190 ngày = 27 tuần 1 ngày.
 
 ---
 
@@ -3290,8 +3736,27 @@ private struct AddKickButton: View {
 
 - [ ] **Step 4: Cập nhật project.yml**
 
-Thay toàn bộ khối `targets.KickCounter` và thêm target `KickCounterWidgets`, sao cho phần `targets:` thành:
+Thay toàn bộ `project.yml` bằng:
 ```yaml
+name: KickCounter
+options:
+  bundleIdPrefix: com.lmtiep
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+packages:
+  KickCore:
+    path: Packages/KickCore
+  KickData:
+    path: Packages/KickData
 targets:
   KickCounter:
     type: application
@@ -3301,6 +3766,7 @@ targets:
       - Shared
     dependencies:
       - package: KickCore
+      - package: KickData
       - target: KickCounterWidgets
     info:
       path: App/Info.plist
@@ -3352,6 +3818,25 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.lmtiep.kickcounter.widgets
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  KickCounterUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: KickCounter
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lmtiep.kickcounter.uitests
+schemes:
+  KickCounter:
+    build:
+      targets:
+        KickCounter: all
+        KickCounterUITests: [test]
+    test:
+      targets:
+        - KickCounterUITests
 ```
 Thêm vào `.gitignore` (file entitlements do XcodeGen sinh ra):
 ```
@@ -3359,30 +3844,25 @@ App/KickCounter.entitlements
 Widgets/KickCounterWidgets.entitlements
 ```
 
-- [ ] **Step 5: Build + kiểm tra toàn bộ**
-
-Run: `scripts/test.sh`
-Expected: `==> All checks passed`. Unit test của KickCore vẫn xanh, cả app và extension đều build được.
-
-Chạy app trên simulator **không** dùng `-uiTesting`. Chạm một lần, sau đó khóa màn hình simulator (⌘L). Chụp màn hình để xác nhận Live Activity hiện "1/10", đồng hồ đang chạy và nút "+1". Trên simulator, nút "+1" có thể cần máy thật mới hoạt động đầy đủ; việc này được kiểm lại ở Task 13.
-
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit, push, xác minh trên CI**
 
 ```bash
 git add Shared App Widgets project.yml .gitignore
 git commit -m "feat: add Live Activity with lock screen +1 button via LiveActivityIntent"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`. App và extension build được, mọi test cũ vẫn xanh. CI chạy với `-uiTesting` (Live Activity tắt) nên không chụp được Live Activity. Phần này được kiểm trên iPhone thật qua TestFlight ở Task 14.
 
 ---
 
-### Task 12: UI test luồng chính + bật UI test trong cổng kiểm tra
+### Task 12: UI test chức năng cho luồng chính
 
 **Files:**
-- Create: `UITests/KickCounterUITests.swift`
-- Modify: `project.yml` (thêm target + scheme test), `scripts/test.sh` (`build` → `test`)
+- Create: `UITests/KickCounterUITests.swift` (target `KickCounterUITests` đã có từ Task 8, tự nhận file mới)
 
 **Interfaces:**
-- Consumes: accessibility identifiers từ Global Constraints; launch argument `-uiTesting`.
+- Consumes: accessibility identifiers trong Global Constraints; các launch argument `-uiTesting`, `-AppleLanguages`.
 
 - [ ] **Step 1: Viết UI test**
 
@@ -3404,7 +3884,7 @@ final class KickCounterUITests: XCTestCase {
 
     private func completeOnboarding() {
         let next = app.buttons["onboardingNext"]
-        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
         next.tap()
         next.tap()
         app.buttons["onboardingAgree"].tap()
@@ -3455,65 +3935,162 @@ final class KickCounterUITests: XCTestCase {
         }
         XCTAssertEqual(kickValue, "0 of 10 movements")
     }
+
+    @MainActor
+    func testDebounceIgnoresAccidentalDoubleTap() {
+        let kick = app.buttons["kickButton"]
+        XCTAssertTrue(kick.waitForExistence(timeout: 5))
+        kick.doubleTap()
+        XCTAssertEqual(kickValue, "1 of 10 movements")
+    }
 }
 ```
 
-UI test chạy với ngôn ngữ `en` cố định để so khớp chuỗi accessibility. Nếu cách dialog hiển thị trên phiên bản iOS đang dùng làm selector không khớp, hãy chỉnh selector. Không được xóa hay nới lỏng test.
+Nếu cách dialog hiển thị trên phiên bản iOS của runner làm selector không khớp, hãy chỉnh selector. Không được xóa hay nới lỏng assertion.
 
-- [ ] **Step 2: Thêm target UITests và scheme test**
-
-Trong `project.yml`, thêm vào `targets:`:
-```yaml
-  KickCounterUITests:
-    type: bundle.ui-testing
-    platform: iOS
-    sources:
-      - UITests
-    dependencies:
-      - target: KickCounter
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.lmtiep.kickcounter.uitests
-```
-và thay khối `schemes:` bằng:
-```yaml
-schemes:
-  KickCounter:
-    build:
-      targets:
-        KickCounter: all
-        KickCounterUITests: [test]
-    test:
-      targets:
-        - KickCounterUITests
-```
-
-Trong `scripts/test.sh` thay dòng:
-```bash
-XCODE_ACTION="build"
-```
-bằng:
-```bash
-XCODE_ACTION="test"
-```
-
-- [ ] **Step 3: Chạy và thấy pass**
-
-Run: `scripts/test.sh`
-Expected: unit test PASS; `** TEST SUCCEEDED **` với 3 UI test; dòng cuối `==> All checks passed`.
-
-Nếu một UI test fail, dùng skill `superpowers:systematic-debugging`. Sửa code app hoặc selector, không nới lỏng assertion.
-
-- [ ] **Step 4: Commit**
+- [ ] **Step 2: Commit, push, CI**
 
 ```bash
-git add UITests project.yml scripts/test.sh
-git commit -m "test: add UI tests for count, undo and cancel flows; run them in pre-push gate"
+git add UITests
+git commit -m "test: add functional UI tests for count, undo, cancel and debounce"
+git push
+scripts/ci-wait.sh
 ```
+Expected: `CI PASSED`. Log có `** TEST SUCCEEDED **`. Nếu fail, đọc `ci-artifacts/xcresult` và log, sau đó dùng `superpowers:systematic-debugging`.
 
 ---
 
-### Task 13: Kiểm thử trên máy thật + checklist phát hành
+### Task 13: Phát hành TestFlight từ GitHub Actions
+
+**Điều kiện:** Task 0 đã xong, kể cả Step 4 (secrets). Kiểm tra bằng `gh secret list && gh variable list`. Nếu thiếu, dừng lại và nhờ người dùng hoàn tất.
+
+**Files:**
+- Create: `scripts/release.sh`, `.github/workflows/testflight.yml`
+
+**Interfaces:**
+- Consumes: secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8_BASE64`; variable `DEVELOPMENT_TEAM`; `project.yml`.
+- Produces: workflow `testflight.yml` (chạy tay). Mỗi lần chạy đẩy build số `github.run_number` lên TestFlight.
+
+- [ ] **Step 1: Script release**
+
+`scripts/release.sh`:
+```bash
+#!/usr/bin/env bash
+# Archives the app and uploads it to App Store Connect (TestFlight).
+# Runs on GitHub Actions; uses cloud-managed signing via an App Store Connect API key.
+set -euo pipefail
+: "${ASC_KEY_ID:?}" "${ASC_ISSUER_ID:?}" "${DEVELOPMENT_TEAM:?}" "${BUILD_NUMBER:?}"
+cd "$(dirname "$0")/.."
+
+KEY_PATH="$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+[[ -f "$KEY_PATH" ]] || { echo "Missing API key at $KEY_PATH" >&2; exit 1; }
+AUTH=(-allowProvisioningUpdates
+      -authenticationKeyPath "$KEY_PATH"
+      -authenticationKeyID "$ASC_KEY_ID"
+      -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+
+xcodegen generate --quiet
+rm -rf build && mkdir -p build
+
+xcodebuild -project KickCounter.xcodeproj -scheme KickCounter \
+  -configuration Release -destination "generic/platform=iOS" \
+  -archivePath build/KickCounter.xcarchive \
+  DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" CODE_SIGN_STYLE=Automatic \
+  CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+  "${AUTH[@]}" archive
+
+cat > build/ExportOptions.plist <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key><string>app-store-connect</string>
+    <key>destination</key><string>upload</string>
+    <key>teamID</key><string>${DEVELOPMENT_TEAM}</string>
+    <key>signingStyle</key><string>automatic</string>
+    <key>manageAppVersionAndBuildNumber</key><false/>
+</dict>
+</plist>
+EOF
+
+xcodebuild -exportArchive \
+  -archivePath build/KickCounter.xcarchive \
+  -exportOptionsPlist build/ExportOptions.plist \
+  -exportPath build/export \
+  "${AUTH[@]}"
+echo "==> Uploaded build $BUILD_NUMBER to App Store Connect"
+```
+
+`.github/workflows/testflight.yml`:
+```yaml
+name: TestFlight
+on:
+  workflow_dispatch:
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select latest stable Xcode
+        run: |
+          XCODE="$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)"
+          sudo xcode-select -s "$XCODE/Contents/Developer"
+          xcodebuild -version
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Install App Store Connect API key
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+        run: |
+          mkdir -p ~/private_keys
+          echo "$ASC_KEY_P8_BASE64" | base64 --decode > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+      - name: Archive and upload
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          DEVELOPMENT_TEAM: ${{ vars.DEVELOPMENT_TEAM }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: scripts/release.sh
+      - name: Remove API key
+        if: always()
+        run: rm -rf ~/private_keys
+```
+
+- [ ] **Step 2: Commit, push, CI**
+
+```bash
+chmod +x scripts/release.sh
+git add scripts/release.sh .github/workflows/testflight.yml
+git commit -m "ci: add TestFlight release workflow with cloud-managed signing"
+git push
+scripts/ci-wait.sh
+```
+Expected: `CI PASSED`.
+
+- [ ] **Step 3: Chạy release. HỎI NGƯỜI DÙNG XÁC NHẬN TRƯỚC**, vì bước này tải bản build lên App Store Connect của họ.
+
+```bash
+gh workflow run testflight.yml
+sleep 10
+gh run watch "$(gh run list --workflow testflight.yml --limit 1 --json databaseId -q '.[0].databaseId')" --exit-status
+```
+Expected: log có `==> Uploaded build <n> to App Store Connect`. Khoảng 10–30 phút sau, build xuất hiện trong App Store Connect → TestFlight ở trạng thái "Processing", rồi chuyển sang "Ready to Test".
+
+Các lỗi thường gặp:
+- `No profiles for 'com.lmtiep.kickcounter' were found`: API key không có quyền Admin, hoặc App ID chưa bật đủ capability như Task 0 Step 1.
+- Lỗi iCloud container / App Group: container hoặc group chưa được gán vào App ID.
+- `Missing Compliance`: đã khai `ITSAppUsesNonExemptEncryption: false` trong Info.plist, nên không cần làm gì thêm.
+
+- [ ] **Step 4: Nhờ người dùng cài TestFlight** trên iPhone. Trong App Store Connect → TestFlight → Internal Testing, thêm Apple ID của người dùng. Sau đó chuyển sang Task 14.
+
+---
+
+### Task 14: Kiểm thử trên máy thật + checklist phát hành
 
 **Files:**
 - Create: `docs/release-checklist.md`
@@ -3525,44 +4102,43 @@ git commit -m "test: add UI tests for count, undo and cancel flows; run them in 
 # Checklist trước khi phát hành
 
 ## Cấu hình (một lần)
-- [ ] Điền `DEVELOPMENT_TEAM` trong `project.yml`, chạy `xcodegen generate`.
-- [ ] Trên developer.apple.com: tạo App ID `com.lmtiep.kickcounter` (App Groups, iCloud/CloudKit, Push Notifications),
-      App ID `com.lmtiep.kickcounter.widgets` (App Groups), App Group `group.com.lmtiep.kickcounter`,
-      iCloud container `iCloud.com.lmtiep.kickcounter`.
-- [ ] CloudKit Console: sau khi chạy thử bản debug, **Deploy Schema Changes** lên Production.
-- [ ] Đặt `aps-environment` = `production` cho bản Archive (Xcode tự đổi khi ký bằng distribution).
-- [ ] Icon 1024×1024 trong `App/Assets.xcassets/AppIcon.appiconset`.
+- [ ] Task 0 đã xong: identifiers, app record, API key (Admin), secrets trên GitHub.
+- [ ] CloudKit Console (icloud.developer.apple.com): sau khi bản TestFlight đầu tiên đã lưu dữ liệu,
+      **Deploy Schema Changes** từ Development lên Production.
+- [ ] Icon 1024×1024 trong `App/Assets.xcassets/AppIcon.appiconset` (không trong suốt, không bo góc).
 
-## Kiểm thử thủ công trên iPhone thật (ngôn ngữ vi và en)
+## Kiểm thử thủ công trên iPhone thật qua TestFlight (ngôn ngữ vi và en)
 - [ ] Onboarding hiện lần đầu, không hiện lại sau khi đồng ý.
 - [ ] Chạm lần đầu → hỏi quyền thông báo; Live Activity xuất hiện trên màn hình khóa.
 - [ ] Khóa máy, bấm "+1" trên màn hình khóa 3 lần → số đếm tăng; mở app thấy đúng số.
 - [ ] Dynamic Island (iPhone 14 Pro trở lên): compact hiện "n/10"; nhấn giữ hiện nút "+1".
 - [ ] Đủ 10 lần từ màn hình khóa → Live Activity hiện "Xong!" và tự biến mất sau ~15 phút; mở app thấy lượt trong Lịch sử.
-- [ ] Bắt đầu một lượt, chờ 2 giờ (hoặc tạm đổi `overdueThreshold` = 120 trong bản debug) → nhận thông báo cảnh báo, banner hiện trong app, Live Activity hiện dòng cảnh báo.
+- [ ] Bắt đầu một lượt và để quá 2 giờ → nhận thông báo cảnh báo; banner hiện trong app; Live Activity hiện dòng cảnh báo.
 - [ ] Nhắc hằng ngày: đặt giờ sau 2 phút → nhận thông báo.
 - [ ] Từ chối quyền thông báo → app vẫn đếm được; Cài đặt hiện mục Quyền.
 - [ ] Tắt Live Activities trong Settings → app vẫn đếm; Cài đặt hiện dòng nhắc.
 - [ ] Buộc tắt app khi đang đếm → mở lại thấy lượt đang đếm còn nguyên.
 - [ ] Hai máy cùng Apple ID: lượt hoàn thành trên máy A hiện trong Lịch sử máy B.
-- [ ] Chế độ tối, Dynamic Type lớn nhất, VoiceOver đọc được "Ghi nhận cử động, đã có n trên 10 cử động".
+- [ ] Chế độ tối, Dynamic Type lớn nhất, VoiceOver đọc "Ghi nhận cử động, đã có n trên 10 cử động".
 
 ## App Store Connect
 - [ ] Danh mục: Health & Fitness.
 - [ ] App Privacy: "Data Not Collected".
 - [ ] Mô tả có câu miễn trừ y tế (dùng nội dung `medical.body`).
-- [ ] Ảnh chụp màn hình vi + en (6.9" và 6.5").
+- [ ] Ảnh chụp màn hình vi + en: lấy từ `ci-artifacts/screenshots/` hoặc chụp trên máy thật.
 - [ ] Ghi chú cho reviewer: cách thử Live Activity (chạm một lần trong app rồi khóa máy).
 ```
 
-- [ ] **Step 2: Thực hiện phần "Kiểm thử thủ công" trên iPhone thật**, đánh dấu từng mục. Mục nào lỗi thì mở task sửa riêng (dùng `superpowers:systematic-debugging`).
-
-- [ ] **Step 3: Commit**
+- [ ] **Step 2: Commit, push, CI**
 
 ```bash
 git add docs/release-checklist.md
 git commit -m "docs: add device test and App Store release checklist"
+git push
+scripts/ci-wait.sh
 ```
+
+- [ ] **Step 3: Người dùng kiểm thử trên iPhone qua TestFlight** theo phần "Kiểm thử thủ công". Mục nào lỗi thì mở task sửa riêng (dùng `superpowers:systematic-debugging`), rồi phát hành bản TestFlight mới bằng Task 13 Step 3.
 
 ---
 
@@ -3575,14 +4151,16 @@ git commit -m "docs: add device test and App Store release checklist"
 | §3.1 Onboarding 3 trang + miễn trừ | 10 |
 | §3.2 Nút lớn, vòng tiến độ, đồng hồ, haptic, hoàn tác, hủy, màn hoàn thành, banner 2 giờ | 8 |
 | §3.3 Biểu đồ 14 ngày + đường 2 giờ, danh sách theo ngày, vuốt xóa | 4, 9 |
-| §3.4 Nhắc hằng ngày (mặc định 20:00), ngày dự sinh/tuần thai, thông tin y tế, trạng thái quyền | 4, 10 |
+| §3.4 Nhắc hằng ngày (mặc định 20:00), ngày dự sinh/tuần thai, thông tin y tế, trạng thái quyền | 3 (khóa cài đặt), 4, 10 |
+| §4.1 Tách lớp logic / lưu trữ / UI | 3 (KickCore ↔ KickData qua `SessionRepository`) |
 | §4.2 Model tương thích CloudKit | 3 |
-| §4.3 SessionEngine (debounce 0,5 giây, không undo sau completed) | 2 |
+| §4.3 SessionEngine (debounce 0,5 giây, không undo sau completed) | 2, 12 |
 | §4.4 Bất biến một session active | 3 |
 | §4.5 Luồng Live Activity, `Text(timerInterval:)`, đồng bộ lại khi mở app, kết thúc sau 15 phút | 6, 11 |
 | §4.6 Thông báo nhắc + cảnh báo 2 giờ, xin quyền đúng lúc | 5, 6, 10 |
 | §5 Xử lý lỗi | 3 (iCloud/local), 6 (failure), 8 (StoreErrorView, alert), 10 (quyền), 11 (Live Activity tắt) |
-| §6 Trợ năng, chế độ tối | 8, 9, 10 (kiểm tra trực quan), 13 |
-| §7 Song ngữ | 7 |
-| §8 Unit test, UI test, kiểm thử thủ công, pre-push | 1–6, 12, 13 |
-| §9 App Store, privacy | 10 (PrivacyInfo), 13 |
+| §6 Trợ năng, chế độ tối | 8–10 (ảnh chụp sáng/tối trên CI), 14 |
+| §7 Song ngữ | 7, ảnh chụp vi/en ở 8–10 |
+| §8 Unit test, UI test, kiểm thử thủ công, pre-push | 1–6, 8, 12, 14 |
+| §8a Build không cần Xcode local (CI + TestFlight) | 1, 13 |
+| §9 App Store, privacy | 10 (PrivacyInfo), 13, 14 |

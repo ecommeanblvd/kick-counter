@@ -30,6 +30,7 @@ sẻ với người khác, server/tài khoản, Apple Watch, iPad.
 | Live Activity | Hướng A — có nút "+1" tương tác (`LiveActivityIntent`) |
 | iOS tối thiểu | 17.0 (SwiftData + Live Activity tương tác) |
 | Test | Swift Testing (unit), XCTest UI test |
+| Môi trường build | Máy dev **không cài Xcode** (thiếu dung lượng). Build, UI test và ảnh chụp simulator chạy trên GitHub Actions (repo public). Bản TestFlight được đẩy lên qua workflow dùng App Store Connect API key |
 
 ## 3. Màn hình
 
@@ -67,8 +68,10 @@ sẻ với người khác, server/tài khoản, Apple Watch, iPad.
 ### 4.1 Targets
 | Target | Nội dung | Phụ thuộc |
 |---|---|---|
-| `KickCore` (Swift package cục bộ) | Model SwiftData, `SessionEngine`, `KickStore`, `KickActivityAttributes`, `AddKickIntent` | Foundation, SwiftData, ActivityKit, AppIntents |
-| `KickCounter` (app) | Giao diện SwiftUI, `NotificationScheduler`, `LiveActivityController` | KickCore |
+| `KickCore` (Swift package cục bộ) | Logic thuần: `SessionEngine`, `SessionRepository` (protocol), tóm tắt lịch sử, scheduler thông báo, `KickCoordinator`. Test được trên máy không có Xcode | Foundation, Observation, UserNotifications |
+| `KickData` (Swift package cục bộ) | Model SwiftData, `KickPersistence`, `KickStore: SessionRepository`. Chỉ build/test trên CI | KickCore, SwiftData |
+| `Shared/` (biên dịch vào App + Widgets) | `KickActivityAttributes`, `AddKickIntent`, `L10n`, String Catalog | ActivityKit, AppIntents |
+| `KickCounter` (app) | Giao diện SwiftUI, `SystemLiveActivityManager` | KickCore, KickData |
 | `KickCounterWidgets` (extension) | Giao diện Live Activity (màn hình khóa + Dynamic Island) | KickCore |
 
 App và extension cùng thuộc App Group `group.<bundle-prefix>.kickcounter`.
@@ -167,8 +170,10 @@ còn lại `cancelled`.
   trong lịch sử.
 - **Thủ công trên iPhone thật:** Live Activity, Dynamic Island, nút "+1" từ
   màn hình khóa, thông báo nhắc và cảnh báo 2h.
-- **Pre-push hook** (`.githooks/pre-push`): chạy `swift test` cho KickCore và
-  `xcodebuild test` cho app trên simulator; chặn push nếu thất bại.
+- **Pre-push hook** (`.githooks/pre-push`): chạy test KickCore ở local, đây là kiểm tra
+  duy nhất chạy được khi không có Xcode. KickData, build iOS và UI test do CI GitHub
+  Actions chặn. UI test chụp ảnh màn hình (sáng/tối, vi/en) để xác minh trực quan.
+- **Thử trên máy thật:** qua TestFlight (workflow `testflight.yml`).
 
 ## 9. App Store
 - Danh mục: Health & Fitness (Sức khỏe).
