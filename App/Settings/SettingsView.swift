@@ -18,6 +18,7 @@ struct SettingsView: View {
             Form {
                 Section(L10n.settingsReminderSection) {
                     Toggle(L10n.settingsReminderToggle, isOn: $reminderEnabled)
+                        .accessibilityIdentifier("settingsReminderToggle")
                     if reminderEnabled {
                         DatePicker(L10n.settingsReminderTime, selection: reminderTime, displayedComponents: .hourAndMinute)
                     }
@@ -25,6 +26,7 @@ struct SettingsView: View {
 
                 Section(L10n.settingsPregnancySection) {
                     Toggle(L10n.settingsDueDateToggle, isOn: hasDueDate)
+                        .accessibilityIdentifier("settingsDueDateToggle")
                     if dueDate > 0 {
                         DatePicker(
                             L10n.settingsDueDate,

@@ -106,7 +106,9 @@ final class ScreenshotTests: XCTestCase {
         app.tabBars.buttons.element(boundBy: 2).tap()
         XCTAssertTrue(app.switches.firstMatch.waitForExistence(timeout: 5))
         snap(app, "settings")
-        app.switches.element(boundBy: 1).tap() // "Đặt ngày dự sinh"
+        let dueDateToggle = app.switches["settingsDueDateToggle"] // "Đặt ngày dự sinh"
+        XCTAssertTrue(dueDateToggle.waitForExistence(timeout: 5))
+        dueDateToggle.tap()
         snap(app, "settings-due-date")
 
         app.tabBars.buttons.element(boundBy: 0).tap()
