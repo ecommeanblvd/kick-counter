@@ -1,4 +1,5 @@
 import OSLog
+import SwiftData
 import SwiftUI
 
 private let logger = Logger(subsystem: "com.lmtiep.kickcounter", category: "app")
