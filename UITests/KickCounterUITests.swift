@@ -63,6 +63,15 @@ final class KickCounterUITests: XCTestCase {
             // Newer iOS versions may render the dialog as a popover rather than a sheet.
             app.buttons.matching(identifier: "Cancel session").element(boundBy: 1).tap()
         }
+        // cancelSession() runs in an async Task, so the kick button's accessibility
+        // value updates asynchronously after the tap; wait for it instead of reading
+        // it immediately (which raced the update and observed the stale count on CI).
+        let kick = app.buttons["kickButton"]
+        let reset = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == %@", "0 of 10 movements"),
+            object: kick
+        )
+        XCTAssertEqual(XCTWaiter().wait(for: [reset], timeout: 5), .completed)
         XCTAssertEqual(kickValue, "0 of 10 movements")
     }
 
