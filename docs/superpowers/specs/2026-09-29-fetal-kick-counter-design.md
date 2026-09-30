@@ -147,7 +147,7 @@ còn lại `cancelled`.
 | Tắt Live Activity trong Settings | Đếm trong app bình thường; không tạo activity |
 | Không đăng nhập iCloud | SwiftData chạy cục bộ, không báo lỗi |
 | Mở `ModelContainer` thất bại | Màn hình lỗi thân thiện + log `os.Logger`; không crash |
-| Live Activity hết hạn (8h) | Session vẫn còn trong app |
+| Lượt đếm bỏ dở | Sau 8 giờ không tạo lại Live Activity; sau 12 giờ tự chuyển sang "Đã hủy", lần bấm tiếp theo bắt đầu lượt mới |
 | App bị kill khi đang đếm | Session khôi phục từ SwiftData khi mở lại |
 | Bấm đúp nhầm | Debounce 0,5s trong `SessionEngine` |
 
