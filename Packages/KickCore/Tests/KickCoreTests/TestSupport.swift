@@ -112,6 +112,7 @@ final class FakeSessionRepository: SessionRepository {
     private(set) var sessions: [UUID: SessionState] = [:]
     private var activeID: UUID?
     var failNextWrite = false
+    var failNextCancel = false
 
     func activeSession() throws -> SessionRecord? {
         guard let id = activeID, let state = sessions[id] else { return nil }
@@ -146,6 +147,10 @@ final class FakeSessionRepository: SessionRepository {
     }
 
     func cancelActive(at now: Date) throws -> SessionRecord? {
+        if failNextCancel {
+            failNextCancel = false
+            throw WriteFailed()
+        }
         guard let id = activeID, var state = sessions[id] else { return nil }
         SessionEngine.cancel(&state, at: now)
         sessions[id] = state

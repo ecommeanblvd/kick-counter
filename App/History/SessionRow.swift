@@ -17,7 +17,7 @@ struct SessionRow: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
-                if let duration = state.duration {
+                if state.status == .completed, let duration = state.duration {
                     Text(Formatting.duration(duration)).font(.body.monospacedDigit())
                 }
                 statusLabel(state)

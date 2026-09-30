@@ -40,38 +40,42 @@ func setFill(_ context: CGContext, _ red: CGFloat, _ green: CGFloat, _ blue: CGF
 setFill(context, 0.847, 0.365, 0.412)
 context.fill(CGRect(x: 0, y: 0, width: size, height: size))
 
+/// Draws a classic heart — two rounded lobes on top meeting at a top-center
+/// notch, a single pointed tip at the bottom — into `path`, sized by `scale`
+/// (the heart's total width) and centered at (centerX, centerY).
+///
+/// Built from a well-known heart SVG path (viewBox 0-32, bounds x:[2,30]
+/// y:[2,29.239]) by mapping its coordinates into a local frame centered on
+/// that path's own bounding box: `lx = (x - 16) / 28 * scale`,
+/// `ly = (15.6195 - y) / 28 * scale`. The path's bounding box is symmetric
+/// around (16, 15.6195) in both axes, so this local frame is automatically
+/// centered at (0, 0) — translating by (centerX, centerY) centers the drawn
+/// heart's bounding box there exactly, and `scale` maps directly to the
+/// heart's on-canvas width. CGContext here is y-up; the `15.6195 - y` flip
+/// accounts for the source path's y-down SVG convention (larger y = lower on
+/// screen), so the bottom tip lands below center and the top lobes above it.
 func addHeart(to path: CGMutablePath, centerX: CGFloat, centerY: CGFloat, scale: CGFloat) {
-    let w = scale
-    let h = scale * 0.9
-    // Unit heart in a local frame where y=0 is the bottom tip and y=h is the top
-    // of the lobes, translated to (centerX, centerY). CGContext is y-up, so this
-    // maps directly without flipping.
-    func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: centerX + x, y: centerY + y - h * 0.5) }
-    path.move(to: p(0, h * 0.3))
-    path.addCurve(to: p(-w * 0.5, h * 0.8), control1: p(0, h * 0.05), control2: p(-w * 0.5, h * 0.5))
-    path.addCurve(to: p(-w * 0.15, h), control1: p(-w * 0.5, h * 1.05), control2: p(-w * 0.32, h))
-    path.addCurve(to: p(0, h * 0.75), control1: p(-w * 0.03, h), control2: p(0, h * 0.9))
-    path.addCurve(to: p(w * 0.15, h), control1: p(0, h * 0.9), control2: p(w * 0.03, h))
-    path.addCurve(to: p(w * 0.5, h * 0.8), control1: p(w * 0.32, h), control2: p(w * 0.5, h * 1.05))
-    path.addCurve(to: p(0, h * 0.3), control1: p(w * 0.5, h * 0.5), control2: p(0, h * 0.05))
+    func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+        CGPoint(x: centerX + (x - 16) / 28 * scale, y: centerY + (15.6195 - y) / 28 * scale)
+    }
+    path.move(to: p(16, 29.239))
+    path.addCurve(to: p(2, 10.5), control1: p(16, 29.239), control2: p(2, 18))
+    path.addCurve(to: p(10.5, 2), control1: p(2, 5.806), control2: p(5.806, 2))
+    path.addCurve(to: p(16, 4.5), control1: p(13.703, 2), control2: p(16, 4.5))
+    path.addCurve(to: p(21.5, 2), control1: p(16, 4.5), control2: p(18.297, 2))
+    path.addCurve(to: p(30, 10.5), control1: p(26.194, 2), control2: p(30, 5.806))
+    path.addCurve(to: p(16, 29.239), control1: p(30, 18), control2: p(16, 29.239))
     path.closeSubpath()
 }
 
 let centerX = CGFloat(size) / 2
 let centerY = CGFloat(size) / 2
 
-// Outer heart: white.
-let outerHeart = CGMutablePath()
-addHeart(to: outerHeart, centerX: centerX, centerY: centerY, scale: CGFloat(size) * 0.62)
+// Heart: white, ~58% of the canvas width, bounding box centered on the canvas.
+let heart = CGMutablePath()
+addHeart(to: heart, centerX: centerX, centerY: centerY, scale: CGFloat(size) * 0.58)
 setFill(context, 1.0, 1.0, 1.0)
-context.addPath(outerHeart)
-context.fillPath()
-
-// Inner heart: subtle lighter coral, slightly smaller, for depth.
-let innerHeart = CGMutablePath()
-addHeart(to: innerHeart, centerX: centerX, centerY: centerY - CGFloat(size) * 0.04, scale: CGFloat(size) * 0.34)
-setFill(context, 0.957, 0.557, 0.588)
-context.addPath(innerHeart)
+context.addPath(heart)
 context.fillPath()
 
 guard let cgImage = context.makeImage() else {
