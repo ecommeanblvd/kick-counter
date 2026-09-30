@@ -427,12 +427,6 @@ struct KickCoordinatorTests {
 
     // MARK: - Fix round 3: test hygiene (no hangs)
 
-    /// Literal regression test for the `startingSessionID` gate in
-    /// `performLoad`: a `load()` call must not start a second activity while
-    /// the first kick's own `start` is still in flight. This already passes on
-    /// the prior HEAD (fix round 1 already shared `startingSessionID` between
-    /// `startSideEffects` and `performLoad`); it's added as explicit coverage
-    /// per the round-3 review, not because it currently fails.
     // MARK: - Abandoned sessions auto-expire
 
     /// Item 1a: a 13h-old active session is auto-cancelled by `load()`; no Live
@@ -452,6 +446,43 @@ struct KickCoordinatorTests {
         #expect(try repository.activeSession() == nil)
         #expect(live.started.isEmpty)
         #expect(!center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: id) })
+    }
+
+    /// Item 3a: `load()` on a 13h-old active session whose cancel fails must
+    /// stop before running no-active-session reconciliation — it must not end
+    /// Live Activities or sweep the (still-legitimate) overdue alert, and the
+    /// repository must still hold the active session.
+    @Test func loadStopsAfterFailedAbandonedCancel() async throws {
+        let seeded = try repository.addKick(at: t0)
+        let id = seeded.record.id
+        center.added.append(UNNotificationRequest(
+            identifier: NotificationScheduler.overdueID(for: id), content: UNMutableNotificationContent(), trigger: nil
+        ))
+        clock.advance(13 * 60 * 60)
+        repository.failNextCancel = true
+
+        await coordinator.load()
+
+        #expect(coordinator.failure == .saveFailed)
+        #expect(live.endAllCount == 0)
+        #expect(center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: id) })
+        #expect(try repository.activeSession()?.id == id)
+    }
+
+    /// Item 3b: `recordKick()` on a 13h-old active session whose cancel fails
+    /// must not add the kick to the stale session or start a new one.
+    @Test func recordKickStopsAfterFailedAbandonedCancel() async throws {
+        let seeded = try repository.addKick(at: t0)
+        let id = seeded.record.id
+        clock.advance(13 * 60 * 60)
+        repository.failNextCancel = true
+
+        let outcome = await coordinator.recordKick()
+
+        #expect(outcome == .ignoredInactive)
+        #expect(coordinator.failure == .saveFailed)
+        #expect(try repository.activeSession()?.id == id)
+        #expect(try repository.activeSession()?.state.count == 1)
     }
 
     /// Item 1b: `recordKick()` on a 13h-old active session cancels it and starts
@@ -498,6 +529,12 @@ struct KickCoordinatorTests {
         #expect(live.started.map(\.id) == [id])
     }
 
+    /// Literal regression test for the `startingSessionID` gate in
+    /// `performLoad`: a `load()` call must not start a second activity while
+    /// the first kick's own `start` is still in flight. This already passes on
+    /// the prior HEAD (fix round 1 already shared `startingSessionID` between
+    /// `startSideEffects` and `performLoad`); it's added as explicit coverage
+    /// per the round-3 review, not because it currently fails.
     @Test func loadDoesNotStartSecondActivityWhileFirstKickStartIsInFlight() async throws {
         live.holdStart = true
 

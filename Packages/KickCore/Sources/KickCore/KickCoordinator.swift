@@ -78,7 +78,11 @@ public final class KickCoordinator {
                 return
             }
             if SessionEngine.isAbandoned(fetched.state, now: now()) {
-                await cancelAbandoned(fetched)
+                // If cancelling the abandoned session failed, the store still holds
+                // it as active: stop here rather than running the no-active-session
+                // reconciliation, which would end Live Activities and sweep this
+                // still-legitimate session's overdue alert out from under it.
+                guard await cancelAbandoned(fetched) else { return }
                 // A new session may have started while `cancelAbandoned` awaited its
                 // Live Activity teardown; don't clobber it with the "no session" path.
                 guard activeSessionID == nil else { return }
@@ -142,30 +146,37 @@ public final class KickCoordinator {
     /// without being finished or cancelled — e.g. the mother forgot about it —
     /// so it doesn't linger forever showing a stale Live Activity/overdue banner
     /// and doesn't swallow the next day's first kick.
-    private func cancelAbandoned(_ record: SessionRecord) async {
+    /// Returns `false` (and sets `failure = .saveFailed`) if the cancel itself
+    /// failed, so callers can stop instead of treating the session as gone.
+    @discardableResult
+    private func cancelAbandoned(_ record: SessionRecord) async -> Bool {
         do {
             _ = try store.cancelActive(at: now())
         } catch {
             logger.error("Cancelling abandoned session failed: \(error.localizedDescription)")
             failure = .saveFailed
-            return
+            return false
         }
         notifications.cancelOverdueAlert(sessionID: record.id)
         publish(nil)
         await liveActivities.end(sessionID: record.id, dismissAfter: 0)
+        return true
     }
 
     /// Cancels the active session first if it's abandoned, so a kick that
     /// arrives after `SessionRules.abandonAfter` starts a fresh session
-    /// instead of extending the forgotten one.
-    private func expireAbandonedSessionIfNeeded() async {
-        guard let record = try? store.activeSession(), SessionEngine.isAbandoned(record.state, now: now()) else { return }
-        await cancelAbandoned(record)
+    /// instead of extending the forgotten one. Returns `false` if an abandoned
+    /// session was found but failed to cancel, so the caller must not touch it.
+    private func expireAbandonedSessionIfNeeded() async -> Bool {
+        guard let record = try? store.activeSession(), SessionEngine.isAbandoned(record.state, now: now()) else { return true }
+        return await cancelAbandoned(record)
     }
 
     @discardableResult
     public func recordKick() async -> KickOutcome {
-        await expireAbandonedSessionIfNeeded()
+        // If an abandoned session failed to cancel, it's still active in the
+        // store: stop rather than adding this kick to the 13-hour-old session.
+        guard await expireAbandonedSessionIfNeeded() else { return .ignoredInactive }
         let time = now()
         let result: KickResult
         do {
