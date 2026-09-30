@@ -1625,6 +1625,8 @@ scripts/ci-wait.sh
 
 ### Task 6: LiveActivityManaging + KickCoordinator
 
+> **Đã sửa sau review (commit d630ca8):** `LiveActivityManaging.update/end` nhận thêm `sessionID`; `NotificationCenterClient` có thêm `pendingRequestIDs()`; `NotificationScheduler` có thêm `cancelOverdueAlerts(except:)`; `KickCoordinator` kiểm tra lại session sau mỗi `await` và `load()` được tuần tự hóa, đồng bộ đầy đủ. Code trong repo là nguồn đúng; các đoạn code bên dưới là bản gốc.
+
 **Files:**
 - Create: `Packages/KickCore/Sources/KickCore/LiveActivityManaging.swift`
 - Create: `Packages/KickCore/Sources/KickCore/KickCoordinator.swift`
@@ -1634,7 +1636,7 @@ scripts/ci-wait.sh
 **Interfaces:**
 - Consumes: `SessionRepository`, `SessionRecord`, `KickResult`, `NotificationScheduler`, `NotificationText`, `SessionEngine`, `SessionState`, `KickOutcome`, `SessionRules`
 - Produces:
-  - `@MainActor public protocol LiveActivityManaging: AnyObject { var isAvailable: Bool { get }; func hasActivity(for: UUID) -> Bool; func start(sessionID: UUID, startedAt: Date, count: Int) async; func update(count: Int, completedAt: Date?) async; func end(dismissAfter: TimeInterval) async; func endAll() async }`
+  - `@MainActor public protocol LiveActivityManaging: AnyObject { var isAvailable: Bool { get }; func hasActivity(for: UUID) -> Bool; func start(sessionID: UUID, startedAt: Date, count: Int) async; func update(sessionID: UUID, count: Int, completedAt: Date?) async; func end(sessionID: UUID, dismissAfter: TimeInterval) async; func endAll() async }`
   - `public enum KickFailure: Equatable, Sendable { case loadFailed, saveFailed }`
   - `@MainActor @Observable public final class KickCoordinator` với:
     - `private(set) var activeSession: SessionState?`, `activeSessionID: UUID?`, `completedSession: SessionState?`, `failure: KickFailure?`
@@ -2376,6 +2378,7 @@ final class DisabledNotificationCenter: NotificationCenterClient {
     func removePending(ids: [String]) {}
     func requestAuthorization() async throws -> Bool { false }
     func authorizationStatus() async -> UNAuthorizationStatus { .denied }
+    func pendingRequestIDs() async -> [String] { [] }
 }
 
 @MainActor
@@ -2383,8 +2386,8 @@ final class NoopLiveActivityManager: LiveActivityManaging {
     var isAvailable: Bool { false }
     func hasActivity(for sessionID: UUID) -> Bool { false }
     func start(sessionID: UUID, startedAt: Date, count: Int) async {}
-    func update(count: Int, completedAt: Date?) async {}
-    func end(dismissAfter: TimeInterval) async {}
+    func update(sessionID: UUID, count: Int, completedAt: Date?) async {}
+    func end(sessionID: UUID, dismissAfter: TimeInterval) async {}
     func endAll() async {}
 }
 ```
@@ -3540,8 +3543,8 @@ final class SystemLiveActivityManager: LiveActivityManaging {
         Activity<KickActivityAttributes>.activities
     }
 
-    private var current: Activity<KickActivityAttributes>? {
-        activities.first { $0.activityState == .active }
+    private func activity(for sessionID: UUID) -> Activity<KickActivityAttributes>? {
+        activities.first { $0.attributes.sessionID == sessionID && $0.activityState == .active }
     }
 
     var isAvailable: Bool {
@@ -3549,11 +3552,14 @@ final class SystemLiveActivityManager: LiveActivityManaging {
     }
 
     func hasActivity(for sessionID: UUID) -> Bool {
-        activities.contains { $0.attributes.sessionID == sessionID && $0.activityState == .active }
+        activity(for: sessionID) != nil
     }
 
     func start(sessionID: UUID, startedAt: Date, count: Int) async {
-        await endAll()
+        for other in activities where other.attributes.sessionID != sessionID {
+            await other.end(nil, dismissalPolicy: .immediate)
+        }
+        guard !hasActivity(for: sessionID) else { return }
         let attributes = KickActivityAttributes(sessionID: sessionID, startedAt: startedAt)
         let content = ActivityContent(
             state: KickActivityAttributes.ContentState(count: count, completedAt: nil),
@@ -3566,8 +3572,8 @@ final class SystemLiveActivityManager: LiveActivityManaging {
         }
     }
 
-    func update(count: Int, completedAt: Date?) async {
-        guard let activity = current else { return }
+    func update(sessionID: UUID, count: Int, completedAt: Date?) async {
+        guard let activity = activity(for: sessionID) else { return }
         let staleDate = completedAt == nil
             ? activity.attributes.startedAt.addingTimeInterval(SessionRules.overdueThreshold)
             : nil
@@ -3577,8 +3583,8 @@ final class SystemLiveActivityManager: LiveActivityManaging {
         ))
     }
 
-    func end(dismissAfter: TimeInterval) async {
-        guard let activity = current else { return }
+    func end(sessionID: UUID, dismissAfter: TimeInterval) async {
+        guard let activity = activity(for: sessionID) else { return }
         let policy: ActivityUIDismissalPolicy = dismissAfter <= 0
             ? .immediate
             : .after(Date.now.addingTimeInterval(dismissAfter))
