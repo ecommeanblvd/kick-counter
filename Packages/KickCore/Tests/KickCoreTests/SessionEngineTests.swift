@@ -91,6 +91,23 @@ struct SessionEngineTests {
         #expect(state.endedAt == t0.addingTimeInterval(300))
     }
 
+    @Test func abandonBoundaryIsInclusive() {
+        let state = SessionState(startedAt: t0)
+        #expect(SessionEngine.isAbandoned(state, now: t0.addingTimeInterval(SessionRules.abandonAfter - 1)) == false)
+        #expect(SessionEngine.isAbandoned(state, now: t0.addingTimeInterval(SessionRules.abandonAfter)))
+    }
+
+    @Test func completedOrCancelledSessionIsNeverAbandoned() {
+        var completed = SessionState(startedAt: t0)
+        _ = kick(&completed, 10)
+        #expect(SessionEngine.isAbandoned(completed, now: t0.addingTimeInterval(30 * 3600)) == false)
+
+        var cancelled = SessionState(startedAt: t0)
+        _ = kick(&cancelled, 2)
+        SessionEngine.cancel(&cancelled, at: t0.addingTimeInterval(120))
+        #expect(SessionEngine.isAbandoned(cancelled, now: t0.addingTimeInterval(30 * 3600)) == false)
+    }
+
     @Test func elapsedUsesEndDateWhenFinished() {
         var state = SessionState(startedAt: t0)
         #expect(SessionEngine.elapsed(state, now: t0.addingTimeInterval(90)) == 90)

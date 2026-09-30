@@ -73,6 +73,10 @@ public enum SessionEngine {
         state.status == .active && now.timeIntervalSince(state.startedAt) >= SessionRules.overdueThreshold
     }
 
+    public static func isAbandoned(_ state: SessionState, now: Date) -> Bool {
+        state.status == .active && now.timeIntervalSince(state.startedAt) >= SessionRules.abandonAfter
+    }
+
     public static func elapsed(_ state: SessionState, now: Date) -> TimeInterval {
         max(0, (state.endedAt ?? now).timeIntervalSince(state.startedAt))
     }

@@ -433,6 +433,71 @@ struct KickCoordinatorTests {
     /// the prior HEAD (fix round 1 already shared `startingSessionID` between
     /// `startSideEffects` and `performLoad`); it's added as explicit coverage
     /// per the round-3 review, not because it currently fails.
+    // MARK: - Abandoned sessions auto-expire
+
+    /// Item 1a: a 13h-old active session is auto-cancelled by `load()`; no Live
+    /// Activity is (re)started and its overdue alert is removed.
+    @Test func loadCancelsAbandonedSession() async throws {
+        let seeded = try repository.addKick(at: t0) // active session, no Live Activity yet
+        let id = seeded.record.id
+        center.added.append(UNNotificationRequest(
+            identifier: NotificationScheduler.overdueID(for: id), content: UNMutableNotificationContent(), trigger: nil
+        ))
+        clock.advance(13 * 60 * 60)
+
+        await coordinator.load()
+
+        #expect(coordinator.activeSession == nil)
+        #expect(coordinator.activeSessionID == nil)
+        #expect(try repository.activeSession() == nil)
+        #expect(live.started.isEmpty)
+        #expect(!center.added.contains { $0.identifier == NotificationScheduler.overdueID(for: id) })
+    }
+
+    /// Item 1b: `recordKick()` on a 13h-old active session cancels it and starts
+    /// a brand-new session with normal side effects, scoped only to the new id.
+    @Test func recordKickCancelsAbandonedSessionAndStartsNewOne() async throws {
+        let seeded = try repository.addKick(at: t0) // old session
+        let oldID = seeded.record.id
+        clock.advance(13 * 60 * 60)
+
+        let outcome = await coordinator.recordKick()
+
+        #expect(outcome == .added(count: 1))
+        let newID = try #require(coordinator.activeSessionID)
+        #expect(newID != oldID)
+        #expect(coordinator.activeSession?.count == 1)
+        #expect(try repository.activeSession()?.id == newID)
+        #expect(live.started.map(\.id) == [newID])
+        #expect(center.added.map(\.identifier) == [NotificationScheduler.overdueID(for: newID)])
+    }
+
+    /// Item 1c: a 9h-old active session with no Live Activity (iOS already
+    /// ended it at 8h) must not get a new one started by `load()`.
+    @Test func loadDoesNotRestartLiveActivityPastMaxAge() async throws {
+        let seeded = try repository.addKick(at: t0)
+        let id = seeded.record.id
+        clock.advance(9 * 60 * 60)
+
+        await coordinator.load()
+
+        #expect(live.started.isEmpty)
+        #expect(coordinator.activeSessionID == id)
+        #expect(coordinator.activeSession?.status == .active)
+    }
+
+    /// Item 1d (regression guard): a 3h-old active session with no Live
+    /// Activity still gets one started by `load()`.
+    @Test func loadStillRestartsLiveActivityWellBeforeMaxAge() async throws {
+        let seeded = try repository.addKick(at: t0)
+        let id = seeded.record.id
+        clock.advance(3 * 60 * 60)
+
+        await coordinator.load()
+
+        #expect(live.started.map(\.id) == [id])
+    }
+
     @Test func loadDoesNotStartSecondActivityWhileFirstKickStartIsInFlight() async throws {
         live.holdStart = true
 

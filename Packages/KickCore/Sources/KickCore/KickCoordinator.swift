@@ -73,44 +73,53 @@ public final class KickCoordinator {
 
     private func performLoad() async {
         do {
-            let record = try store.activeSession()
-            publish(record)
-            if let record {
-                let sessionID = record.id
-                if liveActivities.isAvailable {
-                    if !liveActivities.hasActivity(for: sessionID), startingSessionID != sessionID {
-                        await startLiveActivity(sessionID: sessionID, startedAt: record.state.startedAt, initialCount: record.state.count)
-                    } else if liveActivities.hasActivity(for: sessionID) {
-                        await liveActivities.update(sessionID: sessionID, count: record.state.count, completedAt: nil)
-                    }
-                }
-                // The session may have completed, been cancelled, or been superseded
-                // by a new one while the Live Activity call above was in flight; don't
-                // touch another session's overdue alert.
-                guard activeSessionID == sessionID else { return }
-
-                await notifications.cancelOverdueAlerts(except: sessionID)
-                guard activeSessionID == sessionID else { return }
-
-                // Never prompt from load(): only (re)schedule when already authorized.
-                guard await notifications.isAuthorized() else { return }
-                guard activeSessionID == sessionID else { return }
-                do {
-                    try await notifications.scheduleOverdueAlert(
-                        sessionID: sessionID, startedAt: record.state.startedAt, now: now(), text: overdueText
-                    )
-                    if activeSessionID != sessionID {
-                        notifications.cancelOverdueAlert(sessionID: sessionID)
-                    }
-                } catch {
-                    logger.error("Scheduling overdue alert during load failed: \(error.localizedDescription)")
-                }
-            } else {
-                await liveActivities.endAll()
-                // A new session may have started (and scheduled its own overdue alert)
-                // while `endAll` was in flight; don't wipe it out from under it.
+            guard let fetched = try store.activeSession() else {
+                await reconcileNoActiveSession()
+                return
+            }
+            if SessionEngine.isAbandoned(fetched.state, now: now()) {
+                await cancelAbandoned(fetched)
+                // A new session may have started while `cancelAbandoned` awaited its
+                // Live Activity teardown; don't clobber it with the "no session" path.
                 guard activeSessionID == nil else { return }
-                await notifications.cancelOverdueAlerts(except: nil)
+                await reconcileNoActiveSession()
+                return
+            }
+            let record = fetched
+            publish(record)
+            let sessionID = record.id
+            if liveActivities.isAvailable {
+                let age = now().timeIntervalSince(record.state.startedAt)
+                if !liveActivities.hasActivity(for: sessionID), startingSessionID != sessionID {
+                    // Never (re)start a Live Activity for a session this old; iOS has
+                    // already ended it, and it will auto-cancel via `abandonAfter`.
+                    if age < SessionRules.liveActivityMaxAge {
+                        await startLiveActivity(sessionID: sessionID, startedAt: record.state.startedAt, initialCount: record.state.count)
+                    }
+                } else if liveActivities.hasActivity(for: sessionID) {
+                    await liveActivities.update(sessionID: sessionID, count: record.state.count, completedAt: nil)
+                }
+            }
+            // The session may have completed, been cancelled, or been superseded
+            // by a new one while the Live Activity call above was in flight; don't
+            // touch another session's overdue alert.
+            guard activeSessionID == sessionID else { return }
+
+            await notifications.cancelOverdueAlerts(except: sessionID)
+            guard activeSessionID == sessionID else { return }
+
+            // Never prompt from load(): only (re)schedule when already authorized.
+            guard await notifications.isAuthorized() else { return }
+            guard activeSessionID == sessionID else { return }
+            do {
+                try await notifications.scheduleOverdueAlert(
+                    sessionID: sessionID, startedAt: record.state.startedAt, now: now(), text: overdueText
+                )
+                if activeSessionID != sessionID {
+                    notifications.cancelOverdueAlert(sessionID: sessionID)
+                }
+            } catch {
+                logger.error("Scheduling overdue alert during load failed: \(error.localizedDescription)")
             }
         } catch {
             logger.error("Loading active session failed: \(error.localizedDescription)")
@@ -118,8 +127,45 @@ public final class KickCoordinator {
         }
     }
 
+    /// Ends any stray Live Activities and orphaned overdue alerts when no
+    /// session is active — the state load() and cancelling an abandoned
+    /// session both converge on.
+    private func reconcileNoActiveSession() async {
+        await liveActivities.endAll()
+        // A new session may have started (and scheduled its own overdue alert)
+        // while `endAll` was in flight; don't wipe it out from under it.
+        guard activeSessionID == nil else { return }
+        await notifications.cancelOverdueAlerts(except: nil)
+    }
+
+    /// Cancels a session that's been active for `SessionRules.abandonAfter`
+    /// without being finished or cancelled — e.g. the mother forgot about it —
+    /// so it doesn't linger forever showing a stale Live Activity/overdue banner
+    /// and doesn't swallow the next day's first kick.
+    private func cancelAbandoned(_ record: SessionRecord) async {
+        do {
+            _ = try store.cancelActive(at: now())
+        } catch {
+            logger.error("Cancelling abandoned session failed: \(error.localizedDescription)")
+            failure = .saveFailed
+            return
+        }
+        notifications.cancelOverdueAlert(sessionID: record.id)
+        publish(nil)
+        await liveActivities.end(sessionID: record.id, dismissAfter: 0)
+    }
+
+    /// Cancels the active session first if it's abandoned, so a kick that
+    /// arrives after `SessionRules.abandonAfter` starts a fresh session
+    /// instead of extending the forgotten one.
+    private func expireAbandonedSessionIfNeeded() async {
+        guard let record = try? store.activeSession(), SessionEngine.isAbandoned(record.state, now: now()) else { return }
+        await cancelAbandoned(record)
+    }
+
     @discardableResult
     public func recordKick() async -> KickOutcome {
+        await expireAbandonedSessionIfNeeded()
         let time = now()
         let result: KickResult
         do {
