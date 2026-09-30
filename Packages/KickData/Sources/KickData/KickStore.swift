@@ -29,7 +29,7 @@ public final class KickStore: SessionRepository {
         var state = session.state
         let outcome = SessionEngine.addKick(to: &state, at: now)
         apply(state, to: session)
-        try context.save()
+        try save()
         return KickResult(record: session.record, outcome: outcome, didStartSession: didStart)
     }
 
@@ -38,7 +38,7 @@ public final class KickStore: SessionRepository {
         var state = session.state
         guard SessionEngine.undoLastKick(&state) else { return session.record }
         apply(state, to: session)
-        try context.save()
+        try save()
         return session.record
     }
 
@@ -47,7 +47,7 @@ public final class KickStore: SessionRepository {
         var state = session.state
         SessionEngine.cancel(&state, at: now)
         apply(state, to: session)
-        try context.save()
+        try save()
         return session.record
     }
 
@@ -64,9 +64,21 @@ public final class KickStore: SessionRepository {
                 duplicate.status = .cancelled
                 duplicate.endedAt = duplicate.endedAt ?? newest.startedAt
             }
-            try context.save()
+            try save()
         }
         return newest
+    }
+
+    /// Saves the context, rolling back on failure so a failed write (e.g. the
+    /// first kick of a new session) doesn't leave a pending, half-applied
+    /// session around that later suppresses start side effects.
+    private func save() throws {
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     /// Writes an engine state back onto the model, adding/removing Kick rows

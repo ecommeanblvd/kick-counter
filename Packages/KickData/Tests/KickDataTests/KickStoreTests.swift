@@ -75,6 +75,43 @@ struct KickStoreTests {
         #expect(try store.activeSession() == nil)
     }
 
+    /// A failed save (e.g. disk full, store made read-only) must roll back so a
+    /// half-applied session isn't left pending — which would suppress the next
+    /// `addKick`'s start side effects since the repository would think a session
+    /// is already active.
+    @Test func addKickRollsBackOnSaveFailure() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let url = dir.appendingPathComponent("test.store")
+        let configuration = ModelConfiguration(schema: KickPersistence.schema, url: url)
+        let onDiskContainer = try ModelContainer(for: KickPersistence.schema, configurations: configuration)
+        let onDiskStore = KickStore(context: onDiskContainer.mainContext)
+        _ = try onDiskStore.addKick(at: t0)
+
+        let fm = FileManager.default
+        let files = try fm.contentsOfDirectory(atPath: dir.path)
+        for file in files {
+            try fm.setAttributes([.posixPermissions: 0o444], ofItemAtPath: dir.appendingPathComponent(file).path)
+        }
+        try fm.setAttributes([.posixPermissions: 0o555], ofItemAtPath: dir.path)
+        defer {
+            try? fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: dir.path)
+            for file in files {
+                try? fm.setAttributes([.posixPermissions: 0o644], ofItemAtPath: dir.appendingPathComponent(file).path)
+            }
+            try? fm.removeItem(at: dir)
+        }
+
+        #expect(throws: (any Error).self) {
+            try onDiskStore.addKick(at: t0.addingTimeInterval(10))
+        }
+
+        // The failed second kick must have been rolled back: the session still
+        // shows count 1 (from the first, successfully-saved kick), not a
+        // half-applied count 2 that would block a future session from starting.
+        #expect(try onDiskStore.activeSession()?.state.count == 1)
+    }
+
     @Test func duplicateActiveSessionsAreResolvedToNewest() throws {
         // Simulates two devices each starting a session, merged by iCloud sync.
         let older = KickSession(startedAt: t0)
