@@ -269,3 +269,15 @@ final class TestClock {
     init(_ now: Date) { self.now = now }
     func advance(_ seconds: TimeInterval) { now = now.addingTimeInterval(seconds) }
 }
+
+struct MissingFixture: Error {
+    let name: String
+}
+
+/// Decodes `Tests/KickCoreTests/Fixtures/<name>.json`.
+func fixtureContent(_ name: String = "content-fixture") throws -> PregnancyContent {
+    guard let url = Bundle.module.url(forResource: name, withExtension: "json", subdirectory: "Fixtures") else {
+        throw MissingFixture(name: name)
+    }
+    return try JSONDecoder().decode(PregnancyContent.self, from: Data(contentsOf: url))
+}

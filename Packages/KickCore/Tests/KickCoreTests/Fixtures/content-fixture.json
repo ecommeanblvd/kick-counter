@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "sources": ["Fixture source A", "Fixture source B"],
+  "weeks": [
+    {
+      "week": 7,
+      "reviewed": true,
+      "size": { "emoji": "🫐", "en": "a blueberry", "vi": "một quả việt quất" },
+      "baby": { "en": ["Baby fact 7a.", "Baby fact 7b."], "vi": ["Bé tuần 7 ý a.", "Bé tuần 7 ý b."] },
+      "mom": { "en": ["Mom fact 7a.", "Mom fact 7b."], "vi": ["Mẹ tuần 7 ý a.", "Mẹ tuần 7 ý b."] },
+      "tips": { "en": ["Tip 7a.", "Tip 7b."], "vi": ["Lời khuyên 7a.", "Lời khuyên 7b."] },
+      "warnings": { "en": ["Call your doctor about 7."], "vi": ["Gọi bác sĩ về 7."] }
+    },
+    {
+      "week": 8,
+      "reviewed": false,
+      "size": { "emoji": "🍒", "en": "a cherry", "vi": "một quả anh đào" },
+      "lengthCm": 1.6,
+      "weightG": 1,
+      "baby": { "en": ["Baby fact 8a.", "Baby fact 8b."], "vi": ["Bé tuần 8 ý a.", "Bé tuần 8 ý b."] },
+      "mom": { "en": ["Mom fact 8a.", "Mom fact 8b."], "vi": ["Mẹ tuần 8 ý a.", "Mẹ tuần 8 ý b."] },
+      "tips": { "en": ["Tip 8a.", "Tip 8b."], "vi": ["Lời khuyên 8a.", "Lời khuyên 8b."] },
+      "warnings": { "en": ["Call your doctor about 8."], "vi": ["Gọi bác sĩ về 8."] }
+    },
+    {
+      "week": 9,
+      "reviewed": true,
+      "size": { "emoji": "🍇", "en": "a grape", "vi": "một quả nho" },
+      "lengthCm": 2.3,
+      "weightG": 2,
+      "baby": { "en": ["Baby fact 9a.", "Baby fact 9b."], "vi": ["Bé tuần 9 ý a.", "Bé tuần 9 ý b."] },
+      "mom": { "en": ["Mom fact 9a.", "Mom fact 9b."], "vi": ["Mẹ tuần 9 ý a.", "Mẹ tuần 9 ý b."] },
+      "tips": { "en": ["Tip 9a.", "Tip 9b."], "vi": ["Lời khuyên 9a.", "Lời khuyên 9b."] },
+      "warnings": { "en": ["Call your doctor about 9."], "vi": ["Gọi bác sĩ về 9."] }
+    }
+  ],
+  "milestones": [
+    {
+      "id": "m-early",
+      "fromWeek": 6,
+      "toWeek": 8,
+      "title": { "en": "Early visit", "vi": "Khám sớm" },
+      "detail": { "en": "Confirm the pregnancy.", "vi": "Xác nhận có thai." },
+      "reviewed": true
+    },
+    {
+      "id": "m-late",
+      "fromWeek": 11,
+      "toWeek": 14,
+      "title": { "en": "Screening scan", "vi": "Siêu âm sàng lọc" },
+      "detail": { "en": "A scan in weeks 11 to 14.", "vi": "Siêu âm vào tuần 11 đến 14." },
+      "reviewed": false
+    }
+  ]
+}
