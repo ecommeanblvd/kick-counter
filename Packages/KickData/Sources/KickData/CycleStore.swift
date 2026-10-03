@@ -30,7 +30,11 @@ public final class CycleStore: CycleRepository {
         var keep = Dictionary(merged.periods.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         for model in models {
             if let record = keep.removeValue(forKey: model.id) {
-                model.apply(record)
+                // Only touch rows the merge changed: rewriting the others would
+                // mark them dirty for CloudKit for nothing.
+                if model.record != record {
+                    model.apply(record)
+                }
             } else {
                 context.delete(model)
             }
@@ -46,7 +50,11 @@ public final class CycleStore: CycleRepository {
         var keep = Dictionary(merged.logs.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         for model in models {
             if let record = keep.removeValue(forKey: model.id) {
-                model.apply(record)
+                // Only touch rows the merge changed: rewriting the others would
+                // mark them dirty for CloudKit for nothing.
+                if model.record != record {
+                    model.apply(record)
+                }
             } else {
                 context.delete(model)
             }

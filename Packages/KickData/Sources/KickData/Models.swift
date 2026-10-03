@@ -144,11 +144,17 @@ public final class CycleLog {
         )
     }
 
+    /// Raw values this build cannot decode (e.g. synced from a newer app version)
+    /// are kept unless the record actually changes that field.
     func apply(_ record: CycleLogRecord) {
         day = record.day
-        lhRaw = record.lh?.rawValue
+        if lhRaw.flatMap(LHResult.init(rawValue:)) != record.lh {
+            lhRaw = record.lh?.rawValue
+        }
         bbtCelsius = record.bbtCelsius
-        mucusRaw = record.mucus?.rawValue
+        if mucusRaw.flatMap(CervicalMucus.init(rawValue:)) != record.mucus {
+            mucusRaw = record.mucus?.rawValue
+        }
         note = record.note
     }
 }

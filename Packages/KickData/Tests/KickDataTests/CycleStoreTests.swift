@@ -157,6 +157,44 @@ struct CycleStoreTests {
         #expect(try count(CycleLog.self) == 1)
     }
 
+    @Test func unknownRawValuesDecodeToNilAndSurviveAMergeThatLeavesTheKeptRowAlone() throws {
+        // Values a newer app version may sync that this build does not know.
+        let context = container.mainContext
+        let keptID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let kept = CycleLog(record: CycleLogRecord(id: keptID, day: day("2026-10-01"), note: "Tired"))
+        kept.lhRaw = "inconclusive"
+        kept.mucusRaw = "spotting"
+        context.insert(kept)
+        context.insert(CycleLog(record: CycleLogRecord(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!, day: day("2026-10-01"), note: "Tired"
+        )))
+        try context.save()
+
+        #expect(kept.record.lh == nil)
+        #expect(kept.record.mucus == nil)
+        #expect(try store.logs() == [CycleLogRecord(id: keptID, day: day("2026-10-01"), note: "Tired")])
+        #expect(try count(CycleLog.self) == 1)
+        #expect(kept.lhRaw == "inconclusive")
+        #expect(kept.mucusRaw == "spotting")
+    }
+
+    @Test func mergeThatChangesOtherFieldsKeepsUnknownRawValues() throws {
+        let context = container.mainContext
+        let kept = CycleLog(record: CycleLogRecord(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, day: day("2026-10-01")))
+        kept.lhRaw = "inconclusive"
+        kept.mucusRaw = "spotting"
+        context.insert(kept)
+        context.insert(CycleLog(record: CycleLogRecord(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!, day: day("2026-10-01"), bbtCelsius: 36.4
+        )))
+        try context.save()
+
+        #expect(try store.logs().first?.bbtCelsius == 36.4)
+        #expect(kept.bbtCelsius == 36.4)
+        #expect(kept.lhRaw == "inconclusive")
+        #expect(kept.mucusRaw == "spotting")
+    }
+
     // MARK: - Rollback
 
     @Test func failedPeriodSaveRollsBack() throws {
@@ -183,5 +221,35 @@ struct CycleStoreTests {
             try failingStore().deletePeriod(id: period.id)
         }
         #expect(try store.periods() == [period])
+    }
+
+    @Test func failedPeriodUpdateRollsBack() throws {
+        let period = PeriodRecord(startDate: day("2026-09-28"))
+        try store.addPeriod(period, today: today)
+        var ended = period
+        ended.endDate = day("2026-10-01")
+        #expect(throws: SaveFailed.self) {
+            try failingStore().updatePeriod(ended, today: today)
+        }
+        #expect(try store.periods() == [period])
+    }
+
+    @Test func failedMergeSaveThrowsAndKeepsTheDuplicates() throws {
+        let context = container.mainContext
+        context.insert(PeriodEntry(record: PeriodRecord(startDate: day("2026-09-03"))))
+        context.insert(PeriodEntry(record: PeriodRecord(startDate: day("2026-09-03"), endDate: day("2026-09-07"))))
+        context.insert(CycleLog(record: CycleLogRecord(day: day("2026-10-01"), lh: .negative)))
+        context.insert(CycleLog(record: CycleLogRecord(day: day("2026-10-01"), lh: .positive)))
+        try context.save()
+
+        let failing = failingStore()
+        #expect(throws: SaveFailed.self) {
+            try failing.periods()
+        }
+        #expect(throws: SaveFailed.self) {
+            try failing.logs()
+        }
+        #expect(try count(PeriodEntry.self) == 2)
+        #expect(try count(CycleLog.self) == 2)
     }
 }
