@@ -74,15 +74,25 @@ struct BundledContentTests {
             let vi = week.warnings.vi
             #expect(mentions(en, ["fever"]), "week \(week.week): fever")
             #expect(mentions(vi, ["sốt"]), "week \(week.week): sốt")
+            if week.week <= 19 {
+                #expect(mentions(en, ["bleeding"]), "week \(week.week): bleeding")
+                #expect(mentions(en, ["faint"]), "week \(week.week): faint")
+                #expect(mentions(en, ["severe", "one-sided"]), "week \(week.week): severe or one-sided pain")
+            }
+            if week.week <= 12 {
+                #expect(mentions(en, ["shoulder"]), "week \(week.week): shoulder-tip pain")
+            }
             if week.week >= 20 {
                 #expect(mentions(en, ["bleeding"]), "week \(week.week): bleeding")
                 #expect(mentions(vi, ["ra máu"]), "week \(week.week): ra máu")
                 #expect(mentions(en, ["headache"]), "week \(week.week): headache")
                 #expect(mentions(en, ["vision"]), "week \(week.week): vision")
-                #expect(mentions(en, ["fluid", "waters"]), "week \(week.week): leaking fluid")
+                #expect(mentions(en, ["leaking", "waters"]), "week \(week.week): leaking fluid")
+                #expect(mentions(en, ["ambulance"]), "week \(week.week): ambulance")
+                #expect(mentions(vi, ["115"]), "week \(week.week): 115")
             }
             if week.week >= 24 {
-                #expect(mentions(en, ["mov"]), "week \(week.week): movements")
+                #expect(mentions(en, ["moving", "movements"]), "week \(week.week): movements")
             }
         }
         let week24 = library.content(forWeek: 24)?.warnings.en ?? []
