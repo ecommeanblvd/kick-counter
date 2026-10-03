@@ -8,6 +8,41 @@ enum L10n {
     static var tabCounter: String { t("tab.counter") }
     static var tabHistory: String { t("tab.history") }
     static var tabSettings: String { t("tab.settings") }
+    static var tabPregnancy: String { t("tab.pregnancy") }
+
+    static var pregnancyTitle: String { t("pregnancy.title") }
+    static var pregnancyEmptyTitle: String { t("pregnancy.empty.title") }
+    static var pregnancyEmptyBody: String { t("pregnancy.empty.body") }
+    static var pregnancyEmptyAction: String { t("pregnancy.empty.action") }
+    static var pregnancyInvalidTitle: String { t("pregnancy.invalid.title") }
+    static var pregnancyInvalidBody: String { t("pregnancy.invalid.body") }
+    static var pregnancyEditDate: String { t("pregnancy.editDate") }
+    static func pregnancyTrimester(_ number: Int) -> String { String(format: t("pregnancy.trimester"), number) }
+    static func pregnancyDaysLeft(_ days: Int) -> String { String(format: t("pregnancy.daysLeft"), days) }
+    static var pregnancyDueToday: String { t("pregnancy.dueToday") }
+    static func pregnancyPastDueTitle(_ days: Int) -> String { String(format: t("pregnancy.pastDue.title"), days) }
+    static var pregnancyPastDueBody: String { t("pregnancy.pastDue.body") }
+    static func pregnancyBabySize(_ name: String) -> String { String(format: t("pregnancy.baby.size"), name) }
+    static var pregnancyBabyLength: String { t("pregnancy.baby.length") }
+    static var pregnancyBabyWeight: String { t("pregnancy.baby.weight") }
+    static var pregnancyTipsTitle: String { t("pregnancy.tips.title") }
+    static var pregnancySeeWeek: String { t("pregnancy.seeWeek") }
+    static var pregnancyAppointmentTitle: String { t("pregnancy.appointment.title") }
+    static var pregnancyAppointmentNone: String { t("pregnancy.appointment.none") }
+    static func pregnancyAppointmentSuggested(_ from: Int, _ to: Int) -> String {
+        String(format: t("pregnancy.appointment.suggested"), from, to)
+    }
+    static var pregnancyKickCardTitle: String { t("pregnancy.kickCard.title") }
+    static var pregnancyKickCardBody: String { t("pregnancy.kickCard.body") }
+
+    static func weekTitle(_ week: Int) -> String { String(format: t("week.title"), week) }
+    static var weekCurrent: String { t("week.current") }
+    static var weekBaby: String { t("week.baby") }
+    static var weekMom: String { t("week.mom") }
+    static var weekTips: String { t("week.tips") }
+    static var weekWarnings: String { t("week.warnings") }
+    static var weekUnderReview: String { t("week.underReview") }
+    static var weekPendingReview: String { t("week.pendingReview") }
 
     static var counterTitle: String { t("counter.title") }
     static var counterStart: String { t("counter.start") }

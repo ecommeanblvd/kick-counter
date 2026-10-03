@@ -10,6 +10,7 @@ final class KickCounterUITests: XCTestCase {
         app.launchArguments = ["-uiTesting", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
         completeOnboarding()
+        app.openTab(.counter)
     }
 
     private func completeOnboarding() {
@@ -67,7 +68,7 @@ final class KickCounterUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["completionTitle"].waitForExistence(timeout: 5))
         app.buttons["completionDone"].tap()
 
-        app.tabBars.buttons.element(boundBy: 1).tap()
+        app.openTab(.history)
         XCTAssertTrue(app.descendants(matching: .any)["sessionRow"].firstMatch.waitForExistence(timeout: 5))
     }
 

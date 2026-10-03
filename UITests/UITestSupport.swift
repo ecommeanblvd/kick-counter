@@ -44,3 +44,19 @@ extension XCTestCase {
         add(attachment)
     }
 }
+
+/// Tab order in RootView.
+enum AppTab: Int {
+    case pregnancy = 0
+    case counter
+    case history
+    case settings
+}
+
+extension XCUIApplication {
+    func openTab(_ tab: AppTab) {
+        let button = tabBars.buttons.element(boundBy: tab.rawValue)
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+    }
+}

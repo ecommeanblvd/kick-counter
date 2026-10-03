@@ -17,6 +17,7 @@ final class ScreenshotTests: XCTestCase {
         ]
         if dark { app.launchArguments.append("-forceDarkMode") }
         app.launch()
+        app.openTab(.counter)
         return app
     }
 
@@ -62,7 +63,7 @@ final class ScreenshotTests: XCTestCase {
             tapKick(app, times: 2)
             app.buttons["cancelSessionButton"].tap()
             confirmCancel(app)
-            app.tabBars.buttons.element(boundBy: 1).tap()
+            app.openTab(.history)
             XCTAssertTrue(app.descendants(matching: .any)["sessionRow"].firstMatch.waitForExistence(timeout: 5))
             snap(app, "history-\(suffix)")
             app.terminate()
@@ -107,7 +108,7 @@ final class ScreenshotTests: XCTestCase {
         snap(app, "onboarding-4")
         later.tap()
 
-        app.tabBars.buttons.element(boundBy: 2).tap()
+        app.openTab(.settings)
         let datesRow = app.buttons["settingsPregnancyDates"]
         XCTAssertTrue(datesRow.waitForExistence(timeout: 5))
         snap(app, "settings")
@@ -130,7 +131,7 @@ final class ScreenshotTests: XCTestCase {
         snap(app, "medical-sources")
         app.navigationBars.buttons.element(boundBy: 0).tap()
 
-        app.tabBars.buttons.element(boundBy: 0).tap()
+        app.openTab(.counter)
         snap(app, "counter-with-week")
     }
 }
