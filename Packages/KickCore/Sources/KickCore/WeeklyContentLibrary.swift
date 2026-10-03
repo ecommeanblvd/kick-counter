@@ -57,4 +57,11 @@ public struct WeeklyContentLibrary: Sendable {
     public func upcomingMilestones(atWeek week: Int, visibility: ContentVisibility = .all) -> [Milestone] {
         milestones.filter { $0.toWeek >= week && (visibility == .all || $0.reviewed) }
     }
+
+    /// Upcoming milestones at `week`, minus any whose id is already in `addedMilestoneIDs`
+    /// (e.g. because an appointment was created from it). Used by both the home "next
+    /// check-up" card and the Appointments screen's milestone suggestions so they agree.
+    public func suggestedMilestones(atWeek week: Int, visibility: ContentVisibility = .all, excluding addedMilestoneIDs: Set<String>) -> [Milestone] {
+        upcomingMilestones(atWeek: week, visibility: visibility).filter { !addedMilestoneIDs.contains($0.id) }
+    }
 }

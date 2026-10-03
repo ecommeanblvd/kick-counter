@@ -55,6 +55,21 @@ struct WeeklyContentLibraryTests {
         #expect(library.upcomingMilestones(atWeek: 7, visibility: .reviewedOnly).map(\.id) == ["m-early"])
     }
 
+    @Test func suggestedMilestonesExcludeAddedIDs() throws {
+        let library = try library()
+        #expect(library.suggestedMilestones(atWeek: 7, visibility: .all, excluding: []).map(\.id) == ["m-early", "m-late"])
+        #expect(library.suggestedMilestones(atWeek: 7, visibility: .all, excluding: ["m-early"]).map(\.id) == ["m-late"])
+        // Excluding an id that's already past (not in upcomingMilestones) is a no-op.
+        #expect(library.suggestedMilestones(atWeek: 9, visibility: .all, excluding: ["m-early"]).map(\.id) == ["m-late"])
+        #expect(library.suggestedMilestones(atWeek: 7, visibility: .all, excluding: ["m-early", "m-late"]).isEmpty)
+    }
+
+    @Test func suggestedMilestonesRespectVisibility() throws {
+        let library = try library()
+        #expect(library.suggestedMilestones(atWeek: 7, visibility: .reviewedOnly, excluding: []).map(\.id) == ["m-early"])
+        #expect(library.suggestedMilestones(atWeek: 7, visibility: .reviewedOnly, excluding: ["m-early"]).isEmpty)
+    }
+
     @Test func milestonesAreSortedByWeek() throws {
         var content = try fixtureContent()
         content.milestones.reverse()

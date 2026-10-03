@@ -22,13 +22,13 @@ struct AppointmentsView: View {
     }
 
     /// Milestones still ahead that the mother hasn't added yet.
-    private var suggestedMilestones: [Milestone] {
-        let added = Set((appointments.upcoming + appointments.past).compactMap(\.milestoneID))
-        let ahead = library?.upcomingMilestones(atWeek: currentWeek, visibility: BuildFlags.contentVisibility) ?? []
-        return ahead.filter { !added.contains($0.id) }
+    private func loadSuggestedMilestones(excluding addedMilestoneIDs: Set<String>) -> [Milestone] {
+        library?.suggestedMilestones(atWeek: currentWeek, visibility: BuildFlags.contentVisibility, excluding: addedMilestoneIDs) ?? []
     }
 
     var body: some View {
+        let addedMilestoneIDs = Set((appointments.upcoming + appointments.past).compactMap(\.milestoneID))
+        let suggestedMilestones = loadSuggestedMilestones(excluding: addedMilestoneIDs)
         List {
             if appointments.notificationsDenied {
                 Section {

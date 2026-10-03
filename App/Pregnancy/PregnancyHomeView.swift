@@ -101,7 +101,11 @@ struct PregnancyHomeView: View {
             } label: {
                 NextAppointmentCard(
                     appointment: appointments.nextAppointment,
-                    milestone: library?.upcomingMilestones(atWeek: timeline.week.weeks, visibility: visibility).first,
+                    milestone: library?.suggestedMilestones(
+                        atWeek: timeline.week.weeks,
+                        visibility: visibility,
+                        excluding: Set((appointments.upcoming + appointments.past).compactMap(\.milestoneID))
+                    ).first,
                     language: language
                 )
             }
