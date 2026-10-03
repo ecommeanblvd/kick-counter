@@ -40,8 +40,28 @@ final class FakeNotificationCenter: NotificationCenterClient {
     var requestCount = 0
 
     func add(_ request: UNNotificationRequest) async throws {
+        if holdAdd {
+            holdAdd = false
+            addPending = true
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                addContinuations.append(continuation)
+            }
+            addPending = false
+        }
         added.removeAll { $0.identifier == request.identifier }
         added.append(request)
+    }
+
+    /// One-shot gate: the next `add(_:)` call suspends until `releaseAdd()` is
+    /// called, simulating a scheduling request still in flight.
+    var holdAdd = false
+    private(set) var addPending = false
+    private var addContinuations: [CheckedContinuation<Void, Never>] = []
+
+    func releaseAdd() {
+        let continuations = addContinuations
+        addContinuations.removeAll()
+        for continuation in continuations { continuation.resume() }
     }
 
     func removePending(ids: [String]) {
@@ -280,4 +300,72 @@ func fixtureContent(_ name: String = "content-fixture") throws -> PregnancyConte
         throw MissingFixture(name: name)
     }
     return try JSONDecoder().decode(PregnancyContent.self, from: Data(contentsOf: url))
+}
+
+/// In-memory AppointmentRepository with the same rules as AppointmentStore.
+@MainActor
+final class FakeAppointmentRepository: AppointmentRepository {
+    struct Failed: Error {}
+
+    private(set) var appointments: [UUID: AppointmentRecord] = [:]
+    var calendar = utcCalendar
+    var failNextRead = false
+    var failNextWrite = false
+
+    func seed(_ records: AppointmentRecord...) {
+        for record in records { appointments[record.id] = record }
+    }
+
+    private func checkRead() throws {
+        if failNextRead {
+            failNextRead = false
+            throw Failed()
+        }
+    }
+
+    private func checkWrite() throws {
+        if failNextWrite {
+            failNextWrite = false
+            throw Failed()
+        }
+    }
+
+    func appointment(id: UUID) throws -> AppointmentRecord? {
+        try checkRead()
+        return appointments[id]
+    }
+
+    func upcoming(now: Date) throws -> [AppointmentRecord] {
+        try checkRead()
+        return AppointmentRules.upcoming(Array(appointments.values), now: now, calendar: calendar)
+    }
+
+    func past(now: Date) throws -> [AppointmentRecord] {
+        try checkRead()
+        return AppointmentRules.past(Array(appointments.values), now: now, calendar: calendar)
+    }
+
+    func add(_ appointment: AppointmentRecord) throws {
+        try checkWrite()
+        appointments[appointment.id] = appointment
+    }
+
+    func update(_ appointment: AppointmentRecord) throws {
+        try checkWrite()
+        guard appointments[appointment.id] != nil else { throw AppointmentRepositoryError.notFound }
+        appointments[appointment.id] = appointment
+    }
+
+    func delete(id: UUID) throws {
+        try checkWrite()
+        appointments[id] = nil
+    }
+
+    func markDone(id: UUID) throws -> AppointmentRecord? {
+        try checkWrite()
+        guard var appointment = appointments[id] else { return nil }
+        appointment.isDone = true
+        appointments[id] = appointment
+        return appointment
+    }
 }
