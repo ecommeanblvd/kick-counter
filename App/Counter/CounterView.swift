@@ -10,9 +10,9 @@ struct CounterView: View {
 
     private var gestationalWeekText: String? {
         guard dueDate > 0,
-              let week = GestationalAge.week(dueDate: Date(timeIntervalSince1970: dueDate), now: .now)
+              let timeline = PregnancyTimeline(dueDate: Date(timeIntervalSince1970: dueDate), now: AppClock.now())
         else { return nil }
-        return L10n.counterWeek(week)
+        return L10n.counterWeek(timeline.week)
     }
 
     var body: some View {

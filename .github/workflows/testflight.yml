@@ -1,6 +1,11 @@
 name: TestFlight
 on:
   workflow_dispatch:
+    inputs:
+      content_preview:
+        description: "Show content still awaiting the doctor's review (internal testing only)"
+        type: boolean
+        default: false
 concurrency:
   group: testflight
   cancel-in-progress: false
@@ -30,6 +35,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           DEVELOPMENT_TEAM: ${{ vars.DEVELOPMENT_TEAM }}
           BUILD_NUMBER: ${{ github.run_number }}
+          CONTENT_PREVIEW: ${{ inputs.content_preview && '1' || '0' }}
         run: scripts/release.sh
       - name: Remove API key
         if: always()

@@ -12,6 +12,7 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
+    LUNA_CONTENT_PREVIEW: "NO"
 packages:
   KickCore:
     path: Packages/KickCore
@@ -32,12 +33,15 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Kick Counter
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleLocalizations: [en, vi]
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         NSSupportsLiveActivities: true
         UIBackgroundModes: [remote-notification]
+        LunaContentPreview: $(LUNA_CONTENT_PREVIEW)
     entitlements:
       path: App/KickCounter.entitlements
       properties:
@@ -67,6 +71,8 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: Kick Counter
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

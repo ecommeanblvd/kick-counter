@@ -1,0 +1,2396 @@
+{
+  "version": 1,
+  "sources": [
+    "WHO recommendations on antenatal care for a positive pregnancy experience (World Health Organization, 2016)",
+    "ACOG patient education: Your Pregnancy and Childbirth: Month to Month, and pregnancy FAQs (American College of Obstetricians and Gynecologists)",
+    "NHS: Your pregnancy and baby guide (National Health Service, UK)",
+    "Bộ Y tế Việt Nam: Hướng dẫn quốc gia về các dịch vụ chăm sóc sức khỏe sinh sản"
+  ],
+  "weeks": [
+    {
+      "week": 4,
+      "reviewed": false,
+      "size": {
+        "emoji": "🌱",
+        "en": "a poppy seed",
+        "vi": "một hạt anh túc"
+      },
+      "baby": {
+        "en": [
+          "The fertilised egg has settled into the lining of your womb.",
+          "Its cells are dividing fast, forming the early embryo and the placenta."
+        ],
+        "vi": [
+          "Trứng đã thụ tinh vừa bám vào lớp niêm mạc tử cung của mẹ.",
+          "Các tế bào phân chia rất nhanh, tạo thành phôi và nhau thai sau này."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your period may be late, and a home pregnancy test may now show positive.",
+          "Some women notice light spotting, mild cramps or tender breasts."
+        ],
+        "vi": [
+          "Mẹ có thể bị trễ kinh, và que thử thai có thể đã lên hai vạch.",
+          "Một số mẹ thấy ra chút máu báo, đau bụng âm ỉ nhẹ hoặc căng ngực."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Start or keep taking a folic acid supplement, as your doctor advises.",
+          "Stop alcohol and smoking, and avoid second-hand smoke.",
+          "Check any medicines you take with a doctor or pharmacist."
+        ],
+        "vi": [
+          "Bắt đầu hoặc tiếp tục bổ sung axit folic theo hướng dẫn của bác sĩ.",
+          "Ngừng rượu bia, thuốc lá và tránh xa khói thuốc.",
+          "Hỏi bác sĩ hoặc dược sĩ về mọi loại thuốc mẹ đang dùng."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 5,
+      "reviewed": false,
+      "size": {
+        "emoji": "🌱",
+        "en": "a sesame seed",
+        "vi": "một hạt vừng"
+      },
+      "baby": {
+        "en": [
+          "The neural tube, which becomes the brain and spinal cord, is forming.",
+          "A tiny heart is taking shape and starts to beat around this time."
+        ],
+        "vi": [
+          "Ống thần kinh, sau này thành não và tủy sống, đang hình thành.",
+          "Một trái tim bé xíu đang hình thành và bắt đầu đập vào khoảng thời gian này."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Tiredness, sore breasts and needing to pee more often are common.",
+          "Morning sickness may begin, and it can happen at any time of day."
+        ],
+        "vi": [
+          "Mệt mỏi, đau căng ngực và đi tiểu nhiều hơn là những điều thường gặp.",
+          "Ốm nghén có thể bắt đầu, và có thể xảy ra vào bất cứ lúc nào trong ngày."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Book your first antenatal appointment with a doctor or midwife.",
+          "Avoid raw or undercooked meat, fish and eggs, and unpasteurised milk.",
+          "Cut down on coffee, strong tea and energy drinks."
+        ],
+        "vi": [
+          "Đặt lịch khám thai lần đầu với bác sĩ hoặc nữ hộ sinh.",
+          "Tránh thịt, cá, trứng sống hoặc chưa chín kỹ, và sữa tươi chưa thanh trùng.",
+          "Hạn chế cà phê, trà đặc và nước tăng lực."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 6,
+      "reviewed": false,
+      "size": {
+        "emoji": "🫘",
+        "en": "a mung bean",
+        "vi": "một hạt đậu xanh"
+      },
+      "baby": {
+        "en": [
+          "A scan may now show a flickering heartbeat.",
+          "Small buds appear that will grow into arms and legs.",
+          "The face is starting to form, with dark spots where the eyes will be."
+        ],
+        "vi": [
+          "Lúc này siêu âm có thể thấy tim thai đập.",
+          "Những mầm nhỏ xuất hiện, sau này sẽ thành tay và chân.",
+          "Khuôn mặt bắt đầu hình thành, có những chấm sẫm màu ở vị trí mắt."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Nausea and a strong sense of smell are common now.",
+          "Your moods may change quickly as your hormones rise."
+        ],
+        "vi": [
+          "Buồn nôn và nhạy cảm với mùi là điều thường gặp lúc này.",
+          "Tâm trạng mẹ có thể thay đổi thất thường do nội tiết tố tăng."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Eat small, frequent meals; plain crackers or ginger may ease nausea.",
+          "Sip water often through the day to stay hydrated.",
+          "Rest when you can; early tiredness is normal."
+        ],
+        "vi": [
+          "Ăn thành nhiều bữa nhỏ; bánh quy nhạt hoặc gừng có thể giúp giảm buồn nôn.",
+          "Uống nước từng ngụm nhỏ nhiều lần trong ngày để đủ nước.",
+          "Nghỉ ngơi khi có thể; mệt mỏi những tuần đầu là bình thường."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "Vomiting so often you cannot keep fluids down: see your doctor the same day.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Nôn nhiều đến mức không giữ được nước: mẹ hãy đi khám bác sĩ ngay trong ngày.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 7,
+      "reviewed": false,
+      "size": {
+        "emoji": "🫐",
+        "en": "a blueberry",
+        "vi": "một quả việt quất"
+      },
+      "baby": {
+        "en": [
+          "The brain is growing quickly, and the head looks large for the body.",
+          "Arm buds lengthen and flatten into tiny paddles that will become hands."
+        ],
+        "vi": [
+          "Não bộ phát triển rất nhanh, nên đầu bé trông to so với cơ thể.",
+          "Mầm tay dài ra, dẹt lại thành mái chèo nhỏ, sau này sẽ thành bàn tay."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your womb is growing, though your bump does not show yet.",
+          "You may feel bloated, constipated or produce more saliva."
+        ],
+        "vi": [
+          "Tử cung đang lớn dần, dù bụng mẹ chưa lộ rõ.",
+          "Mẹ có thể thấy đầy hơi, táo bón hoặc tiết nhiều nước bọt hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Your first check-up usually happens around now; bring questions to ask.",
+          "Eat fibre-rich vegetables and fruit, and drink enough water to ease constipation."
+        ],
+        "vi": [
+          "Lần khám thai đầu thường vào khoảng thời gian này; mẹ hãy ghi sẵn câu hỏi.",
+          "Ăn nhiều rau xanh, trái cây giàu chất xơ và uống đủ nước để giảm táo bón."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "Pain or burning when you pee: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Đau rát khi đi tiểu: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 8,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍒",
+        "en": "a cherry",
+        "vi": "một quả anh đào"
+      },
+      "lengthCm": 1.6,
+      "weightG": 1,
+      "baby": {
+        "en": [
+          "Fingers and toes are beginning to form, still joined by webbing.",
+          "Your baby makes tiny movements, though you cannot feel them yet."
+        ],
+        "vi": [
+          "Ngón tay, ngón chân bắt đầu hình thành, vẫn còn dính màng với nhau.",
+          "Bé đã cử động nhẹ, dù mẹ chưa cảm nhận được."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your clothes may feel tighter around the waist.",
+          "Nausea and tiredness are often at their strongest around now."
+        ],
+        "vi": [
+          "Quần áo có thể bắt đầu thấy chật ở vòng eo.",
+          "Buồn nôn và mệt mỏi thường rõ nhất vào khoảng thời gian này."
+        ]
+      },
+      "tips": {
+        "en": [
+          "At your first visit, the doctor will usually check your blood and urine.",
+          "Keep all your test results in your pregnancy record book.",
+          "Wash fruit and vegetables well, and wash your hands before eating."
+        ],
+        "vi": [
+          "Ở lần khám đầu, bác sĩ thường cho mẹ xét nghiệm máu và nước tiểu.",
+          "Lưu giữ mọi kết quả xét nghiệm trong sổ khám thai.",
+          "Rửa sạch rau quả và rửa tay trước khi ăn."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "Vomiting everything, with dizziness or very dark urine: see your doctor today.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Nôn hết mọi thứ, kèm chóng mặt hoặc nước tiểu sẫm màu: mẹ hãy đi khám bác sĩ trong ngày.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 9,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍇",
+        "en": "a grape",
+        "vi": "một quả nho"
+      },
+      "lengthCm": 2.3,
+      "weightG": 2,
+      "baby": {
+        "en": [
+          "All the main organs have begun to form.",
+          "Muscles are developing, and the tiny limbs can bend at the elbows."
+        ],
+        "vi": [
+          "Tất cả các cơ quan chính đã bắt đầu hình thành.",
+          "Cơ bắp đang phát triển, tay nhỏ đã gập được ở khuỷu."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your breasts may grow and the veins on them may look more visible.",
+          "Heartburn and mood swings are common."
+        ],
+        "vi": [
+          "Ngực mẹ có thể to lên và các mạch máu trên ngực hiện rõ hơn.",
+          "Ợ nóng và tâm trạng thất thường là điều thường gặp."
+        ]
+      },
+      "tips": {
+        "en": [
+          "A supportive, well-fitting bra can ease breast tenderness.",
+          "Eat smaller meals and avoid lying down right after eating to ease heartburn."
+        ],
+        "vi": [
+          "Áo ngực vừa vặn, nâng đỡ tốt giúp giảm căng tức ngực.",
+          "Ăn bữa nhỏ và tránh nằm ngay sau khi ăn để đỡ ợ nóng."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 10,
+      "reviewed": false,
+      "size": {
+        "emoji": "🌰",
+        "en": "a chestnut",
+        "vi": "một hạt dẻ"
+      },
+      "lengthCm": 3.1,
+      "weightG": 4,
+      "baby": {
+        "en": [
+          "Your baby is now called a fetus; the major organs are in place.",
+          "Tiny nails are starting to grow on the fingers and toes."
+        ],
+        "vi": [
+          "Từ tuần này bé được gọi là thai nhi; các cơ quan chính đã có đủ.",
+          "Móng tay, móng chân nhỏ xíu bắt đầu mọc."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may have mild aches low in your belly as your womb stretches.",
+          "Feeling emotional or anxious is normal; talking about it helps."
+        ],
+        "vi": [
+          "Mẹ có thể thấy đau nhẹ ở bụng dưới khi tử cung giãn ra.",
+          "Dễ xúc động hay lo lắng là bình thường; chia sẻ sẽ giúp mẹ nhẹ lòng hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Ask your doctor about booking the nuchal translucency scan for weeks 11 to 14.",
+          "Gentle walking or swimming is good for most women; check with your doctor."
+        ],
+        "vi": [
+          "Hỏi bác sĩ để đặt lịch siêu âm đo độ mờ da gáy vào tuần 11 đến 14.",
+          "Đi bộ hoặc bơi nhẹ nhàng tốt cho hầu hết các mẹ; hãy hỏi ý kiến bác sĩ."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "Pain or burning when you pee: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Đau rát khi đi tiểu: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 11,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍓",
+        "en": "a strawberry",
+        "vi": "một quả dâu tây"
+      },
+      "lengthCm": 4.1,
+      "weightG": 7,
+      "baby": {
+        "en": [
+          "Bones are starting to harden, and the head is about half of the body length.",
+          "Your baby kicks, stretches and hiccups, though you cannot feel it yet."
+        ],
+        "vi": [
+          "Xương bắt đầu cứng dần, và đầu dài khoảng một nửa chiều dài cơ thể.",
+          "Bé đạp, vươn vai và nấc cụt, dù mẹ chưa cảm nhận được."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Nausea may start to ease for some women.",
+          "You may notice more vaginal discharge; clear or white is normal."
+        ],
+        "vi": [
+          "Với một số mẹ, cơn buồn nôn có thể bắt đầu giảm.",
+          "Khí hư có thể nhiều hơn; dịch trong hoặc trắng là bình thường."
+        ]
+      },
+      "tips": {
+        "en": [
+          "The nuchal translucency scan and double test are usually done in weeks 11 to 14.",
+          "Include protein, iron-rich foods and dairy in your meals."
+        ],
+        "vi": [
+          "Siêu âm đo độ mờ da gáy và xét nghiệm double test thường làm vào tuần 11 đến 14.",
+          "Bữa ăn nên có chất đạm, thực phẩm giàu sắt và sữa hoặc chế phẩm từ sữa."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "Itchy, smelly or green discharge: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Khí hư ngứa, có mùi hôi hoặc màu xanh: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥝",
+        "en": "a kiwi",
+        "vi": "một quả kiwi"
+      },
+      "lengthCm": 5.4,
+      "weightG": 14,
+      "baby": {
+        "en": [
+          "Reflexes are developing: your baby can open and close the fingers.",
+          "The kidneys have started to make urine."
+        ],
+        "vi": [
+          "Phản xạ đang phát triển: bé đã biết xòe và nắm các ngón tay.",
+          "Thận của bé đã bắt đầu tạo nước tiểu."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your womb is rising above your pubic bone.",
+          "Your energy may slowly start to return."
+        ],
+        "vi": [
+          "Tử cung đã nhô lên trên xương mu.",
+          "Sức lực của mẹ có thể dần hồi phục."
+        ]
+      },
+      "tips": {
+        "en": [
+          "If you have not had your screening scan yet, ask your doctor about it this week.",
+          "Keep taking the supplements your doctor recommends."
+        ],
+        "vi": [
+          "Nếu chưa siêu âm sàng lọc, mẹ hãy hỏi bác sĩ ngay trong tuần này.",
+          "Tiếp tục dùng các loại vitamin, khoáng chất bác sĩ đã dặn."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Vaginal bleeding or severe belly pain: contact your doctor straight away.",
+          "Sharp pain on one side, pain at the tip of your shoulder, or feeling faint: go to the emergency department straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo hoặc đau bụng dữ dội: mẹ hãy liên hệ bác sĩ ngay.",
+          "Đau nhói một bên bụng, đau ở đầu vai, hoặc choáng váng muốn ngất: mẹ hãy đến khoa cấp cứu ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 13,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍋",
+        "en": "a lemon",
+        "vi": "một quả chanh vàng"
+      },
+      "lengthCm": 7.4,
+      "weightG": 23,
+      "baby": {
+        "en": [
+          "Vocal cords are forming, and the intestines settle inside the belly.",
+          "Fingerprints are starting to form on the tiny fingertips."
+        ],
+        "vi": [
+          "Dây thanh âm đang hình thành, ruột đã nằm gọn trong ổ bụng.",
+          "Vân tay bắt đầu hình thành trên những đầu ngón tay nhỏ xíu."
+        ]
+      },
+      "mom": {
+        "en": [
+          "This is the last week of the first trimester.",
+          "Nausea often eases now, and many women feel more energetic."
+        ],
+        "vi": [
+          "Đây là tuần cuối của tam cá nguyệt thứ nhất.",
+          "Ốm nghén thường giảm, nhiều mẹ thấy khỏe khoắn hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Plan your second-trimester check-ups and write them in your pregnancy record book.",
+          "Moisturise your belly and hips to help with dry or itchy skin."
+        ],
+        "vi": [
+          "Lên lịch khám thai tam cá nguyệt thứ hai và ghi vào sổ khám thai.",
+          "Dưỡng ẩm vùng bụng và hông để đỡ khô, ngứa da."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Pain or burning when you pee: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Đau rát khi đi tiểu: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 14,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍑",
+        "en": "a peach",
+        "vi": "một quả đào"
+      },
+      "lengthCm": 8.7,
+      "weightG": 43,
+      "baby": {
+        "en": [
+          "Your baby can squint, frown and make other facial expressions.",
+          "Fine, soft hair called lanugo starts to cover the skin."
+        ],
+        "vi": [
+          "Bé đã biết nheo mắt, nhíu mày và làm nhiều biểu cảm khác.",
+          "Lớp lông tơ mềm mịn bắt đầu phủ lên da bé."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Welcome to the second trimester, often the most comfortable stage.",
+          "Your appetite may return, and your bump may start to show."
+        ],
+        "vi": [
+          "Chào mừng mẹ đến tam cá nguyệt thứ hai, thường là giai đoạn dễ chịu nhất.",
+          "Mẹ có thể ăn ngon miệng trở lại, và bụng bắt đầu lộ rõ."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Aim for regular gentle exercise, such as walking, if your doctor agrees.",
+          "Visit a dentist; pregnancy can make gums swell and bleed."
+        ],
+        "vi": [
+          "Duy trì vận động nhẹ nhàng đều đặn như đi bộ, nếu bác sĩ đồng ý.",
+          "Đi khám răng; khi mang thai lợi dễ sưng và chảy máu."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 15,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍎",
+        "en": "an apple",
+        "vi": "một quả táo"
+      },
+      "lengthCm": 10.1,
+      "weightG": 70,
+      "baby": {
+        "en": [
+          "The skeleton keeps hardening, and the bones show up on a scan.",
+          "Even with closed eyelids, your baby can sense light."
+        ],
+        "vi": [
+          "Bộ xương tiếp tục cứng dần và đã thấy rõ trên siêu âm.",
+          "Dù mí mắt còn khép, bé đã cảm nhận được ánh sáng."
+        ]
+      },
+      "mom": {
+        "en": [
+          "A stuffy nose or small nosebleeds are common in pregnancy.",
+          "Your gums may bleed a little when you brush your teeth."
+        ],
+        "vi": [
+          "Nghẹt mũi hoặc chảy chút máu cam là điều thường gặp khi mang thai.",
+          "Lợi có thể chảy chút máu khi mẹ đánh răng."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Ask your doctor whether you need the triple test, usually done in weeks 15 to 18.",
+          "Use a soft toothbrush and keep up regular brushing and flossing."
+        ],
+        "vi": [
+          "Hỏi bác sĩ xem mẹ có cần làm triple test không, thường làm vào tuần 15 đến 18.",
+          "Dùng bàn chải lông mềm, đánh răng và dùng chỉ nha khoa đều đặn."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Fluid leaking or gushing from your vagina: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Ra nước âm đạo, rỉ rả hay ồ ạt: mẹ hãy đến khoa sản của bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 16,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥑",
+        "en": "an avocado",
+        "vi": "một quả bơ"
+      },
+      "lengthCm": 11.6,
+      "weightG": 100,
+      "baby": {
+        "en": [
+          "The eyes can move slowly behind the closed eyelids.",
+          "The heart pumps a large amount of blood every day."
+        ],
+        "vi": [
+          "Mắt bé đã có thể chuyển động chậm sau mí mắt.",
+          "Tim bé bơm một lượng máu lớn mỗi ngày."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Some women feel first flutters now, especially in a second pregnancy.",
+          "If you have not felt anything yet, that is normal; most women first feel movements between 16 and 24 weeks."
+        ],
+        "vi": [
+          "Một số mẹ bắt đầu cảm nhận thai máy nhẹ, nhất là từ lần mang thai thứ hai.",
+          "Nếu mẹ chưa cảm nhận được gì cũng bình thường; đa số mẹ cảm nhận thai máy lần đầu trong khoảng tuần 16 đến 24."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Eat iron-rich foods, such as lean meat, eggs, beans and green leafy vegetables.",
+          "Drink plenty of water and limit sugary drinks."
+        ],
+        "vi": [
+          "Ăn thực phẩm giàu sắt như thịt nạc, trứng, các loại đậu và rau xanh đậm.",
+          "Uống đủ nước và hạn chế đồ uống nhiều đường."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Pain or burning when you pee: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Đau rát khi đi tiểu: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 17,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍐",
+        "en": "a pear",
+        "vi": "một quả lê"
+      },
+      "lengthCm": 13.0,
+      "weightG": 140,
+      "baby": {
+        "en": [
+          "Fat is starting to form under the skin.",
+          "Soft cartilage is turning into bone, and the umbilical cord grows stronger."
+        ],
+        "vi": [
+          "Lớp mỡ dưới da bắt đầu hình thành.",
+          "Sụn mềm đang dần chuyển thành xương, dây rốn ngày càng chắc khỏe."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel brief, sharp pains at the sides of your bump as ligaments stretch.",
+          "Your growing belly may change your balance."
+        ],
+        "vi": [
+          "Mẹ có thể thấy đau nhói thoáng qua hai bên bụng do dây chằng bị kéo giãn.",
+          "Bụng lớn dần có thể khiến mẹ khó giữ thăng bằng hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Get up slowly and change position gently to ease ligament pain.",
+          "Choose flat, comfortable shoes to avoid falls."
+        ],
+        "vi": [
+          "Đứng dậy từ từ và đổi tư thế nhẹ nhàng để đỡ đau dây chằng.",
+          "Chọn giày đế bằng, êm chân để tránh té ngã."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Pain that is severe or does not go away with rest: contact your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Đau dữ dội hoặc không đỡ khi nghỉ ngơi: mẹ hãy liên hệ bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 18,
+      "reviewed": false,
+      "size": {
+        "emoji": "🫑",
+        "en": "a bell pepper",
+        "vi": "một quả ớt chuông"
+      },
+      "lengthCm": 14.2,
+      "weightG": 190,
+      "baby": {
+        "en": [
+          "The ears are in their final position, and your baby may start to hear sounds.",
+          "Your baby yawns, stretches and sucks their thumb."
+        ],
+        "vi": [
+          "Tai bé đã ở đúng vị trí, bé có thể bắt đầu nghe thấy âm thanh.",
+          "Bé biết ngáp, vươn vai và mút ngón tay."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel dizzy if you stand up quickly.",
+          "Backache is common as your posture changes."
+        ],
+        "vi": [
+          "Mẹ có thể chóng mặt khi đứng dậy quá nhanh.",
+          "Đau lưng là điều thường gặp khi dáng người thay đổi."
+        ]
+      },
+      "tips": {
+        "en": [
+          "The detailed anomaly scan is usually done in weeks 18 to 22; book it now.",
+          "Talk and sing to your baby; they may soon recognise your voice."
+        ],
+        "vi": [
+          "Siêu âm hình thái thường làm vào tuần 18 đến 22; mẹ hãy đặt lịch từ bây giờ.",
+          "Hãy trò chuyện và hát cho bé nghe; bé có thể sớm nhận ra giọng mẹ."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Fainting, or dizziness that does not pass when you sit: see your doctor.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Ngất xỉu, hoặc chóng mặt không đỡ khi ngồi nghỉ: mẹ hãy đi khám bác sĩ.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 19,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥭",
+        "en": "a mango",
+        "vi": "một quả xoài"
+      },
+      "lengthCm": 15.3,
+      "weightG": 240,
+      "baby": {
+        "en": [
+          "A creamy coating called vernix forms to protect the skin.",
+          "The senses of hearing, taste, smell and touch are developing."
+        ],
+        "vi": [
+          "Lớp chất gây màu trắng hình thành để bảo vệ làn da của bé.",
+          "Thính giác, vị giác, khứu giác và xúc giác đang phát triển."
+        ]
+      },
+      "mom": {
+        "en": [
+          "A dark line may appear down your belly; it usually fades after birth.",
+          "Your skin may darken in patches on your face; this is common."
+        ],
+        "vi": [
+          "Có thể xuất hiện đường sẫm màu dọc bụng; thường mờ dần sau sinh.",
+          "Da mặt có thể xuất hiện mảng sẫm màu; đây là điều thường gặp."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Use sun protection, as pregnancy skin darkens more easily in the sun.",
+          "Sleep on your side with a pillow between your knees for comfort."
+        ],
+        "vi": [
+          "Che nắng kỹ, vì da khi mang thai dễ sạm hơn dưới ánh nắng.",
+          "Nằm nghiêng, kẹp gối giữa hai đầu gối để ngủ dễ chịu hơn."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, severe belly pain, or feeling faint: contact your doctor or maternity unit straight away.",
+          "Fluid leaking or gushing from your vagina: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, đau bụng dữ dội hoặc choáng ngất: mẹ hãy liên hệ bác sĩ hoặc bệnh viện ngay.",
+          "Ra nước âm đạo, rỉ rả hay ồ ạt: mẹ hãy đến khoa sản của bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 20,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍌",
+        "en": "a banana",
+        "vi": "một quả chuối"
+      },
+      "lengthCm": 25.6,
+      "weightG": 300,
+      "baby": {
+        "en": [
+          "You are halfway there; your baby is now measured from head to heel.",
+          "Your baby swallows amniotic fluid, which helps the gut develop."
+        ],
+        "vi": [
+          "Mẹ đã đi được nửa chặng đường; từ tuần này bé được đo từ đầu đến gót.",
+          "Bé nuốt nước ối, giúp hệ tiêu hóa phát triển."
+        ]
+      },
+      "mom": {
+        "en": [
+          "The top of your womb is around the level of your belly button.",
+          "Many women now feel their baby move."
+        ],
+        "vi": [
+          "Đáy tử cung lúc này lên khoảng ngang rốn.",
+          "Nhiều mẹ đã cảm nhận được bé cử động."
+        ]
+      },
+      "tips": {
+        "en": [
+          "If you have not had the anomaly scan yet, book it this week.",
+          "Have your blood pressure checked at each antenatal visit."
+        ],
+        "vi": [
+          "Nếu chưa siêu âm hình thái, mẹ hãy đặt lịch ngay trong tuần này.",
+          "Đo huyết áp ở mỗi lần khám thai."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 21,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥕",
+        "en": "a carrot",
+        "vi": "một củ cà rốt"
+      },
+      "lengthCm": 26.7,
+      "weightG": 360,
+      "baby": {
+        "en": [
+          "Movements are getting stronger and more frequent.",
+          "Taste buds are working, and your baby can taste flavours in the amniotic fluid."
+        ],
+        "vi": [
+          "Bé cử động mạnh hơn và thường xuyên hơn.",
+          "Vị giác đã hoạt động, bé nếm được hương vị trong nước ối."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Leg cramps, often at night, are common.",
+          "You may notice swollen veins in your legs."
+        ],
+        "vi": [
+          "Chuột rút ở chân, nhất là về đêm, là điều thường gặp.",
+          "Mẹ có thể thấy tĩnh mạch ở chân nổi rõ hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Stretch your calves before bed and stay active during the day.",
+          "Avoid standing for long periods; put your feet up when resting."
+        ],
+        "vi": [
+          "Duỗi bắp chân trước khi ngủ và vận động nhẹ trong ngày.",
+          "Tránh đứng lâu; kê cao chân khi nghỉ ngơi."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A painful, red or swollen area in one leg: see a doctor straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Một bên chân đau, đỏ hoặc sưng: mẹ hãy đi khám bác sĩ ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 22,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥒",
+        "en": "a cucumber",
+        "vi": "một quả dưa chuột"
+      },
+      "lengthCm": 27.8,
+      "weightG": 430,
+      "baby": {
+        "en": [
+          "Eyebrows and eyelashes are growing.",
+          "Your baby can grip, and may hold the umbilical cord."
+        ],
+        "vi": [
+          "Lông mày và lông mi của bé đang mọc.",
+          "Bé biết nắm, có thể nắm cả dây rốn."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Stretch marks may appear on your belly, breasts or thighs.",
+          "You may feel warmer than usual and sweat more."
+        ],
+        "vi": [
+          "Vết rạn da có thể xuất hiện ở bụng, ngực hoặc đùi.",
+          "Mẹ có thể thấy nóng người và ra mồ hôi nhiều hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Wear loose, breathable clothes and drink enough water.",
+          "Ask your doctor about antenatal classes to prepare for birth."
+        ],
+        "vi": [
+          "Mặc quần áo rộng rãi, thoáng mát và uống đủ nước.",
+          "Hỏi bác sĩ về các lớp tiền sản để chuẩn bị cho ngày sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 23,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍠",
+        "en": "a large sweet potato",
+        "vi": "một củ khoai lang to"
+      },
+      "lengthCm": 28.9,
+      "weightG": 501,
+      "baby": {
+        "en": [
+          "Your baby can hear loud sounds from outside the womb.",
+          "The lungs are developing the branches they will need to breathe."
+        ],
+        "vi": [
+          "Bé nghe được những âm thanh lớn từ bên ngoài.",
+          "Phổi đang phát triển các nhánh cần thiết để sau này bé tự thở."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Mild swelling of the feet and ankles is common, especially in the evening.",
+          "Your belly button may start to pop out."
+        ],
+        "vi": [
+          "Phù nhẹ ở bàn chân, mắt cá chân là điều thường gặp, nhất là buổi tối.",
+          "Rốn của mẹ có thể bắt đầu lồi ra."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Rest with your feet raised to ease mild swelling.",
+          "Keep your antenatal appointments, even if you feel well."
+        ],
+        "vi": [
+          "Nghỉ ngơi và kê cao chân để giảm phù nhẹ.",
+          "Đi khám thai đúng hẹn, kể cả khi mẹ thấy khỏe."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 24,
+      "reviewed": false,
+      "size": {
+        "emoji": "🌽",
+        "en": "an ear of corn",
+        "vi": "một bắp ngô"
+      },
+      "lengthCm": 30.0,
+      "weightG": 600,
+      "baby": {
+        "en": [
+          "The lungs begin to make a substance that will later help them work.",
+          "Your baby has regular times of sleeping and waking."
+        ],
+        "vi": [
+          "Phổi bắt đầu tạo ra một chất giúp phổi hoạt động sau này.",
+          "Bé đã có những khoảng ngủ và thức đều đặn."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your bump is clearly visible, and the skin over it may itch.",
+          "Heartburn and trouble sleeping are common."
+        ],
+        "vi": [
+          "Bụng mẹ đã lộ rõ, da bụng có thể bị ngứa.",
+          "Ợ nóng và khó ngủ là điều thường gặp."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Screening for gestational diabetes is usually done in weeks 24 to 28; ask your doctor.",
+          "Start getting to know your baby's usual pattern of movements."
+        ],
+        "vi": [
+          "Tầm soát tiểu đường thai kỳ thường làm vào tuần 24 đến 28; mẹ hãy hỏi bác sĩ.",
+          "Bắt đầu làm quen với nhịp cử động thường ngày của bé."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "If you have not felt your baby move by now, contact your doctor or maternity unit.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Nếu đến giờ mẹ vẫn chưa cảm nhận được thai máy, hãy liên hệ bác sĩ hoặc bệnh viện.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 25,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥦",
+        "en": "a head of broccoli",
+        "vi": "một cây súp lơ xanh"
+      },
+      "lengthCm": 34.6,
+      "weightG": 660,
+      "baby": {
+        "en": [
+          "Your baby may respond to your voice with movement.",
+          "The hands are fully formed, and your baby explores by touching."
+        ],
+        "vi": [
+          "Bé có thể cử động khi nghe giọng nói của mẹ.",
+          "Bàn tay đã hoàn chỉnh, bé khám phá xung quanh bằng cách sờ chạm."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your hair may look thicker and shinier.",
+          "Tingling or numbness in your hands can happen as fluid builds up."
+        ],
+        "vi": [
+          "Tóc mẹ có thể trông dày và bóng hơn.",
+          "Tê hoặc châm chích ở bàn tay có thể xảy ra do cơ thể giữ nước."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Eat meals with whole grains, vegetables and protein to keep your energy steady.",
+          "Notice when your baby is most active, and enjoy those moments."
+        ],
+        "vi": [
+          "Ăn bữa có ngũ cốc nguyên hạt, rau xanh và chất đạm để giữ sức bền.",
+          "Để ý những lúc bé hiếu động nhất và tận hưởng những khoảnh khắc ấy."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 26,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥬",
+        "en": "a head of lettuce",
+        "vi": "một cây xà lách"
+      },
+      "lengthCm": 35.6,
+      "weightG": 760,
+      "baby": {
+        "en": [
+          "The eyes are beginning to open.",
+          "Your baby may startle at loud noises."
+        ],
+        "vi": [
+          "Mắt bé bắt đầu mở ra.",
+          "Bé có thể giật mình khi nghe tiếng động lớn."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel practice contractions: painless tightenings that come and go.",
+          "Sleep may be harder as your bump grows."
+        ],
+        "vi": [
+          "Mẹ có thể thấy cơn gò sinh lý: bụng cứng lên rồi mềm lại, không đau.",
+          "Giấc ngủ có thể khó hơn khi bụng lớn dần."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Change position or rest if you feel practice contractions; they should ease.",
+          "Sleep on your side and use pillows to support your bump."
+        ],
+        "vi": [
+          "Đổi tư thế hoặc nghỉ ngơi khi có cơn gò sinh lý; cơn gò sẽ dịu đi.",
+          "Nằm nghiêng khi ngủ và dùng gối đỡ bụng."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 27,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥬",
+        "en": "a head of napa cabbage",
+        "vi": "một cây cải thảo"
+      },
+      "lengthCm": 36.6,
+      "weightG": 875,
+      "baby": {
+        "en": [
+          "The brain is very active, and your baby has clear sleep and wake cycles.",
+          "You may feel rhythmic jolts when your baby has hiccups."
+        ],
+        "vi": [
+          "Não bộ hoạt động mạnh, bé có chu kỳ ngủ và thức rõ ràng.",
+          "Mẹ có thể thấy những cú giật nhịp nhàng khi bé nấc cụt."
+        ]
+      },
+      "mom": {
+        "en": [
+          "This is the last week of the second trimester.",
+          "Backache and leg cramps may increase."
+        ],
+        "vi": [
+          "Đây là tuần cuối của tam cá nguyệt thứ hai.",
+          "Đau lưng và chuột rút có thể tăng lên."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Ask your doctor about the tetanus and whooping cough vaccines for pregnancy.",
+          "Keep getting to know your baby's daily movement pattern."
+        ],
+        "vi": [
+          "Hỏi bác sĩ về lịch tiêm phòng uốn ván và ho gà trong thai kỳ.",
+          "Tiếp tục làm quen với nhịp cử động hằng ngày của bé."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 28,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍆",
+        "en": "an eggplant",
+        "vi": "một quả cà tím"
+      },
+      "lengthCm": 37.6,
+      "weightG": 1005,
+      "baby": {
+        "en": [
+          "Your baby can open and close the eyes and blink.",
+          "The brain is growing fast and laying down more connections."
+        ],
+        "vi": [
+          "Bé đã biết mở mắt, nhắm mắt và chớp mắt.",
+          "Não bộ phát triển nhanh và hình thành thêm nhiều kết nối."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Welcome to the third trimester.",
+          "Check-ups usually become more frequent from now on."
+        ],
+        "vi": [
+          "Chào mừng mẹ đến tam cá nguyệt thứ ba.",
+          "Từ nay các lần khám thai thường dày hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Get to know your baby's movement pattern and count movements every day.",
+          "Go to sleep on your side, rather than on your back.",
+          "If your blood group is Rh negative, ask your doctor what extra care you need."
+        ],
+        "vi": [
+          "Làm quen với nhịp cử động của bé và đếm cử động mỗi ngày.",
+          "Khi đi ngủ, mẹ nên nằm nghiêng thay vì nằm ngửa.",
+          "Nếu mẹ có nhóm máu Rh âm, hãy hỏi bác sĩ về việc chăm sóc thêm cần thiết."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 29,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥥",
+        "en": "a coconut",
+        "vi": "một quả dừa"
+      },
+      "lengthCm": 38.6,
+      "weightG": 1153,
+      "baby": {
+        "en": [
+          "Muscles and lungs keep maturing.",
+          "Your baby's kicks and jabs are strong and easy to feel."
+        ],
+        "vi": [
+          "Cơ bắp và phổi tiếp tục trưởng thành.",
+          "Những cú đạp, cú huých của bé mạnh và dễ cảm nhận."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel short of breath as your womb presses upwards.",
+          "Needing to pee often may return."
+        ],
+        "vi": [
+          "Mẹ có thể thấy hụt hơi khi tử cung đẩy lên cao.",
+          "Mẹ có thể lại đi tiểu nhiều lần."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Eat foods rich in calcium, such as milk, yoghurt, tofu and small fish eaten with bones."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Ăn thực phẩm giàu canxi như sữa, sữa chua, đậu phụ và cá nhỏ ăn cả xương."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 30,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥬",
+        "en": "a head of cabbage",
+        "vi": "một bắp cải"
+      },
+      "lengthCm": 39.9,
+      "weightG": 1319,
+      "baby": {
+        "en": [
+          "Bone marrow is now making red blood cells.",
+          "The soft lanugo hair is starting to disappear."
+        ],
+        "vi": [
+          "Tủy xương đã bắt đầu tạo hồng cầu.",
+          "Lớp lông tơ mềm bắt đầu rụng dần."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Tiredness and heartburn are common again.",
+          "You may feel clumsier as your bump grows."
+        ],
+        "vi": [
+          "Mệt mỏi và ợ nóng lại thường gặp.",
+          "Mẹ có thể thấy vụng về hơn khi bụng lớn dần."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "A growth scan is often done in weeks 30 to 32; ask your doctor."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Siêu âm đánh giá tăng trưởng thường làm vào tuần 30 đến 32; mẹ hãy hỏi bác sĩ."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 31,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍈",
+        "en": "a cantaloupe",
+        "vi": "một quả dưa lưới"
+      },
+      "lengthCm": 41.1,
+      "weightG": 1502,
+      "baby": {
+        "en": [
+          "All five senses are working.",
+          "Your baby can turn their head from side to side."
+        ],
+        "vi": [
+          "Cả năm giác quan của bé đều đã hoạt động.",
+          "Bé đã biết quay đầu sang hai bên."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Practice contractions may be more frequent.",
+          "Your breasts may leak a little early milk, called colostrum."
+        ],
+        "vi": [
+          "Cơn gò sinh lý có thể xuất hiện nhiều hơn.",
+          "Ngực có thể rỉ một ít sữa non."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Start learning about breastfeeding; ask your doctor or midwife for advice."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Bắt đầu tìm hiểu về nuôi con bằng sữa mẹ; hãy hỏi bác sĩ hoặc nữ hộ sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 32,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍌",
+        "en": "a bunch of bananas",
+        "vi": "một nải chuối"
+      },
+      "lengthCm": 42.4,
+      "weightG": 1702,
+      "baby": {
+        "en": [
+          "Your baby practises breathing movements with amniotic fluid.",
+          "Fingernails and toenails have grown in."
+        ],
+        "vi": [
+          "Bé tập các động tác thở với nước ối.",
+          "Móng tay và móng chân đã mọc đầy đủ."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Many babies turn head-down in the coming weeks.",
+          "You may need to rest more often during the day."
+        ],
+        "vi": [
+          "Nhiều bé sẽ quay đầu xuống dưới trong những tuần tới.",
+          "Mẹ có thể cần nghỉ ngơi nhiều lần hơn trong ngày."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Talk with your doctor about where you plan to give birth."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Trao đổi với bác sĩ về nơi mẹ dự định sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 33,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍍",
+        "en": "a pineapple",
+        "vi": "một quả dứa"
+      },
+      "lengthCm": 43.7,
+      "weightG": 1918,
+      "baby": {
+        "en": [
+          "Bones are hardening, but the skull stays soft to help with birth.",
+          "Antibodies pass from you to your baby to help protect them after birth."
+        ],
+        "vi": [
+          "Xương cứng dần, riêng xương sọ vẫn mềm để giúp bé chào đời.",
+          "Kháng thể từ mẹ truyền sang giúp bảo vệ bé sau khi sinh."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your feet and ankles may swell more by the end of the day.",
+          "Finding a comfortable sleeping position may be harder."
+        ],
+        "vi": [
+          "Bàn chân, mắt cá chân có thể phù nhiều hơn vào cuối ngày.",
+          "Mẹ có thể khó tìm tư thế ngủ thoải mái hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Start packing a bag for the hospital with your documents and pregnancy record book."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Bắt đầu chuẩn bị túi đồ đi sinh, kèm giấy tờ và sổ khám thai."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 34,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍈",
+        "en": "a large cantaloupe",
+        "vi": "một quả dưa lưới to"
+      },
+      "lengthCm": 45.0,
+      "weightG": 2146,
+      "baby": {
+        "en": [
+          "The nervous system and lungs keep maturing.",
+          "A layer of fat is filling out your baby's body."
+        ],
+        "vi": [
+          "Hệ thần kinh và phổi tiếp tục trưởng thành.",
+          "Lớp mỡ đang làm cơ thể bé tròn trịa hơn."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel pressure low in your pelvis.",
+          "Tiredness and broken sleep are common."
+        ],
+        "vi": [
+          "Mẹ có thể thấy nặng nề ở vùng chậu.",
+          "Mệt mỏi và ngủ chập chờn là điều thường gặp."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Learn the signs of labour and how to reach your maternity unit."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Tìm hiểu dấu hiệu chuyển dạ và cách liên lạc với bệnh viện nơi mẹ sẽ sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 35,
+      "reviewed": false,
+      "size": {
+        "emoji": "🎃",
+        "en": "a small pumpkin",
+        "vi": "một quả bí đỏ nhỏ"
+      },
+      "lengthCm": 46.2,
+      "weightG": 2383,
+      "baby": {
+        "en": [
+          "The kidneys are fully developed.",
+          "There is less room to move, but you should still feel movements every day."
+        ],
+        "vi": [
+          "Thận của bé đã phát triển hoàn chỉnh.",
+          "Bé có ít chỗ hơn để xoay trở, nhưng mẹ vẫn cảm nhận được cử động mỗi ngày."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may need to pee more as your baby presses on your bladder.",
+          "Practice contractions may feel stronger."
+        ],
+        "vi": [
+          "Mẹ có thể đi tiểu nhiều hơn do bé đè lên bàng quang.",
+          "Cơn gò sinh lý có thể mạnh hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "The group B strep test is often done in weeks 35 to 37; ask your doctor."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Xét nghiệm liên cầu khuẩn nhóm B thường làm vào tuần 35 đến 37; mẹ hãy hỏi bác sĩ."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 36,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥥",
+        "en": "a pair of coconuts",
+        "vi": "hai quả dừa"
+      },
+      "lengthCm": 47.4,
+      "weightG": 2622,
+      "baby": {
+        "en": [
+          "Your baby may drop lower into your pelvis, especially in a first pregnancy.",
+          "Most of the lanugo hair has gone."
+        ],
+        "vi": [
+          "Bé có thể tụt xuống thấp hơn trong khung chậu, nhất là ở lần mang thai đầu.",
+          "Phần lớn lông tơ đã rụng."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Breathing may feel easier once your baby drops.",
+          "You may feel more pressure on your bladder and pelvis."
+        ],
+        "vi": [
+          "Mẹ có thể thở dễ hơn khi bé tụt xuống.",
+          "Mẹ có thể thấy bàng quang và vùng chậu bị đè nặng hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Finish packing your hospital bag and keep it near the door."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Hoàn tất túi đồ đi sinh và để sẵn gần cửa."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Any vaginal bleeding, or belly pain that does not go away: contact your maternity unit straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Fluid leaking from your vagina, regular tightenings or period-like cramps before 37 weeks: go to the maternity unit straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Ra máu âm đạo dù ít hay nhiều, hoặc đau bụng không dứt: mẹ hãy liên hệ bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ra nước âm đạo, gò bụng đều đặn hoặc đau như đau bụng kinh trước tuần 37: mẹ hãy đến bệnh viện ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 37,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍍",
+        "en": "a pair of pineapples",
+        "vi": "hai quả dứa"
+      },
+      "lengthCm": 48.6,
+      "weightG": 2859,
+      "baby": {
+        "en": [
+          "Your baby is now considered early term.",
+          "Your baby practises sucking, blinking and breathing movements."
+        ],
+        "vi": [
+          "Từ tuần này bé được xem là đủ tháng sớm.",
+          "Bé tập bú, chớp mắt và các động tác thở."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Check-ups usually happen every week from now.",
+          "You may notice a mucus show as your cervix gets ready."
+        ],
+        "vi": [
+          "Từ nay mẹ thường đi khám thai mỗi tuần.",
+          "Mẹ có thể thấy ra nhầy khi cổ tử cung chuẩn bị cho chuyển dạ."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Know the signs of labour: regular, stronger contractions, your waters breaking, or a show."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Nhận biết dấu hiệu chuyển dạ: cơn gò đều và mạnh dần, vỡ ối, hoặc ra nhầy hồng."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 38,
+      "reviewed": false,
+      "size": {
+        "emoji": "🎃",
+        "en": "a pumpkin",
+        "vi": "một quả bí đỏ"
+      },
+      "lengthCm": 49.8,
+      "weightG": 3083,
+      "baby": {
+        "en": [
+          "Your baby's grasp is firm.",
+          "The organs are ready to work outside the womb."
+        ],
+        "vi": [
+          "Bé đã nắm tay rất chắc.",
+          "Các cơ quan đã sẵn sàng hoạt động bên ngoài bụng mẹ."
+        ]
+      },
+      "mom": {
+        "en": [
+          "You may feel uncomfortable and impatient; this is normal.",
+          "Practice contractions may be frequent."
+        ],
+        "vi": [
+          "Mẹ có thể thấy khó chịu và sốt ruột; đây là điều bình thường.",
+          "Cơn gò sinh lý có thể xuất hiện thường xuyên."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Rest when you can and eat light, regular meals."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Nghỉ ngơi khi có thể và ăn các bữa nhẹ, đều đặn."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 39,
+      "reviewed": false,
+      "size": {
+        "emoji": "🥬",
+        "en": "a large head of cabbage",
+        "vi": "một bắp cải lớn"
+      },
+      "lengthCm": 50.7,
+      "weightG": 3288,
+      "baby": {
+        "en": [
+          "Your baby is full term.",
+          "A layer of fat helps your baby keep warm after birth."
+        ],
+        "vi": [
+          "Bé đã đủ tháng.",
+          "Lớp mỡ giúp bé giữ ấm sau khi chào đời."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Labour could start any day now.",
+          "You may feel a burst of energy, or very tired."
+        ],
+        "vi": [
+          "Chuyển dạ có thể bắt đầu bất cứ ngày nào.",
+          "Mẹ có thể bỗng thấy tràn đầy năng lượng, hoặc rất mệt."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Keep your phone charged and your hospital bag ready."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Luôn sạc đầy điện thoại và để sẵn túi đồ đi sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 40,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍉",
+        "en": "a small watermelon",
+        "vi": "một quả dưa hấu nhỏ"
+      },
+      "lengthCm": 51.2,
+      "weightG": 3462,
+      "baby": {
+        "en": [
+          "Your baby is ready to be born.",
+          "Only a few babies arrive exactly on their due date."
+        ],
+        "vi": [
+          "Bé đã sẵn sàng chào đời.",
+          "Chỉ một số ít bé chào đời đúng vào ngày dự sinh."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your due date is here; waiting a little longer is common.",
+          "Your doctor will check on you and your baby more closely."
+        ],
+        "vi": [
+          "Đã đến ngày dự sinh; chờ thêm ít ngày là điều thường gặp.",
+          "Bác sĩ sẽ theo dõi mẹ và bé sát sao hơn."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Keep your check-up appointments after your due date."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Đi khám đúng hẹn sau ngày dự sinh."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 41,
+      "reviewed": false,
+      "size": {
+        "emoji": "🎃",
+        "en": "a large pumpkin",
+        "vi": "một quả bí đỏ lớn"
+      },
+      "lengthCm": 51.7,
+      "weightG": 3597,
+      "baby": {
+        "en": [
+          "Your baby keeps growing, and the skin may be a little dry at birth.",
+          "Nails may have grown past the fingertips."
+        ],
+        "vi": [
+          "Bé vẫn tiếp tục lớn, da có thể hơi khô khi chào đời.",
+          "Móng tay có thể đã dài quá đầu ngón."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your doctor will monitor you and your baby more often.",
+          "Your doctor may talk with you about inducing labour."
+        ],
+        "vi": [
+          "Bác sĩ sẽ theo dõi mẹ và bé thường xuyên hơn.",
+          "Bác sĩ có thể trao đổi với mẹ về việc khởi phát chuyển dạ."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Ask your doctor about the plan if labour does not start on its own."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Hỏi bác sĩ về kế hoạch nếu chuyển dạ không tự bắt đầu."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    },
+    {
+      "week": 42,
+      "reviewed": false,
+      "size": {
+        "emoji": "🍉",
+        "en": "a watermelon",
+        "vi": "một quả dưa hấu"
+      },
+      "lengthCm": 51.7,
+      "weightG": 3685,
+      "baby": {
+        "en": [
+          "Your baby is past term, and the care team will watch closely.",
+          "Your baby may have less lanugo and vernix at birth."
+        ],
+        "vi": [
+          "Bé đã quá ngày dự sinh, đội ngũ y tế sẽ theo dõi sát sao.",
+          "Khi chào đời, bé có thể ít lông tơ và chất gây hơn."
+        ]
+      },
+      "mom": {
+        "en": [
+          "Your doctor will check your baby's heartbeat and the amount of amniotic fluid.",
+          "Your doctor will usually recommend helping labour to start."
+        ],
+        "vi": [
+          "Bác sĩ sẽ kiểm tra tim thai và lượng nước ối.",
+          "Bác sĩ thường sẽ đề nghị hỗ trợ khởi phát chuyển dạ."
+        ]
+      },
+      "tips": {
+        "en": [
+          "Count your baby's movements every day at a time when they are usually active.",
+          "Follow your doctor's plan for monitoring and the timing of birth."
+        ],
+        "vi": [
+          "Đếm cử động của bé mỗi ngày vào khoảng thời gian bé thường hiếu động.",
+          "Làm theo kế hoạch theo dõi và thời điểm sinh mà bác sĩ đề ra."
+        ]
+      },
+      "warnings": {
+        "en": [
+          "Your baby moving less than usual, or a change in the pattern: contact your maternity unit straight away, day or night.",
+          "Your waters break, whether the fluid is clear, green or brown: contact your maternity unit straight away.",
+          "Heavy or bright red bleeding, or constant belly pain that does not ease: go to hospital straight away.",
+          "Severe headache, blurred vision or flashing lights, or sudden swelling of face, hands or feet: go to the maternity unit straight away.",
+          "Fits, or trouble breathing: call an emergency ambulance (115) straight away.",
+          "Intense itching, especially on your palms and soles: tell your doctor promptly.",
+          "A fever of 38°C or higher, or feeling hot and shivery: call your doctor."
+        ],
+        "vi": [
+          "Bé cử động ít hơn mọi ngày hoặc khác thường: mẹ hãy liên hệ bệnh viện ngay, dù ngày hay đêm.",
+          "Vỡ ối, dù nước ối trong, xanh hay nâu: mẹ hãy liên hệ bệnh viện ngay.",
+          "Ra máu nhiều hoặc máu đỏ tươi, hoặc đau bụng liên tục không dịu: mẹ hãy đến bệnh viện ngay.",
+          "Đau đầu dữ dội, nhìn mờ hoặc nổi đom đóm mắt, phù mặt, tay, chân đột ngột: mẹ hãy đến bệnh viện ngay.",
+          "Co giật hoặc khó thở: gọi cấp cứu 115 ngay.",
+          "Ngứa nhiều, nhất là ở lòng bàn tay, bàn chân: mẹ hãy báo bác sĩ sớm.",
+          "Sốt từ 38°C trở lên, hoặc thấy nóng lạnh, run người: mẹ hãy gọi cho bác sĩ."
+        ]
+      }
+    }
+  ],
+  "milestones": [
+    {
+      "id": "confirm-pregnancy",
+      "fromWeek": 6,
+      "toWeek": 8,
+      "title": {
+        "en": "First pregnancy check-up",
+        "vi": "Khám thai lần đầu"
+      },
+      "detail": {
+        "en": "An ultrasound checks that the pregnancy is in the womb, looks for the heartbeat and dates the pregnancy. Routine blood and urine tests are usually done too.",
+        "vi": "Siêu âm xác định thai nằm trong tử cung, kiểm tra tim thai và tính tuổi thai. Mẹ thường được làm thêm xét nghiệm máu và nước tiểu."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "nt-scan",
+      "fromWeek": 11,
+      "toWeek": 14,
+      "title": {
+        "en": "Nuchal translucency scan",
+        "vi": "Siêu âm đo độ mờ da gáy"
+      },
+      "detail": {
+        "en": "Measures the fluid at the back of your baby's neck. With a blood test (double test), it screens for some chromosomal conditions.",
+        "vi": "Đo lớp dịch sau gáy của bé. Kết hợp xét nghiệm máu (double test) để sàng lọc một số bất thường nhiễm sắc thể."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "triple-test",
+      "fromWeek": 15,
+      "toWeek": 18,
+      "title": {
+        "en": "Triple test",
+        "vi": "Xét nghiệm triple test"
+      },
+      "detail": {
+        "en": "A blood test that screens for some chromosomal conditions and neural tube defects. Ask your doctor whether you need it.",
+        "vi": "Xét nghiệm máu sàng lọc một số bất thường nhiễm sắc thể và dị tật ống thần kinh. Mẹ hãy hỏi bác sĩ xem có cần làm không."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "anomaly-scan",
+      "fromWeek": 18,
+      "toWeek": 22,
+      "title": {
+        "en": "Detailed anomaly scan",
+        "vi": "Siêu âm hình thái"
+      },
+      "detail": {
+        "en": "A detailed ultrasound that checks how your baby's organs and body are developing, and where the placenta lies.",
+        "vi": "Siêu âm chi tiết để kiểm tra sự phát triển các cơ quan, hình thái của bé và vị trí bánh nhau."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "gdm-screening",
+      "fromWeek": 24,
+      "toWeek": 28,
+      "title": {
+        "en": "Gestational diabetes screening",
+        "vi": "Tầm soát tiểu đường thai kỳ"
+      },
+      "detail": {
+        "en": "A glucose tolerance test: you drink a sugary drink, then have blood tests to see how your body handles sugar.",
+        "vi": "Nghiệm pháp dung nạp glucose: mẹ uống dung dịch đường, sau đó lấy máu xét nghiệm để xem cơ thể xử lý đường thế nào."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "tetanus-pertussis",
+      "fromWeek": 27,
+      "toWeek": 36,
+      "title": {
+        "en": "Tetanus and whooping cough vaccines",
+        "vi": "Tiêm phòng uốn ván, ho gà"
+      },
+      "detail": {
+        "en": "Vaccines in pregnancy protect you and pass protection to your newborn. Follow the schedule your clinic recommends.",
+        "vi": "Tiêm phòng khi mang thai giúp bảo vệ mẹ và truyền miễn dịch cho bé sau sinh. Mẹ hãy tiêm theo lịch hướng dẫn của cơ sở y tế nơi khám."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "growth-scan",
+      "fromWeek": 30,
+      "toWeek": 32,
+      "title": {
+        "en": "Growth scan",
+        "vi": "Siêu âm đánh giá tăng trưởng"
+      },
+      "detail": {
+        "en": "An ultrasound that checks your baby's growth, position and the amount of amniotic fluid.",
+        "vi": "Siêu âm kiểm tra sự tăng trưởng, ngôi thai và lượng nước ối."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "gbs-test",
+      "fromWeek": 35,
+      "toWeek": 37,
+      "title": {
+        "en": "Group B strep test",
+        "vi": "Cấy liên cầu khuẩn nhóm B"
+      },
+      "detail": {
+        "en": "A swab checks for group B streptococcus. If it is found, antibiotics during labour help protect your baby.",
+        "vi": "Lấy mẫu dịch để tìm liên cầu khuẩn nhóm B (GBS). Nếu có, mẹ sẽ được dùng kháng sinh khi chuyển dạ để bảo vệ bé."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "weekly-checks",
+      "fromWeek": 37,
+      "toWeek": 40,
+      "title": {
+        "en": "Weekly check-ups",
+        "vi": "Khám thai hằng tuần"
+      },
+      "detail": {
+        "en": "From week 37 you are usually seen every week to check your blood pressure, your baby's heartbeat and position.",
+        "vi": "Từ tuần 37, mẹ thường khám mỗi tuần để kiểm tra huyết áp, tim thai và ngôi thai."
+      },
+      "reviewed": false
+    },
+    {
+      "id": "post-dates",
+      "fromWeek": 40,
+      "toWeek": 42,
+      "title": {
+        "en": "Care after your due date",
+        "vi": "Theo dõi khi quá ngày dự sinh"
+      },
+      "detail": {
+        "en": "If your baby has not arrived, you will be checked more often, and your doctor will discuss inducing labour.",
+        "vi": "Nếu bé chưa chào đời, mẹ sẽ được theo dõi thường xuyên hơn và bác sĩ sẽ trao đổi về việc khởi phát chuyển dạ."
+      },
+      "reviewed": false
+    }
+  ]
+}

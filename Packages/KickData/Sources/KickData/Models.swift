@@ -50,3 +50,36 @@ public final class Kick {
         self.timestamp = timestamp
     }
 }
+
+/// A check-up the mother added. Synced through iCloud like sessions.
+@Model
+public final class Appointment {
+    public var id: UUID = UUID()
+    public var date: Date = Date()
+    public var title: String = ""
+    public var note: String = ""
+    public var isDone: Bool = false
+    /// Id of the suggested milestone this was created from, if any.
+    public var milestoneID: String?
+
+    public init(record: AppointmentRecord) {
+        id = record.id
+        date = record.date
+        title = record.title
+        note = record.note
+        isDone = record.isDone
+        milestoneID = record.milestoneID
+    }
+
+    public var record: AppointmentRecord {
+        AppointmentRecord(id: id, date: date, title: title, note: note, isDone: isDone, milestoneID: milestoneID)
+    }
+
+    func apply(_ record: AppointmentRecord) {
+        date = record.date
+        title = record.title
+        note = record.note
+        isDone = record.isDone
+        milestoneID = record.milestoneID
+    }
+}

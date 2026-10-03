@@ -1,0 +1,156 @@
+import XCTest
+
+/// Screenshots of the Pregnancy tab at fixed gestational ages (see `UITestDates`).
+final class PregnancyScreenshotTests: XCTestCase {
+    override func setUp() {
+        continueAfterFailure = false
+    }
+
+    private static let homeWeeks = [
+        ("12", UITestDates.dueAtWeek12),
+        ("24", UITestDates.dueAtWeek24),
+        ("38", UITestDates.dueAtWeek38),
+    ]
+
+    @MainActor
+    func testPregnancyHomeScreens() {
+        for (week, dueDate) in Self.homeWeeks {
+            for language in ["vi", "en"] {
+                for dark in [false, true] {
+                    let name = "pregnancy-home-\(week)-\(language)-\(dark ? "dark" : "light")"
+                    let app = XCUIApplication.launchPinned(language: language, dark: dark, dueDate: dueDate)
+                    XCTAssertTrue(app.descendants(matching: .any)["weekProgressCard"].waitForExistence(timeout: 10), name)
+                    attachScreenshot(app, name)
+                    if week == "38", language == "vi", !dark {
+                        app.swipeUp()
+                        XCTAssertTrue(app.buttons["kickCountCard"].waitForExistence(timeout: 5))
+                        attachScreenshot(app, "pregnancy-home-38-vi-light-bottom")
+                    }
+                    app.terminate()
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testPastDueScreen() {
+        let app = XCUIApplication.launchPinned(language: "en", dueDate: UITestDates.dueSevenDaysAgo)
+        let progress = app.descendants(matching: .any)["weekProgressCard"]
+        XCTAssertTrue(progress.waitForExistence(timeout: 10))
+        XCTAssertTrue(progress.label.contains("Days past your due date: 7"), progress.label)
+        attachScreenshot(app, "pregnancy-home-pastdue-en")
+    }
+
+    @MainActor
+    func testWeekDetailScreens() {
+        for (language, dark) in [("vi", false), ("vi", true), ("en", false)] {
+            let suffix = "\(language)-\(dark ? "dark" : "light")"
+            let app = XCUIApplication.launchPinned(language: language, dark: dark, dueDate: UITestDates.dueAtWeek24)
+            let babyCard = app.buttons["babySizeCard"]
+            XCTAssertTrue(babyCard.waitForExistence(timeout: 10))
+            babyCard.tap()
+            XCTAssertTrue(app.descendants(matching: .any)["weekWarnings"].firstMatch.waitForExistence(timeout: 5))
+            attachScreenshot(app, "week-24-\(suffix)")
+            app.swipeUp()
+            attachScreenshot(app, "week-24-warnings-\(suffix)")
+            if language == "vi", !dark {
+                app.swipeLeft()
+                XCTAssertTrue(app.navigationBars.staticTexts["Tuần 25"].waitForExistence(timeout: 5))
+                attachScreenshot(app, "week-25-vi-light")
+            }
+            app.terminate()
+        }
+    }
+
+    @MainActor
+    func testEmptyStateScreens() {
+        for (language, dark) in [("vi", false), ("vi", true), ("en", false)] {
+            let suffix = "\(language)-\(dark ? "dark" : "light")"
+            let app = XCUIApplication.launchPinned(language: language, dark: dark)
+            let addDates = app.buttons["pregnancyAddDateButton"]
+            XCTAssertTrue(addDates.waitForExistence(timeout: 10))
+            attachScreenshot(app, "pregnancy-empty-\(suffix)")
+            if language == "vi", !dark {
+                addDates.tap()
+                XCTAssertTrue(app.buttons["pregnancyDateSave"].waitForExistence(timeout: 5))
+                attachScreenshot(app, "pregnancy-date-sheet-from-home-vi")
+            }
+            app.terminate()
+        }
+    }
+
+    @MainActor
+    func testAppointmentsScreens() {
+        for (language, dark) in [("vi", false), ("vi", true), ("en", false)] {
+            let suffix = "\(language)-\(dark ? "dark" : "light")"
+            let app = XCUIApplication.launchPinned(language: language, dark: dark, dueDate: UITestDates.dueAtWeek24)
+            let card = app.buttons["nextAppointmentCard"]
+            XCTAssertTrue(card.waitForExistence(timeout: 10))
+            card.tap()
+            let add = app.buttons["addAppointmentButton"]
+            XCTAssertTrue(add.waitForExistence(timeout: 5))
+            attachScreenshot(app, "appointments-empty-\(suffix)")
+
+            if language == "vi", !dark {
+                // Add the first two suggested milestones (week 24–28, then 27–36).
+                for index in 0..<2 {
+                    app.buttons.matching(identifier: "addMilestoneButton").firstMatch.tap()
+                    let save = app.buttons["appointmentSaveButton"]
+                    XCTAssertTrue(save.waitForExistence(timeout: 5))
+                    if index == 0 { attachScreenshot(app, "appointment-editor-milestone-vi") }
+                    save.tap()
+                    XCTAssertTrue(add.waitForExistence(timeout: 5))
+                }
+                let firstRow = app.buttons.matching(identifier: "appointmentRow").firstMatch
+                XCTAssertTrue(firstRow.waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointments-upcoming-vi-light")
+
+                firstRow.tap()
+                let markDone = app.buttons["appointmentMarkDoneButton"]
+                XCTAssertTrue(markDone.waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointment-editor-edit-vi")
+                markDone.tap()
+                // Wait for the sheet to fully dismiss before scrolling, so the
+                // early drags land on the list, not on the dismissing sheet.
+                XCTAssertTrue(add.waitForExistence(timeout: 5))
+                // The milestones still ahead push "Past" below the fold; List only
+                // renders cells near the viewport, so scroll before it can exist.
+                // Nudge up a little at a time (rather than a full swipeUp, which
+                // would scroll "Upcoming" out of frame too) and stop as soon as
+                // "Past" is realized, so both sections stay visible for the shot.
+                let pastHeader = app.staticTexts["pastHeader"]
+                var remainingNudges = 10
+                while !pastHeader.exists, remainingNudges > 0 {
+                    let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+                    let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55))
+                    start.press(forDuration: 0.02, thenDragTo: end)
+                    remainingNudges -= 1
+                }
+                XCTAssertTrue(pastHeader.waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointments-with-past-vi-light")
+
+                // At that minimal scroll, "Đã qua" and the done row are only just
+                // realized and still partly behind the tab bar. Keep scrolling,
+                // bounded, until the done row clears it, so the green "Đã khám"
+                // label is legible in its own screenshot.
+                let doneRow = app.buttons.matching(
+                    NSPredicate(format: "identifier == 'appointmentRow' AND label CONTAINS 'Đã khám'")
+                ).firstMatch
+                XCTAssertTrue(doneRow.waitForExistence(timeout: 5))
+                let tabBarTop = app.tabBars.firstMatch.frame.minY
+                var remainingClearingSwipes = 10
+                while doneRow.frame.maxY > tabBarTop, remainingClearingSwipes > 0 {
+                    app.swipeUp()
+                    remainingClearingSwipes -= 1
+                }
+                XCTAssertLessThan(doneRow.frame.maxY, tabBarTop)
+                attachScreenshot(app, "appointments-past-vi-light")
+
+                app.navigationBars.buttons.element(boundBy: 0).tap()
+                XCTAssertTrue(card.waitForExistence(timeout: 5))
+                attachScreenshot(app, "pregnancy-home-with-appointment-vi-light")
+            }
+            app.terminate()
+        }
+    }
+}

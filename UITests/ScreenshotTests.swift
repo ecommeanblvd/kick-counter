@@ -17,6 +17,7 @@ final class ScreenshotTests: XCTestCase {
         ]
         if dark { app.launchArguments.append("-forceDarkMode") }
         app.launch()
+        app.openTab(.counter)
         return app
     }
 
@@ -62,7 +63,7 @@ final class ScreenshotTests: XCTestCase {
             tapKick(app, times: 2)
             app.buttons["cancelSessionButton"].tap()
             confirmCancel(app)
-            app.tabBars.buttons.element(boundBy: 1).tap()
+            app.openTab(.history)
             XCTAssertTrue(app.descendants(matching: .any)["sessionRow"].firstMatch.waitForExistence(timeout: 5))
             snap(app, "history-\(suffix)")
             app.terminate()
@@ -102,21 +103,35 @@ final class ScreenshotTests: XCTestCase {
         next.tap()
         snap(app, "onboarding-3")
         app.buttons["onboardingAgree"].tap()
+        let later = app.buttons["onboardingSkipDate"]
+        XCTAssertTrue(later.waitForExistence(timeout: 5))
+        snap(app, "onboarding-4")
+        later.tap()
 
-        app.tabBars.buttons.element(boundBy: 2).tap()
-        XCTAssertTrue(app.switches.firstMatch.waitForExistence(timeout: 5))
+        app.openTab(.settings)
+        let datesRow = app.buttons["settingsPregnancyDates"]
+        XCTAssertTrue(datesRow.waitForExistence(timeout: 5))
         snap(app, "settings")
-        let dueDateToggle = app.switches["settingsDueDateToggle"] // "Đặt ngày dự sinh"
-        XCTAssertTrue(dueDateToggle.waitForExistence(timeout: 5))
-        // SwiftUI reports one Switch accessibility element for the whole Form row, so its
-        // frame center falls on the row label rather than the actual UISwitch, which sits
-        // near the trailing edge. Tap a coordinate close to the real control instead.
-        dueDateToggle.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
-        let dueDateOn = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: dueDateToggle)
-        XCTAssertEqual(XCTWaiter().wait(for: [dueDateOn], timeout: 5), .completed)
-        snap(app, "settings-due-date")
 
-        app.tabBars.buttons.element(boundBy: 0).tap()
+        datesRow.tap()
+        let save = app.buttons["pregnancyDateSave"]
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        snap(app, "pregnancy-date-sheet")
+        app.segmentedControls.buttons.element(boundBy: 1).tap() // "Kỳ kinh cuối"
+        XCTAssertTrue(app.staticTexts["pregnancyEstimatedDue"].waitForExistence(timeout: 5))
+        snap(app, "pregnancy-date-sheet-lmp")
+        save.tap()
+        XCTAssertTrue(app.buttons["settingsPregnancyClear"].waitForExistence(timeout: 5))
+        snap(app, "settings-pregnancy-set")
+
+        app.buttons["settingsMedicalInfo"].tap()
+        let sources = app.descendants(matching: .any)["medicalSources"]
+        XCTAssertTrue(sources.waitForExistence(timeout: 5))
+        app.swipeUp()
+        snap(app, "medical-sources")
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+
+        app.openTab(.counter)
         snap(app, "counter-with-week")
     }
 }

@@ -15,11 +15,20 @@ AUTH=(-allowProvisioningUpdates
 xcodegen generate --quiet
 rm -rf build && mkdir -p build
 
+# TestFlight builds show pregnancy content still awaiting the obstetrician's
+# review (CONTENT_PREVIEW=1, set by testflight.yml). App Store builds must not set it.
+EXTRA_SETTINGS=()
+if [[ "${CONTENT_PREVIEW:-0}" == "1" ]]; then
+  EXTRA_SETTINGS+=('SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) CONTENT_PREVIEW' 'LUNA_CONTENT_PREVIEW=YES')
+  echo "==> CONTENT_PREVIEW enabled"
+fi
+
 xcodebuild -project KickCounter.xcodeproj -scheme KickCounter \
   -configuration Release -destination "generic/platform=iOS" \
   -archivePath build/KickCounter.xcarchive \
   DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" CODE_SIGN_STYLE=Automatic \
   CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+  ${EXTRA_SETTINGS[@]+"${EXTRA_SETTINGS[@]}"} \
   "${AUTH[@]}" archive
 
 cat > build/ExportOptions.plist <<EOF

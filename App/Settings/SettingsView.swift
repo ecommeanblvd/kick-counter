@@ -10,8 +10,13 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.reminderHour, store: AppGroup.defaults) private var reminderHour = SettingsDefault.reminderHour
     @AppStorage(SettingsKey.reminderMinute, store: AppGroup.defaults) private var reminderMinute = SettingsDefault.reminderMinute
     @AppStorage(SettingsKey.dueDate, store: AppGroup.defaults) private var dueDate: Double = 0
+    @AppStorage(SettingsKey.lmpDate, store: AppGroup.defaults) private var lmpDate: Double = 0
+    @AppStorage(SettingsKey.pregnancyDateSource, store: AppGroup.defaults)
+    private var pregnancyDateSource = PregnancyDateSource.dueDate.rawValue
 
     @State private var notificationsAuthorized = true
+    @State private var showingPregnancyDates = false
+    @State private var confirmingClearPregnancy = false
 
     var body: some View {
         NavigationStack {
@@ -25,15 +30,26 @@ struct SettingsView: View {
                 }
 
                 Section(L10n.settingsPregnancySection) {
-                    Toggle(L10n.settingsDueDateToggle, isOn: hasDueDate)
-                        .accessibilityIdentifier("settingsDueDateToggle")
+                    Button {
+                        showingPregnancyDates = true
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            LabeledContent(dueDate > 0 ? L10n.settingsDueDate : L10n.settingsPregnancySet, value: dueDateText)
+                            if let lmpText {
+                                Text(L10n.settingsPregnancyFromLMP(lmpText))
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .tint(.primary)
+                    .accessibilityIdentifier("settingsPregnancyDates")
+
                     if dueDate > 0 {
-                        DatePicker(
-                            L10n.settingsDueDate,
-                            selection: dueDateValue,
-                            in: Date.now...Date.now.addingTimeInterval(300 * 86_400),
-                            displayedComponents: .date
-                        )
+                        Button(L10n.settingsPregnancyClear, role: .destructive) {
+                            confirmingClearPregnancy = true
+                        }
+                        .accessibilityIdentifier("settingsPregnancyClear")
                     }
                 }
 
@@ -53,10 +69,20 @@ struct SettingsView: View {
 
                 Section(L10n.settingsAboutSection) {
                     NavigationLink(L10n.settingsMedicalInfo) { MedicalInfoView() }
+                        .accessibilityIdentifier("settingsMedicalInfo")
                     LabeledContent(L10n.settingsVersion, value: appVersion)
                 }
             }
             .navigationTitle(L10n.settingsTitle)
+            .sheet(isPresented: $showingPregnancyDates) { PregnancyDateSheet() }
+            .confirmationDialog(
+                L10n.settingsPregnancyClearConfirm,
+                isPresented: $confirmingClearPregnancy,
+                titleVisibility: .visible
+            ) {
+                Button(L10n.settingsPregnancyClear, role: .destructive) { PregnancyProfile.clear(AppGroup.defaults) }
+                Button(L10n.commonCancel, role: .cancel) {}
+            }
             .task { await refreshPermissions() }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await refreshPermissions() } }
@@ -65,6 +91,16 @@ struct SettingsView: View {
             .onChange(of: reminderHour) { Task { await applyReminder() } }
             .onChange(of: reminderMinute) { Task { await applyReminder() } }
         }
+    }
+
+    private var dueDateText: String {
+        guard dueDate > 0 else { return L10n.settingsPregnancyNotSet }
+        return Date(timeIntervalSince1970: dueDate).formatted(date: .long, time: .omitted)
+    }
+
+    private var lmpText: String? {
+        guard pregnancyDateSource == PregnancyDateSource.lmp.rawValue, lmpDate > 0 else { return nil }
+        return Date(timeIntervalSince1970: lmpDate).formatted(date: .long, time: .omitted)
     }
 
     private var reminderTime: Binding<Date> {
@@ -77,22 +113,6 @@ struct SettingsView: View {
                 reminderHour = components.hour ?? SettingsDefault.reminderHour
                 reminderMinute = components.minute ?? SettingsDefault.reminderMinute
             }
-        )
-    }
-
-    private var hasDueDate: Binding<Bool> {
-        Binding(
-            get: { dueDate > 0 },
-            set: { enabled in
-                dueDate = enabled ? Date.now.addingTimeInterval(90 * 86_400).timeIntervalSince1970 : 0
-            }
-        )
-    }
-
-    private var dueDateValue: Binding<Date> {
-        Binding(
-            get: { Date(timeIntervalSince1970: dueDate) },
-            set: { dueDate = $0.timeIntervalSince1970 }
         )
     }
 

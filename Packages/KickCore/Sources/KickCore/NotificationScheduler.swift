@@ -67,7 +67,7 @@ public final class NotificationScheduler {
         "overdue-\(sessionID.uuidString)"
     }
 
-    private let center: NotificationCenterClient
+    let center: NotificationCenterClient
 
     public init(center: NotificationCenterClient) {
         self.center = center
@@ -78,6 +78,12 @@ public final class NotificationScheduler {
         case .authorized, .provisional, .ephemeral: true
         default: false
         }
+    }
+
+    /// True only when the user has explicitly turned notifications off
+    /// (not when they have never been asked).
+    public func isDenied() async -> Bool {
+        await center.authorizationStatus() == .denied
     }
 
     /// Prompts only if the user has never been asked; otherwise reports the current status.
