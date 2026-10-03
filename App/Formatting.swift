@@ -20,9 +20,11 @@ enum Formatting {
     }
 
     /// A weight range in the unit `weight(grams: reference)` uses, unit written once:
-    /// "275–387 g", "758–1,068 g", "1–1.42 kg".
+    /// "275–387 g", "758–1,068 g", "1–1.42 kg". Word joiners around the dash and a
+    /// no-break space before the unit keep the range on one line when the text wraps.
     static func weightRange(_ low: Int, _ high: Int, unitOf reference: Int) -> String {
-        "\(weightRangeStart(low, unitOf: reference))–\(weightInUnit(high, unitOf: reference))"
+        let end = weightInUnit(high, unitOf: reference).replacingOccurrences(of: " ", with: "\u{00A0}")
+        return "\(weightRangeStart(low, unitOf: reference))\u{2060}–\u{2060}\(end)"
     }
 
     /// The bare number that starts a range, e.g. "275" or "1" (kg).
