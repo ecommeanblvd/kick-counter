@@ -378,3 +378,88 @@ func makeTestDefaults() -> UserDefaults {
     return defaults
 }
 
+
+/// In-memory CycleRepository with the same rules as CycleStore.
+@MainActor
+final class FakeCycleRepository: CycleRepository {
+    struct Failed: Error {}
+
+    private(set) var storedPeriods: [PeriodRecord] = []
+    private(set) var storedLogs: [CycleLogRecord] = []
+    var calendar = utcCalendar
+    var failNextRead = false
+    var failNextWrite = false
+
+    func seed(periods: [PeriodRecord] = [], logs: [CycleLogRecord] = []) {
+        storedPeriods += periods
+        storedLogs += logs
+    }
+
+    private func checkRead() throws {
+        if failNextRead {
+            failNextRead = false
+            throw Failed()
+        }
+    }
+
+    private func checkWrite() throws {
+        if failNextWrite {
+            failNextWrite = false
+            throw Failed()
+        }
+    }
+
+    private(set) var periodReads = 0
+
+    func periods() throws -> [PeriodRecord] {
+        try checkRead()
+        periodReads += 1
+        let merged = CycleRules.mergingDuplicates(storedPeriods, calendar: calendar)
+        storedPeriods = merged.periods
+        return merged.periods
+    }
+
+    func logs() throws -> [CycleLogRecord] {
+        try checkRead()
+        let merged = CycleRules.mergingDuplicates(storedLogs, calendar: calendar)
+        storedLogs = merged.logs
+        return merged.logs
+    }
+
+    func addPeriod(_ period: PeriodRecord, today: Date) throws {
+        try CycleRules.validate(period, existing: storedPeriods, today: today, calendar: calendar)
+        try checkWrite()
+        storedPeriods.append(CycleRules.normalized(period, calendar: calendar))
+    }
+
+    func updatePeriod(_ period: PeriodRecord, today: Date) throws {
+        guard let index = storedPeriods.firstIndex(where: { $0.id == period.id }) else {
+            throw CycleRepositoryError.notFound
+        }
+        try CycleRules.validate(period, existing: storedPeriods, today: today, calendar: calendar)
+        try checkWrite()
+        storedPeriods[index] = CycleRules.normalized(period, calendar: calendar)
+    }
+
+    func deletePeriod(id: UUID) throws {
+        try checkWrite()
+        storedPeriods.removeAll { $0.id == id }
+    }
+
+    func saveLog(_ log: CycleLogRecord, today: Date) throws {
+        let normalized = CycleRules.normalized(log, calendar: calendar)
+        try CycleRules.validate(normalized, today: today, calendar: calendar)
+        try checkWrite()
+        let existing = storedLogs.first { $0.day == normalized.day }
+        storedLogs.removeAll { $0.day == normalized.day }
+        guard !normalized.isEmpty else { return }
+        var saved = normalized
+        if let existing {
+            saved = CycleLogRecord(
+                id: existing.id, day: normalized.day, lh: normalized.lh,
+                bbtCelsius: normalized.bbtCelsius, mucus: normalized.mucus, note: normalized.note
+            )
+        }
+        storedLogs.append(saved)
+    }
+}
