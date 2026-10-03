@@ -23,4 +23,17 @@ for PLIST in "$APP/Info.plist" "$APP/PlugIns/KickCounterWidgets.appex/Info.plist
     echo "OK $PLIST: $VERSION ($BUILD)"
   fi
 done
+
+# A normal (non-TestFlight-content-preview) build must not show unreviewed
+# pregnancy content. See docs/release-checklist.md / final-fix-wave.md item 1.
+MAIN_PLIST="$APP/Info.plist"
+if [[ -f "$MAIN_PLIST" ]]; then
+  CONTENT_PREVIEW_FLAG="$("$PLIST_BUDDY" -c 'Print :LunaContentPreview' "$MAIN_PLIST" 2>/dev/null || echo '<missing>')"
+  if [[ "$CONTENT_PREVIEW_FLAG" != "NO" ]]; then
+    echo "Expected LunaContentPreview=NO in $MAIN_PLIST, got $CONTENT_PREVIEW_FLAG" >&2
+    STATUS=1
+  else
+    echo "OK $MAIN_PLIST: LunaContentPreview=$CONTENT_PREVIEW_FLAG"
+  fi
+fi
 exit $STATUS

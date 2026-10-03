@@ -19,7 +19,7 @@ rm -rf build && mkdir -p build
 # review (CONTENT_PREVIEW=1, set by testflight.yml). App Store builds must not set it.
 EXTRA_SETTINGS=()
 if [[ "${CONTENT_PREVIEW:-0}" == "1" ]]; then
-  EXTRA_SETTINGS+=('SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) CONTENT_PREVIEW')
+  EXTRA_SETTINGS+=('SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) CONTENT_PREVIEW' 'LUNA_CONTENT_PREVIEW=YES')
   echo "==> CONTENT_PREVIEW enabled"
 fi
 
