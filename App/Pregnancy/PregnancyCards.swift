@@ -53,7 +53,7 @@ struct BabySizeCard: View {
             HStack(spacing: 16) {
                 Text(week.size.emoji)
                     .font(.system(size: emojiSize))
-                    .accessibilityLabel(week.size.name(language))
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 8) {
                     Text(L10n.pregnancyBabySize(week.size.name(language)))
                         .font(.headline)
@@ -160,6 +160,9 @@ struct NextAppointmentCard: View {
                 Text(L10n.pregnancyAppointmentSuggested(milestone.fromWeek, milestone.toWeek))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                if !milestone.reviewed {
+                    PendingReviewBadge()
+                }
             } else {
                 Text(L10n.pregnancyAppointmentNone)
                     .font(.subheadline)
