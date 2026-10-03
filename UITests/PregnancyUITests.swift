@@ -75,4 +75,32 @@ final class PregnancyUITests: XCTestCase {
         XCTAssertTrue(card.waitForExistence(timeout: 5))
         XCTAssertTrue(card.label.contains("Glucose test"), card.label)
     }
+
+    @MainActor
+    func testClearingPregnancyDatesEmptiesPregnancyAndCounterTabs() {
+        let app = XCUIApplication.launchPinned(language: "en", dueDate: UITestDates.dueAtWeek24)
+        app.openTab(.counter)
+        XCTAssertTrue(app.staticTexts["Week 24 + 3 days"].waitForExistence(timeout: 10))
+
+        app.openTab(.settings)
+        let clearButton = app.buttons["settingsPregnancyClear"]
+        XCTAssertTrue(clearButton.waitForExistence(timeout: 10))
+        clearButton.tap()
+
+        // Confirm the destructive action in the confirmation dialog (its button comes first).
+        let sheetButton = app.sheets.buttons.element(boundBy: 0)
+        if sheetButton.waitForExistence(timeout: 2) {
+            sheetButton.tap()
+        } else {
+            // Newer iOS versions may show a popover: its button has the same label.
+            app.buttons.matching(NSPredicate(format: "label == %@", clearButton.label)).element(boundBy: 1).tap()
+        }
+
+        app.openTab(.pregnancy)
+        XCTAssertTrue(app.buttons["pregnancyAddDateButton"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.descendants(matching: .any)["weekProgressCard"].exists)
+
+        app.openTab(.counter)
+        XCTAssertFalse(app.staticTexts["Week 24 + 3 days"].exists)
+    }
 }
