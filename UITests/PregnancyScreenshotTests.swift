@@ -110,6 +110,9 @@ final class PregnancyScreenshotTests: XCTestCase {
                 XCTAssertTrue(markDone.waitForExistence(timeout: 5))
                 attachScreenshot(app, "appointment-editor-edit-vi")
                 markDone.tap()
+                // Wait for the sheet to fully dismiss before scrolling, so the
+                // early drags land on the list, not on the dismissing sheet.
+                XCTAssertTrue(add.waitForExistence(timeout: 5))
                 // The milestones still ahead push "Past" below the fold; List only
                 // renders cells near the viewport, so scroll before it can exist.
                 // Nudge up a little at a time (rather than a full swipeUp, which
@@ -125,6 +128,23 @@ final class PregnancyScreenshotTests: XCTestCase {
                 }
                 XCTAssertTrue(pastHeader.waitForExistence(timeout: 5))
                 attachScreenshot(app, "appointments-with-past-vi-light")
+
+                // At that minimal scroll, "Đã qua" and the done row are only just
+                // realized and still partly behind the tab bar. Keep scrolling,
+                // bounded, until the done row clears it, so the green "Đã khám"
+                // label is legible in its own screenshot.
+                let doneRow = app.buttons.matching(
+                    NSPredicate(format: "identifier == 'appointmentRow' AND label CONTAINS 'Đã khám'")
+                ).firstMatch
+                XCTAssertTrue(doneRow.waitForExistence(timeout: 5))
+                let tabBarTop = app.tabBars.firstMatch.frame.minY
+                var remainingClearingSwipes = 10
+                while doneRow.frame.maxY > tabBarTop, remainingClearingSwipes > 0 {
+                    app.swipeUp()
+                    remainingClearingSwipes -= 1
+                }
+                XCTAssertLessThan(doneRow.frame.maxY, tabBarTop)
+                attachScreenshot(app, "appointments-past-vi-light")
 
                 app.navigationBars.buttons.element(boundBy: 0).tap()
                 XCTAssertTrue(card.waitForExistence(timeout: 5))

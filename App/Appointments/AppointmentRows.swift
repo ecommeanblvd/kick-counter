@@ -59,6 +59,9 @@ struct MilestoneRow: View {
             }
             .buttonStyle(.borderless)
             .accessibilityIdentifier("addMilestoneButton")
+            // The icon-only label alone is the same for every milestone; include
+            // the milestone's own title so VoiceOver announces which one this is.
+            .accessibilityLabel("\(L10n.appointmentsMilestoneAdd), \(milestone.title.text(language))")
         }
     }
 }
