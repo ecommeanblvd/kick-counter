@@ -11,9 +11,15 @@ public enum ContentIssue: Equatable, Sendable {
     case blankText(String)
     case tooFewItems(week: Int, section: String, language: ContentLanguage, minimum: Int)
     case translationCountMismatch(week: Int, section: String)
+    /// A measurement is required in this week (weights 10–42, `crlMm` 7–13) but absent.
     case missingMeasurement(week: Int, field: String)
+    /// A measurement is present outside the weeks its source covers.
+    case unexpectedMeasurement(week: Int, field: String)
     case nonPositiveMeasurement(week: Int, field: String)
+    /// Weights fell from the previous week, or `crlMm` did not rise.
     case decreasingMeasurement(week: Int, field: String)
+    /// Not `weightP10G ≤ weightG ≤ weightP90G`.
+    case invalidWeightRange(week: Int)
     case invalidMilestoneRange(id: String)
     case duplicateMilestoneID(String)
 }
@@ -21,8 +27,12 @@ public enum ContentIssue: Equatable, Sendable {
 /// Structural rules for `pregnancy-content.json`, enforced by unit tests so a
 /// broken file never ships (the app itself only logs and hides content).
 public enum ContentValidator {
-    public static let supportedVersion = 1
-    public static let measurementsRequiredFromWeek = 8
+    /// Version 2: Hadlock `crlMm` / `weightG` / `weightP10G` / `weightP90G` replace `lengthCm`.
+    public static let supportedVersion = 2
+    /// Hadlock 1991 Table 1 starts at week 10; weeks 41–42 reuse week 40.
+    public static let weightWeeks = 10...42
+    /// Hadlock 1992 crown–rump length, within the CRL dating window (ACOG: up to 13 6/7 weeks).
+    public static let crlWeeks = 7...13
     static let minimumItems: [(section: String, minimum: Int)] = [
         ("baby", 2), ("mom", 2), ("tips", 2), ("warnings", 1),
     ]
@@ -78,25 +88,46 @@ public enum ContentValidator {
         return issues
     }
 
+    private struct MeasurementField: Sendable {
+        let name: String
+        let weeks: ClosedRange<Int>
+        /// `crlMm` must rise every week; weights may stay level (weeks 41–42 reuse week 40).
+        let strictlyIncreasing: Bool
+        let value: @Sendable (WeekContent) -> Double?
+    }
+
+    private static let measurementFields: [MeasurementField] = [
+        MeasurementField(name: "crlMm", weeks: crlWeeks, strictlyIncreasing: true) { $0.crlMm },
+        MeasurementField(name: "weightG", weeks: weightWeeks, strictlyIncreasing: false) { $0.weightG.map(Double.init) },
+        MeasurementField(name: "weightP10G", weeks: weightWeeks, strictlyIncreasing: false) { $0.weightP10G.map(Double.init) },
+        MeasurementField(name: "weightP90G", weeks: weightWeeks, strictlyIncreasing: false) { $0.weightP90G.map(Double.init) },
+    ]
+
     private static func measurementIssues(_ weeks: [WeekContent]) -> [ContentIssue] {
         var issues: [ContentIssue] = []
-        let fields: [(name: String, value: (WeekContent) -> Double?)] = [
-            ("lengthCm", { $0.lengthCm }), ("weightG", { $0.weightG }),
-        ]
-        for field in fields {
+        for field in measurementFields {
             var previous: Double?
             for week in weeks {
                 guard let value = field.value(week) else {
-                    if week.week >= measurementsRequiredFromWeek {
+                    if field.weeks.contains(week.week) {
                         issues.append(.missingMeasurement(week: week.week, field: field.name))
                     }
                     continue
                 }
+                if !field.weeks.contains(week.week) {
+                    issues.append(.unexpectedMeasurement(week: week.week, field: field.name))
+                }
                 if value <= 0 { issues.append(.nonPositiveMeasurement(week: week.week, field: field.name)) }
-                if let previous, value < previous {
+                if let previous, field.strictlyIncreasing ? value <= previous : value < previous {
                     issues.append(.decreasingMeasurement(week: week.week, field: field.name))
                 }
                 previous = value
+            }
+        }
+        for week in weeks {
+            if let p10 = week.weightP10G, let p50 = week.weightG, let p90 = week.weightP90G,
+               !(p10 <= p50 && p50 <= p90) {
+                issues.append(.invalidWeightRange(week: week.week))
             }
         }
         return issues

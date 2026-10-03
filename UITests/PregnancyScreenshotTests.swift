@@ -38,7 +38,30 @@ final class PregnancyScreenshotTests: XCTestCase {
         let progress = app.descendants(matching: .any)["weekProgressCard"]
         XCTAssertTrue(progress.waitForExistence(timeout: 10))
         XCTAssertTrue(progress.label.contains("Days past your due date: 7"), progress.label)
+        // Week 41 reuses week 40's Hadlock weight and says the standard ends at 40.
+        let babyCard = app.buttons["babySizeCard"]
+        XCTAssertTrue(babyCard.waitForExistence(timeout: 5))
+        XCTAssertTrue(babyCard.label.contains("Hadlock's standard ends at week 40"), babyCard.label)
         attachScreenshot(app, "pregnancy-home-pastdue-en")
+    }
+
+    /// Weeks 7–13 show the Hadlock crown–rump length in mm next to the weight range.
+    @MainActor
+    func testWeek12DetailScreens() {
+        for language in ["vi", "en"] {
+            let app = XCUIApplication.launchPinned(language: language, dueDate: UITestDates.dueAtWeek12)
+            let babyCard = app.buttons["babySizeCard"]
+            XCTAssertTrue(babyCard.waitForExistence(timeout: 10))
+            if language == "en" {
+                XCTAssertTrue(babyCard.label.contains("Crown–rump length"), babyCard.label)
+                XCTAssertTrue(babyCard.label.contains("About 53.5"), babyCard.label)
+                XCTAssertTrue(babyCard.label.contains("typically 48 to 68"), babyCard.label)
+            }
+            babyCard.tap()
+            XCTAssertTrue(app.descendants(matching: .any)["weekWarnings"].firstMatch.waitForExistence(timeout: 5))
+            attachScreenshot(app, "week-12-\(language)-light")
+            app.terminate()
+        }
     }
 
     @MainActor

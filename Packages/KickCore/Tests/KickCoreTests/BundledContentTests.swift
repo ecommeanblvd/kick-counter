@@ -18,12 +18,33 @@ struct BundledContentTests {
     ]
     static let careWordsEN = ["doctor", "midwife", "maternity", "hospital", "emergency"]
     static let careWordsVI = ["bác sĩ", "cơ sở y tế", "bệnh viện", "cấp cứu", "115"]
-    static let typicalMeasurements: [Int: (length: ClosedRange<Double>, weight: ClosedRange<Double>)] = [
-        12: (4.5...7, 10...25),
-        20: (15...27, 250...350),
-        24: (28...33, 500...700),
-        28: (35...39, 900...1200),
-        40: (48...54, 3100...3700),
+    /// Hadlock-anchored sanity ranges for the 50th-percentile weight (g).
+    static let typicalWeights: [Int: ClosedRange<Int>] = [
+        12: 48...68,
+        20: 300...360,
+        28: 1004...1416,
+        40: 3400...3800,
+    ]
+    /// Sanity ranges for crown–rump length (mm).
+    static let typicalCRL: [Int: ClosedRange<Double>] = [
+        8: 14...18,
+        12: 50...57,
+    ]
+    /// Hadlock, Harrist & Martinez-Poyer, Radiology 1991;181:129–133, Table 1:
+    /// week → (10th, 50th, 90th) estimated fetal weight in grams.
+    static let hadlock1991: [Int: (p10: Int, p50: Int, p90: Int)] = [
+        10: (29, 35, 41), 11: (37, 45, 53), 12: (48, 58, 68), 13: (61, 73, 85),
+        14: (77, 93, 109), 15: (97, 117, 137), 16: (121, 146, 171), 17: (150, 181, 212),
+        18: (185, 223, 261), 19: (227, 273, 319), 20: (275, 331, 387), 21: (331, 399, 467),
+        22: (398, 478, 559), 23: (471, 568, 665), 24: (556, 670, 784), 25: (652, 785, 918),
+        26: (758, 913, 1068), 27: (876, 1055, 1234), 28: (1004, 1210, 1416), 29: (1145, 1379, 1613),
+        30: (1294, 1559, 1824), 31: (1453, 1751, 2049), 32: (1621, 1953, 2285), 33: (1794, 2162, 2530),
+        34: (1973, 2377, 2781), 35: (2154, 2595, 3036), 36: (2335, 2813, 3291), 37: (2513, 3028, 3543),
+        38: (2686, 3236, 3786), 39: (2851, 3435, 4019), 40: (3004, 3619, 4234),
+    ]
+    /// Crown–rump length (mm) at week+0 from the Hadlock 1992 equation (research doc §2.2).
+    static let hadlock1992CRL: [Int: Double] = [
+        7: 9.6, 8: 16.0, 9: 23.1, 10: 31.3, 11: 41.2, 12: 53.5, 13: 67.2,
     ]
 
     let library: WeeklyContentLibrary
@@ -118,10 +139,100 @@ struct BundledContentTests {
     }
 
     @Test func measurementsAreInTypicalRanges() {
-        for (week, expected) in Self.typicalMeasurements {
+        for (week, expected) in Self.typicalWeights {
+            #expect(library.content(forWeek: week)?.weightG.map(expected.contains) == true, "week \(week) weight")
+        }
+        for (week, expected) in Self.typicalCRL {
+            #expect(library.content(forWeek: week)?.crlMm.map(expected.contains) == true, "week \(week) CRL")
+        }
+    }
+
+    @Test func keyWeightsEqualHadlockTable1() {
+        #expect(library.content(forWeek: 20)?.weightG == 331)
+        #expect(library.content(forWeek: 24)?.weightG == 670)
+        #expect(library.content(forWeek: 28)?.weightG == 1210)
+        #expect(library.content(forWeek: 40)?.weightG == 3619)
+        #expect(library.content(forWeek: 12)?.crlMm == 53.5)
+    }
+
+    @Test func everyWeightMatchesHadlock1991() {
+        for (week, expected) in Self.hadlock1991 {
             let content = library.content(forWeek: week)
-            #expect(content?.lengthCm.map(expected.length.contains) == true, "week \(week) length")
-            #expect(content?.weightG.map(expected.weight.contains) == true, "week \(week) weight")
+            #expect(content?.weightP10G == expected.p10, "week \(week) 10th")
+            #expect(content?.weightG == expected.p50, "week \(week) 50th")
+            #expect(content?.weightP90G == expected.p90, "week \(week) 90th")
+        }
+    }
+
+    @Test func weeks41And42ReuseWeek40() throws {
+        let week40 = try #require(library.content(forWeek: 40))
+        for number in [41, 42] {
+            let week = try #require(library.content(forWeek: number))
+            #expect(week.weightG == week40.weightG, "week \(number)")
+            #expect(week.weightP10G == week40.weightP10G, "week \(number)")
+            #expect(week.weightP90G == week40.weightP90G, "week \(number)")
+            #expect(week.weightBeyondStandard, "week \(number)")
+        }
+    }
+
+    @Test func crownRumpLengthsMatchHadlock1992() {
+        for week in library.document.weeks {
+            #expect(week.crlMm == Self.hadlock1992CRL[week.week], "week \(week.week)")
+        }
+    }
+
+    @Test func noWeightBeforeWeek10() {
+        for week in library.document.weeks where week.week < 10 {
+            #expect(week.weightG == nil && week.weightP10G == nil && week.weightP90G == nil, "week \(week.week)")
+        }
+    }
+
+    @Test func sourcesCiteHadlock() {
+        let joined = library.sources.joined(separator: " | ")
+        #expect(joined.contains("Hadlock FP, Harrist RB, Martinez-Poyer J"))
+        #expect(joined.contains("Radiology. 1991;181(1):129–133"))
+        #expect(joined.contains("Hadlock FP, Shah YP, Kanon DJ, Lindsey JV"))
+        #expect(joined.contains("Radiology. 1992;182(2):501–505"))
+    }
+
+    @Test func sourceJSONHasNoLegacyLengthKey() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/KickCore/Resources/\(WeeklyContentLibrary.resourceName).json")
+        let text = try String(contentsOf: url, encoding: .utf8)
+        #expect(!text.contains("\"lengthCm\""))
+    }
+
+    /// The CRL values are calculated from Hadlock 1992's equation, not printed in the paper.
+    @Test func crlSourceSaysValuesAreCalculated() throws {
+        let source = try #require(library.sources.first { $0.contains("Hadlock FP, Shah YP") })
+        #expect(source.contains("calculated from this paper's regression equation"), "\(source)")
+    }
+
+    /// Every size item must be depicted by its own emoji; items without an
+    /// accurate emoji (pumpkin, pomelo, lime …) are not used.
+    @Test func sizeEmojiDepictsTheItem() {
+        let expectedEmoji: [(keyword: String, emoji: Set<String>)] = [
+            ("watermelon", ["🍉"]), ("cantaloupe", ["🍈"]), ("honeydew", ["🍈"]),
+            ("pineapple", ["🍍"]), ("coconut", ["🥥"]), ("banana", ["🍌"]),
+            ("cabbage", ["🥬"]), ("lettuce", ["🥬"]), ("lemon", ["🍋"]),
+            ("garlic", ["🧄"]), ("ginger", ["🫚"]),
+        ]
+        for week in library.document.weeks {
+            let name = week.size.en
+            for unsupported in ["pumpkin", "pomelo", "lime"] {
+                #expect(!name.contains(unsupported), "week \(week.week): \(name)")
+            }
+            for rule in expectedEmoji where name.contains(rule.keyword) {
+                #expect(rule.emoji.contains(week.size.emoji), "week \(week.week): \(name) \(week.size.emoji)")
+            }
+        }
+    }
+
+    /// 🎃 is a carved jack-o'-lantern; not fitting for medical content.
+    @Test func noJackOLanternEmoji() {
+        for week in library.document.weeks {
+            #expect(!week.size.emoji.contains("🎃"), "week \(week.week)")
         }
     }
 

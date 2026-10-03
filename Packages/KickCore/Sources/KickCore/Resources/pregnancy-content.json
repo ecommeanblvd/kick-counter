@@ -1,10 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "sources": [
     "WHO recommendations on antenatal care for a positive pregnancy experience (World Health Organization, 2016)",
     "ACOG patient education: Your Pregnancy and Childbirth: Month to Month, and pregnancy FAQs (American College of Obstetricians and Gynecologists)",
     "NHS: Your pregnancy and baby guide (National Health Service, UK)",
-    "Bộ Y tế Việt Nam: Hướng dẫn quốc gia về các dịch vụ chăm sóc sức khỏe sinh sản"
+    "Bộ Y tế Việt Nam: Hướng dẫn quốc gia về các dịch vụ chăm sóc sức khỏe sinh sản",
+    "Hadlock FP, Harrist RB, Martinez-Poyer J. In utero analysis of fetal growth: a sonographic weight standard. Radiology. 1991;181(1):129–133. doi:10.1148/radiology.181.1.1887021 — estimated fetal weight, 10th/50th/90th percentiles, weeks 10–40.",
+    "Hadlock FP, Shah YP, Kanon DJ, Lindsey JV. Fetal crown-rump length: reevaluation of relation to menstrual age (5–18 weeks) with high-resolution real-time US. Radiology. 1992;182(2):501–505. doi:10.1148/radiology.182.2.1732970 — crown–rump length at weeks 7–13, calculated from this paper's regression equation."
   ],
   "weeks": [
     {
@@ -178,6 +180,7 @@
         "en": "a blueberry",
         "vi": "một quả việt quất"
       },
+      "crlMm": 9.6,
       "baby": {
         "en": [
           "The brain is growing quickly, and the head looks large for the body.",
@@ -231,8 +234,7 @@
         "en": "a cherry",
         "vi": "một quả anh đào"
       },
-      "lengthCm": 1.6,
-      "weightG": 1,
+      "crlMm": 16.0,
       "baby": {
         "en": [
           "Fingers and toes are beginning to form, still joined by webbing.",
@@ -288,8 +290,7 @@
         "en": "a grape",
         "vi": "một quả nho"
       },
-      "lengthCm": 2.3,
-      "weightG": 2,
+      "crlMm": 23.1,
       "baby": {
         "en": [
           "All the main organs have begun to form.",
@@ -337,12 +338,14 @@
       "week": 10,
       "reviewed": false,
       "size": {
-        "emoji": "🌰",
-        "en": "a chestnut",
-        "vi": "một hạt dẻ"
+        "emoji": "🫚",
+        "en": "a knob of ginger",
+        "vi": "một củ gừng"
       },
-      "lengthCm": 3.1,
-      "weightG": 4,
+      "crlMm": 31.3,
+      "weightG": 35,
+      "weightP10G": 29,
+      "weightP90G": 41,
       "baby": {
         "en": [
           "Your baby is now called a fetus; the major organs are in place.",
@@ -392,12 +395,14 @@
       "week": 11,
       "reviewed": false,
       "size": {
-        "emoji": "🍓",
-        "en": "a strawberry",
-        "vi": "một quả dâu tây"
+        "emoji": "🧄",
+        "en": "a bulb of garlic",
+        "vi": "một củ tỏi"
       },
-      "lengthCm": 4.1,
-      "weightG": 7,
+      "crlMm": 41.2,
+      "weightG": 45,
+      "weightP10G": 37,
+      "weightP90G": 53,
       "baby": {
         "en": [
           "Bones are starting to harden, and the head is about half of the body length.",
@@ -451,8 +456,10 @@
         "en": "a kiwi",
         "vi": "một quả kiwi"
       },
-      "lengthCm": 5.4,
-      "weightG": 14,
+      "crlMm": 53.5,
+      "weightG": 58,
+      "weightP10G": 48,
+      "weightP90G": 68,
       "baby": {
         "en": [
           "Reflexes are developing: your baby can open and close the fingers.",
@@ -504,8 +511,10 @@
         "en": "a lemon",
         "vi": "một quả chanh vàng"
       },
-      "lengthCm": 7.4,
-      "weightG": 23,
+      "crlMm": 67.2,
+      "weightG": 73,
+      "weightP10G": 61,
+      "weightP90G": 85,
       "baby": {
         "en": [
           "Vocal cords are forming, and the intestines settle inside the belly.",
@@ -557,8 +566,9 @@
         "en": "a peach",
         "vi": "một quả đào"
       },
-      "lengthCm": 8.7,
-      "weightG": 43,
+      "weightG": 93,
+      "weightP10G": 77,
+      "weightP90G": 109,
       "baby": {
         "en": [
           "Your baby can squint, frown and make other facial expressions.",
@@ -608,8 +618,9 @@
         "en": "an apple",
         "vi": "một quả táo"
       },
-      "lengthCm": 10.1,
-      "weightG": 70,
+      "weightG": 117,
+      "weightP10G": 97,
+      "weightP90G": 137,
       "baby": {
         "en": [
           "The skeleton keeps hardening, and the bones show up on a scan.",
@@ -661,8 +672,9 @@
         "en": "an avocado",
         "vi": "một quả bơ"
       },
-      "lengthCm": 11.6,
-      "weightG": 100,
+      "weightG": 146,
+      "weightP10G": 121,
+      "weightP90G": 171,
       "baby": {
         "en": [
           "The eyes can move slowly behind the closed eyelids.",
@@ -714,8 +726,9 @@
         "en": "a pear",
         "vi": "một quả lê"
       },
-      "lengthCm": 13.0,
-      "weightG": 140,
+      "weightG": 181,
+      "weightP10G": 150,
+      "weightP90G": 212,
       "baby": {
         "en": [
           "Fat is starting to form under the skin.",
@@ -767,8 +780,9 @@
         "en": "a bell pepper",
         "vi": "một quả ớt chuông"
       },
-      "lengthCm": 14.2,
-      "weightG": 190,
+      "weightG": 223,
+      "weightP10G": 185,
+      "weightP90G": 261,
       "baby": {
         "en": [
           "The ears are in their final position, and your baby may start to hear sounds.",
@@ -820,8 +834,9 @@
         "en": "a mango",
         "vi": "một quả xoài"
       },
-      "lengthCm": 15.3,
-      "weightG": 240,
+      "weightG": 273,
+      "weightP10G": 227,
+      "weightP90G": 319,
       "baby": {
         "en": [
           "A creamy coating called vernix forms to protect the skin.",
@@ -873,8 +888,9 @@
         "en": "a banana",
         "vi": "một quả chuối"
       },
-      "lengthCm": 25.6,
-      "weightG": 300,
+      "weightG": 331,
+      "weightP10G": 275,
+      "weightP90G": 387,
       "baby": {
         "en": [
           "You are halfway there; your baby is now measured from head to heel.",
@@ -930,8 +946,9 @@
         "en": "a carrot",
         "vi": "một củ cà rốt"
       },
-      "lengthCm": 26.7,
-      "weightG": 360,
+      "weightG": 399,
+      "weightP10G": 331,
+      "weightP90G": 467,
       "baby": {
         "en": [
           "Movements are getting stronger and more frequent.",
@@ -989,8 +1006,9 @@
         "en": "a cucumber",
         "vi": "một quả dưa chuột"
       },
-      "lengthCm": 27.8,
-      "weightG": 430,
+      "weightG": 478,
+      "weightP10G": 398,
+      "weightP90G": 559,
       "baby": {
         "en": [
           "Eyebrows and eyelashes are growing.",
@@ -1046,8 +1064,9 @@
         "en": "a large sweet potato",
         "vi": "một củ khoai lang to"
       },
-      "lengthCm": 28.9,
-      "weightG": 501,
+      "weightG": 568,
+      "weightP10G": 471,
+      "weightP90G": 665,
       "baby": {
         "en": [
           "Your baby can hear loud sounds from outside the womb.",
@@ -1103,8 +1122,9 @@
         "en": "an ear of corn",
         "vi": "một bắp ngô"
       },
-      "lengthCm": 30.0,
-      "weightG": 600,
+      "weightG": 670,
+      "weightP10G": 556,
+      "weightP90G": 784,
       "baby": {
         "en": [
           "The lungs begin to make a substance that will later help them work.",
@@ -1164,8 +1184,9 @@
         "en": "a head of broccoli",
         "vi": "một cây súp lơ xanh"
       },
-      "lengthCm": 34.6,
-      "weightG": 660,
+      "weightG": 785,
+      "weightP10G": 652,
+      "weightP90G": 918,
       "baby": {
         "en": [
           "Your baby may respond to your voice with movement.",
@@ -1223,8 +1244,9 @@
         "en": "a head of lettuce",
         "vi": "một cây xà lách"
       },
-      "lengthCm": 35.6,
-      "weightG": 760,
+      "weightG": 913,
+      "weightP10G": 758,
+      "weightP90G": 1068,
       "baby": {
         "en": [
           "The eyes are beginning to open.",
@@ -1282,8 +1304,9 @@
         "en": "a head of napa cabbage",
         "vi": "một cây cải thảo"
       },
-      "lengthCm": 36.6,
-      "weightG": 875,
+      "weightG": 1055,
+      "weightP10G": 876,
+      "weightP90G": 1234,
       "baby": {
         "en": [
           "The brain is very active, and your baby has clear sleep and wake cycles.",
@@ -1337,12 +1360,13 @@
       "week": 28,
       "reviewed": false,
       "size": {
-        "emoji": "🍆",
-        "en": "an eggplant",
-        "vi": "một quả cà tím"
+        "emoji": "🍍",
+        "en": "a small pineapple",
+        "vi": "một quả dứa nhỏ"
       },
-      "lengthCm": 37.6,
-      "weightG": 1005,
+      "weightG": 1210,
+      "weightP10G": 1004,
+      "weightP90G": 1416,
       "baby": {
         "en": [
           "Your baby can open and close the eyes and blink.",
@@ -1404,8 +1428,9 @@
         "en": "a coconut",
         "vi": "một quả dừa"
       },
-      "lengthCm": 38.6,
-      "weightG": 1153,
+      "weightG": 1379,
+      "weightP10G": 1145,
+      "weightP90G": 1613,
       "baby": {
         "en": [
           "Muscles and lungs keep maturing.",
@@ -1465,8 +1490,9 @@
         "en": "a head of cabbage",
         "vi": "một bắp cải"
       },
-      "lengthCm": 39.9,
-      "weightG": 1319,
+      "weightG": 1559,
+      "weightP10G": 1294,
+      "weightP90G": 1824,
       "baby": {
         "en": [
           "Bone marrow is now making red blood cells.",
@@ -1526,8 +1552,9 @@
         "en": "a cantaloupe",
         "vi": "một quả dưa lưới"
       },
-      "lengthCm": 41.1,
-      "weightG": 1502,
+      "weightG": 1751,
+      "weightP10G": 1453,
+      "weightP90G": 2049,
       "baby": {
         "en": [
           "All five senses are working.",
@@ -1587,8 +1614,9 @@
         "en": "a bunch of bananas",
         "vi": "một nải chuối"
       },
-      "lengthCm": 42.4,
-      "weightG": 1702,
+      "weightG": 1953,
+      "weightP10G": 1621,
+      "weightP90G": 2285,
       "baby": {
         "en": [
           "Your baby practises breathing movements with amniotic fluid.",
@@ -1648,8 +1676,9 @@
         "en": "a pineapple",
         "vi": "một quả dứa"
       },
-      "lengthCm": 43.7,
-      "weightG": 1918,
+      "weightG": 2162,
+      "weightP10G": 1794,
+      "weightP90G": 2530,
       "baby": {
         "en": [
           "Bones are hardening, but the skull stays soft to help with birth.",
@@ -1709,8 +1738,9 @@
         "en": "a large cantaloupe",
         "vi": "một quả dưa lưới to"
       },
-      "lengthCm": 45.0,
-      "weightG": 2146,
+      "weightG": 2377,
+      "weightP10G": 1973,
+      "weightP90G": 2781,
       "baby": {
         "en": [
           "The nervous system and lungs keep maturing.",
@@ -1766,12 +1796,13 @@
       "week": 35,
       "reviewed": false,
       "size": {
-        "emoji": "🎃",
-        "en": "a small pumpkin",
-        "vi": "một quả bí đỏ nhỏ"
+        "emoji": "🍈",
+        "en": "a honeydew melon",
+        "vi": "một quả dưa lê"
       },
-      "lengthCm": 46.2,
-      "weightG": 2383,
+      "weightG": 2595,
+      "weightP10G": 2154,
+      "weightP90G": 3036,
       "baby": {
         "en": [
           "The kidneys are fully developed.",
@@ -1831,8 +1862,9 @@
         "en": "a pair of coconuts",
         "vi": "hai quả dừa"
       },
-      "lengthCm": 47.4,
-      "weightG": 2622,
+      "weightG": 2813,
+      "weightP10G": 2335,
+      "weightP90G": 3291,
       "baby": {
         "en": [
           "Your baby may drop lower into your pelvis, especially in a first pregnancy.",
@@ -1892,8 +1924,9 @@
         "en": "a pair of pineapples",
         "vi": "hai quả dứa"
       },
-      "lengthCm": 48.6,
-      "weightG": 2859,
+      "weightG": 3028,
+      "weightP10G": 2513,
+      "weightP90G": 3543,
       "baby": {
         "en": [
           "Your baby is now considered early term.",
@@ -1949,12 +1982,13 @@
       "week": 38,
       "reviewed": false,
       "size": {
-        "emoji": "🎃",
-        "en": "a pumpkin",
-        "vi": "một quả bí đỏ"
+        "emoji": "🍉",
+        "en": "a small watermelon",
+        "vi": "một quả dưa hấu nhỏ"
       },
-      "lengthCm": 49.8,
-      "weightG": 3083,
+      "weightG": 3236,
+      "weightP10G": 2686,
+      "weightP90G": 3786,
       "baby": {
         "en": [
           "Your baby's grasp is firm.",
@@ -2014,8 +2048,9 @@
         "en": "a large head of cabbage",
         "vi": "một bắp cải lớn"
       },
-      "lengthCm": 50.7,
-      "weightG": 3288,
+      "weightG": 3435,
+      "weightP10G": 2851,
+      "weightP90G": 4019,
       "baby": {
         "en": [
           "Your baby is full term.",
@@ -2072,11 +2107,12 @@
       "reviewed": false,
       "size": {
         "emoji": "🍉",
-        "en": "a small watermelon",
-        "vi": "một quả dưa hấu nhỏ"
+        "en": "a medium watermelon",
+        "vi": "một quả dưa hấu vừa"
       },
-      "lengthCm": 51.2,
-      "weightG": 3462,
+      "weightG": 3619,
+      "weightP10G": 3004,
+      "weightP90G": 4234,
       "baby": {
         "en": [
           "Your baby is ready to be born.",
@@ -2132,12 +2168,13 @@
       "week": 41,
       "reviewed": false,
       "size": {
-        "emoji": "🎃",
-        "en": "a large pumpkin",
-        "vi": "một quả bí đỏ lớn"
+        "emoji": "🍌",
+        "en": "two bunches of bananas",
+        "vi": "hai nải chuối"
       },
-      "lengthCm": 51.7,
-      "weightG": 3597,
+      "weightG": 3619,
+      "weightP10G": 3004,
+      "weightP90G": 4234,
       "baby": {
         "en": [
           "Your baby keeps growing, and the skin may be a little dry at birth.",
@@ -2194,11 +2231,12 @@
       "reviewed": false,
       "size": {
         "emoji": "🍉",
-        "en": "a watermelon",
-        "vi": "một quả dưa hấu"
+        "en": "a large watermelon",
+        "vi": "một quả dưa hấu to"
       },
-      "lengthCm": 51.7,
-      "weightG": 3685,
+      "weightG": 3619,
+      "weightP10G": 3004,
+      "weightP90G": 4234,
       "baby": {
         "en": [
           "Your baby is past term, and the care team will watch closely.",

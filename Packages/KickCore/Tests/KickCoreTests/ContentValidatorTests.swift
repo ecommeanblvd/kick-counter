@@ -4,7 +4,7 @@ import Testing
 
 struct ContentValidatorTests {
     private func issues(_ content: PregnancyContent) -> [ContentIssue] {
-        ContentValidator.validate(content, requiredWeeks: 7...9)
+        ContentValidator.validate(content, requiredWeeks: 7...11)
     }
 
     @Test func fixtureIsValid() throws {
@@ -52,21 +52,63 @@ struct ContentValidatorTests {
         #expect(found.contains(.blankText("week 8 size.vi")))
     }
 
-    @Test func measurementsAreRequiredFromWeek8() throws {
+    @Test func crownRumpLengthIsRequiredInWeeks7To13Only() throws {
         var content = try fixtureContent()
-        content.weeks[1].lengthCm = nil
+        content.weeks[1].crlMm = nil
+        var week14 = content.weeks[4]
+        week14.week = 14
+        week14.crlMm = 80.1
+        content.weeks.append(week14)
         let found = issues(content)
-        #expect(found.contains(.missingMeasurement(week: 8, field: "lengthCm")))
-        #expect(!found.contains(.missingMeasurement(week: 7, field: "lengthCm")))
+        #expect(found.contains(.missingMeasurement(week: 8, field: "crlMm")))
+        #expect(found.contains(.unexpectedMeasurement(week: 14, field: "crlMm")))
+        #expect(!found.contains(.missingMeasurement(week: 7, field: "crlMm")))
+    }
+
+    @Test func weightIsRequiredFromWeek10AndAbsentBefore() throws {
+        var content = try fixtureContent()
+        content.weeks[3].weightP90G = nil
+        content.weeks[4].weightG = nil
+        content.weeks[2].weightP10G = 20
+        let found = issues(content)
+        #expect(found.contains(.missingMeasurement(week: 10, field: "weightP90G")))
+        #expect(found.contains(.missingMeasurement(week: 11, field: "weightG")))
+        #expect(found.contains(.unexpectedMeasurement(week: 9, field: "weightP10G")))
+        #expect(!found.contains(.missingMeasurement(week: 9, field: "weightG")))
+    }
+
+    @Test func weightPercentilesMustBeOrdered() throws {
+        var content = try fixtureContent()
+        content.weeks[3].weightP10G = 36 // above the 50th (35)
+        content.weeks[4].weightP90G = 44 // below the 50th (45)
+        let found = issues(content)
+        #expect(found.contains(.invalidWeightRange(week: 10)))
+        #expect(found.contains(.invalidWeightRange(week: 11)))
     }
 
     @Test func decreasingOrNonPositiveMeasurementsAreReported() throws {
         var content = try fixtureContent()
-        content.weeks[2].weightG = 0.5
-        content.weeks[1].lengthCm = 0
+        content.weeks[4].weightG = 34
+        content.weeks[4].weightP10G = 28
+        content.weeks[1].crlMm = 0
         let found = issues(content)
-        #expect(found.contains(.decreasingMeasurement(week: 9, field: "weightG")))
-        #expect(found.contains(.nonPositiveMeasurement(week: 8, field: "lengthCm")))
+        #expect(found.contains(.decreasingMeasurement(week: 11, field: "weightG")))
+        #expect(found.contains(.decreasingMeasurement(week: 11, field: "weightP10G")))
+        #expect(found.contains(.nonPositiveMeasurement(week: 8, field: "crlMm")))
+    }
+
+    @Test func crownRumpLengthMustStrictlyIncrease() throws {
+        var content = try fixtureContent()
+        content.weeks[2].crlMm = 16.0 // same as week 8
+        #expect(issues(content).contains(.decreasingMeasurement(week: 9, field: "crlMm")))
+    }
+
+    @Test func equalWeightsInConsecutiveWeeksAreAllowed() throws {
+        var content = try fixtureContent()
+        content.weeks[4].weightG = 35
+        content.weeks[4].weightP10G = 29
+        content.weeks[4].weightP90G = 41
+        #expect(issues(content).isEmpty)
     }
 
     @Test func invalidMilestoneRangesAreReported() throws {
@@ -93,10 +135,10 @@ struct ContentValidatorTests {
 
     @Test func versionAndSourcesAreChecked() throws {
         var content = try fixtureContent()
-        content.version = 2
+        content.version = 1 // the old lengthCm/weightG schema
         content.sources = []
         let found = issues(content)
-        #expect(found.contains(.unsupportedVersion(2)))
+        #expect(found.contains(.unsupportedVersion(1)))
         #expect(found.contains(.noSources))
     }
 }
