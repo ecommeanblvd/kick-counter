@@ -28,19 +28,6 @@ struct AppointmentsView: View {
         return ahead.filter { !added.contains($0.id) }
     }
 
-    /// A row identity scoped to its section, so List's diffing never has to
-    /// reconcile the same `AppointmentRecord.id` "moving" between the
-    /// `upcoming` and `past` `ForEach`s in one update (e.g. after marking an
-    /// appointment done) — which otherwise drops the row instead of moving it.
-    private struct SectionedAppointment: Identifiable {
-        let id: String
-        let record: AppointmentRecord
-    }
-
-    private func sectioned(_ records: [AppointmentRecord], section: String) -> [SectionedAppointment] {
-        records.map { SectionedAppointment(id: "\(section)-\($0.id)", record: $0) }
-    }
-
     var body: some View {
         List {
             if appointments.notificationsDenied {
@@ -62,8 +49,8 @@ struct AppointmentsView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                ForEach(sectioned(appointments.upcoming, section: "upcoming")) { item in
-                    row(for: item.record)
+                ForEach(appointments.upcoming) { record in
+                    row(for: record)
                 }
             } header: {
                 Text(L10n.appointmentsUpcoming)
@@ -89,8 +76,8 @@ struct AppointmentsView: View {
 
             if !appointments.past.isEmpty {
                 Section {
-                    ForEach(sectioned(appointments.past, section: "past")) { item in
-                        row(for: item.record)
+                    ForEach(appointments.past) { record in
+                        row(for: record)
                     }
                 } header: {
                     Text(L10n.appointmentsPast)

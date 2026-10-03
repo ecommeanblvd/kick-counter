@@ -110,6 +110,9 @@ final class PregnancyScreenshotTests: XCTestCase {
                 XCTAssertTrue(markDone.waitForExistence(timeout: 5))
                 attachScreenshot(app, "appointment-editor-edit-vi")
                 markDone.tap()
+                // The milestones still ahead push "Past" below the fold; List only
+                // renders cells near the viewport, so scroll before it can exist.
+                app.swipeUp()
                 XCTAssertTrue(app.staticTexts["pastHeader"].waitForExistence(timeout: 5))
                 attachScreenshot(app, "appointments-with-past-vi-light")
 
