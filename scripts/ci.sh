@@ -18,6 +18,10 @@ xcodegen generate --quiet
 DEVICE_ID="$(xcrun simctl list devices available | grep -m1 -E '^[[:space:]]+iPhone' | grep -oE '[0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12}')"
 [[ -n "$DEVICE_ID" ]] || { echo "No available iPhone simulator" >&2; exit 1; }
 
+echo "==> Booting simulator $DEVICE_ID"
+xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
+xcrun simctl bootstatus "$DEVICE_ID" -b
+
 XCODE_ACTION="test"
 # A build number other than project.yml's "1", so a hard-coded CFBundleVersion is caught.
 CI_BUILD_NUMBER="${GITHUB_RUN_NUMBER:-4242}"
