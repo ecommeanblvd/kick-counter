@@ -88,6 +88,7 @@ enum AppTab: Int {
 /// Tab order in RootView in trying-to-conceive mode.
 enum CycleModeTab: Int {
     case cycle = 0
+    case calendar
     case settings
 }
 

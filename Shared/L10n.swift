@@ -257,4 +257,25 @@ enum L10n {
         }
     }
     static var dayLogNote: String { t("dayLog.note") }
+
+    static var tabCalendar: String { t("tab.calendar") }
+
+    static var calendarTitle: String { t("calendar.title") }
+    static var calendarPrevious: String { t("calendar.previous") }
+    static var calendarNext: String { t("calendar.next") }
+    static var calendarEmptyHint: String { t("calendar.emptyHint") }
+    static var calendarLegendPeriod: String { t("calendar.legend.period") }
+    static var calendarLegendPredicted: String { t("calendar.legend.predicted") }
+    static var calendarLegendFertile: String { t("calendar.legend.fertile") }
+    static var calendarLegendPeak: String { t("calendar.legend.peak") }
+    static var calendarLegendLogged: String { t("calendar.legend.logged") }
+    static var calendarA11yToday: String { t("calendar.a11y.today") }
+    static var calendarA11yPeriod: String { t("calendar.a11y.period") }
+    static var calendarA11yPredicted: String { t("calendar.a11y.predicted") }
+    static var calendarA11yFertile: String { t("calendar.a11y.fertile") }
+    static var calendarA11yPeak: String { t("calendar.a11y.peak") }
+    static var calendarA11yLHPositive: String { t("calendar.a11y.lhPositive") }
+    static var calendarA11yLHNegative: String { t("calendar.a11y.lhNegative") }
+    static func calendarA11yTemperature(_ value: String) -> String { String(format: t("calendar.a11y.temperature"), value) }
+    static var calendarA11yNote: String { t("calendar.a11y.note") }
 }

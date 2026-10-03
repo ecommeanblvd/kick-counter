@@ -7,6 +7,7 @@ enum AppTab: Hashable {
     case history
     case settings
     case cycle
+    case calendar
 }
 
 struct RootView: View {
@@ -68,12 +69,15 @@ struct RootView: View {
         }
     }
 
-    /// Trying-to-conceive mode: Cycle · Settings (Task 9 adds Calendar).
+    /// Trying-to-conceive mode: Cycle · Calendar · Settings.
     private var cycleTabs: some View {
         TabView(selection: $selectedTab) {
             CycleHomeView()
                 .tabItem { Label(L10n.tabCycle, systemImage: "drop.circle.fill") }
                 .tag(AppTab.cycle)
+            CycleCalendarView()
+                .tabItem { Label(L10n.tabCalendar, systemImage: "calendar") }
+                .tag(AppTab.calendar)
             SettingsView()
                 .tabItem { Label(L10n.tabSettings, systemImage: "gearshape.fill") }
                 .tag(AppTab.settings)

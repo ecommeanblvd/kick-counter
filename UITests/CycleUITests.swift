@@ -100,4 +100,40 @@ final class CycleUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["dayLogBBTError"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["dayLogSave"].exists) // the sheet stays open
     }
+
+    /// Spec §5/§7: the Calendar tab colours days, reads them out for VoiceOver,
+    /// changes month and opens the day log.
+    @MainActor
+    func testCalendarDaysChangeMonthAndOpenTheDayLog() {
+        let app = XCUIApplication.launchPinned(language: "en", seedCycles: "fertile")
+        app.openCycleTab(.calendar)
+        let title = app.staticTexts["calendarMonthTitle"]
+        XCTAssertTrue(title.waitForExistence(timeout: 10))
+        XCTAssertEqual(title.label, "October 2026")
+
+        func day(_ prefix: String) -> XCUIElement {
+            app.buttons.matching(NSPredicate(format: "identifier == 'calendarDay' AND label BEGINSWITH %@", prefix)).firstMatch
+        }
+        // Fertile window 09-29…10-05, ovulation 10-04; a negative LH test was logged on 10-01.
+        XCTAssertTrue(day("October 1,").label.contains("fertile window, negative LH test logged"), day("October 1,").label)
+        XCTAssertTrue(day("October 2,").label.contains("today, fertile window"), day("October 2,").label)
+        XCTAssertTrue(day("October 4,").label.contains("most fertile day"), day("October 4,").label)
+        XCTAssertTrue(day("October 18,").label.contains("predicted period"), day("October 18,").label)
+        XCTAssertFalse(day("October 20,").isEnabled) // future days can't be logged
+
+        app.buttons["calendarNext"].tap()
+        waitForLabel(title, containing: "November 2026")
+        app.buttons["calendarPrevious"].tap()
+        waitForLabel(title, containing: "October 2026")
+
+        day("October 2,").tap()
+        let positive = app.segmentedControls.buttons["Positive"]
+        XCTAssertTrue(positive.waitForExistence(timeout: 5))
+        positive.tap()
+        app.buttons["dayLogSave"].tap()
+        // Ovulation moves from 10-04 to 10-03: today (the day before) becomes a most
+        // fertile day and 10-04 drops back to the end of the fertile window.
+        waitForLabel(day("October 2,"), containing: "today, most fertile day, positive LH test logged")
+        XCTAssertTrue(day("October 4,").label.contains("fertile window"), day("October 4,").label)
+    }
 }
