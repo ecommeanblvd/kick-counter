@@ -23,8 +23,19 @@ enum L10n {
     static func pregnancyPastDueTitle(_ days: Int) -> String { String(format: t("pregnancy.pastDue.title"), days) }
     static var pregnancyPastDueBody: String { t("pregnancy.pastDue.body") }
     static func pregnancyBabySize(_ name: String) -> String { String(format: t("pregnancy.baby.size"), name) }
-    static var pregnancyBabyLength: String { t("pregnancy.baby.length") }
+    static var pregnancyBabyCRL: String { t("pregnancy.baby.crl") }
     static var pregnancyBabyWeight: String { t("pregnancy.baby.weight") }
+    /// "About 331 g (typically 275–387 g)".
+    static func pregnancyBabyWeightValue(_ typical: String, _ range: String) -> String {
+        String(format: t("pregnancy.baby.weightValue"), typical, range)
+    }
+    /// VoiceOver: "About 331 grams, typically 275 to 387 grams".
+    static func pregnancyBabyWeightValueA11y(_ typical: String, _ low: String, _ high: String) -> String {
+        String(format: t("pregnancy.baby.weightValue.a11y"), typical, low, high)
+    }
+    /// Hadlock 1991: SD ±12.7% of the predicted weight.
+    static var pregnancyBabyEstimateNote: String { String(format: t("pregnancy.baby.estimateNote"), 10, 15) }
+    static func pregnancyBabyStandardEnds(_ week: Int) -> String { String(format: t("pregnancy.baby.standardEnds"), week) }
     static var pregnancyTipsTitle: String { t("pregnancy.tips.title") }
     static var pregnancySeeWeek: String { t("pregnancy.seeWeek") }
     static var pregnancyAppointmentTitle: String { t("pregnancy.appointment.title") }

@@ -1327,19 +1327,36 @@
         }
       }
     },
-    "pregnancy.baby.length": {
+    "pregnancy.baby.crl": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Length"
+            "value": "Crown–rump length"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiều dài"
+            "value": "Chiều dài đầu–mông"
+          }
+        }
+      }
+    },
+    "pregnancy.baby.estimateNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultrasound weight estimates can differ by about %1$d–%2$d%%."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cân nặng ước tính qua siêu âm có thể chênh lệch khoảng %1$d–%2$d%%."
           }
         }
       }
@@ -1361,6 +1378,23 @@
         }
       }
     },
+    "pregnancy.baby.standardEnds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hadlock's standard ends at week %d"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số liệu chuẩn Hadlock chỉ đến tuần %d"
+          }
+        }
+      }
+    },
     "pregnancy.baby.weight": {
       "extractionState": "manual",
       "localizations": {
@@ -1374,6 +1408,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cân nặng"
+          }
+        }
+      }
+    },
+    "pregnancy.baby.weightValue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %1$@ (typically %2$@)"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng %1$@ (thường %2$@)"
+          }
+        }
+      }
+    },
+    "pregnancy.baby.weightValue.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %1$@, typically %2$@ to %3$@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng %1$@, thường từ %2$@ đến %3$@"
           }
         }
       }

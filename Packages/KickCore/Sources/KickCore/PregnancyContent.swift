@@ -62,9 +62,13 @@ public struct WeekContent: Codable, Equatable, Sendable, Identifiable {
     /// Set to true by the reviewing obstetrician; Release builds hide unreviewed weeks.
     public var reviewed: Bool
     public var size: FruitSize
-    /// Absent before week 8 (shown as "—").
-    public var lengthCm: Double?
-    public var weightG: Double?
+    /// Crown–rump length in mm (Hadlock 1992), weeks 7–13 only; absent otherwise.
+    public var crlMm: Double?
+    /// Estimated fetal weight in grams, Hadlock 1991 Table 1: 50th percentile with the
+    /// 10th–90th range. Weeks 10–42 (41–42 reuse week 40); absent before week 10.
+    public var weightG: Int?
+    public var weightP10G: Int?
+    public var weightP90G: Int?
     public var baby: LocalizedList
     public var mom: LocalizedList
     public var tips: LocalizedList
@@ -72,6 +76,14 @@ public struct WeekContent: Codable, Equatable, Sendable, Identifiable {
     public var warnings: LocalizedList
 
     public var id: Int { week }
+
+    /// Hadlock's weight standard (1991, Table 1) ends at 40 weeks.
+    public static let weightStandardLastWeek = 40
+
+    /// True when the weight shown is week 40's because the standard has no later rows.
+    public var weightBeyondStandard: Bool {
+        weightG != nil && week > Self.weightStandardLastWeek
+    }
 }
 
 /// A suggested check-up, e.g. the nuchal translucency scan in weeks 11–14.

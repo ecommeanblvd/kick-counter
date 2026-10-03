@@ -57,9 +57,28 @@ struct BabySizeCard: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(L10n.pregnancyBabySize(week.size.name(language)))
                         .font(.headline)
-                    HStack(spacing: 24) {
-                        LabeledValue(title: L10n.pregnancyBabyLength, value: Formatting.length(cm: week.lengthCm))
-                        LabeledValue(title: L10n.pregnancyBabyWeight, value: Formatting.weight(grams: week.weightG))
+                    // Hadlock 1992 crown–rump length, weeks 7–13 only.
+                    if let crl = week.crlMm {
+                        LabeledValue(
+                            title: L10n.pregnancyBabyCRL,
+                            value: Formatting.crownRumpLength(mm: crl),
+                            spokenValue: Formatting.crownRumpLength(mm: crl, spoken: true)
+                        )
+                    }
+                    // Hadlock 1991 50th percentile with the 10th–90th range, weeks 10–42.
+                    if let weight = week.weightG, let p10 = week.weightP10G, let p90 = week.weightP90G {
+                        LabeledValue(
+                            title: L10n.pregnancyBabyWeight,
+                            value: L10n.pregnancyBabyWeightValue(
+                                Formatting.weight(grams: weight),
+                                Formatting.weightRange(p10, p90, unitOf: weight)
+                            ),
+                            spokenValue: L10n.pregnancyBabyWeightValueA11y(
+                                Formatting.weight(grams: weight, spoken: true),
+                                Formatting.weightRangeStart(p10, unitOf: weight),
+                                Formatting.weightInUnit(p90, unitOf: weight, spoken: true)
+                            )
+                        )
                     }
                 }
                 Spacer(minLength: 0)
@@ -68,6 +87,17 @@ struct BabySizeCard: View {
                         .foregroundStyle(.tertiary)
                         .accessibilityHidden(true)
                 }
+            }
+            if week.weightG != nil {
+                VStack(alignment: .leading, spacing: 4) {
+                    if week.weightBeyondStandard {
+                        Text(L10n.pregnancyBabyStandardEnds(WeekContent.weightStandardLastWeek))
+                    }
+                    Text(L10n.pregnancyBabyEstimateNote)
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
             if pendingReview {
                 PendingReviewBadge()
@@ -81,6 +111,8 @@ struct BabySizeCard: View {
 struct LabeledValue: View {
     let title: String
     let value: String
+    /// What VoiceOver reads for `value` (units spelled out), if different.
+    var spokenValue: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -89,6 +121,8 @@ struct LabeledValue: View {
                 .foregroundStyle(.secondary)
             Text(value)
                 .font(.subheadline.monospacedDigit())
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(spokenValue ?? value)
         }
     }
 }

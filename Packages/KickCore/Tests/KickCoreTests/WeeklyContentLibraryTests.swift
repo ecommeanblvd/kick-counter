@@ -10,10 +10,28 @@ struct WeeklyContentLibraryTests {
     @Test func decodesFromJSONData() throws {
         let data = try JSONEncoder().encode(try fixtureContent())
         let library = try WeeklyContentLibrary(data: data)
-        #expect(library.document.weeks.map(\.week) == [7, 8, 9])
+        #expect(library.document.weeks.map(\.week) == [7, 8, 9, 10, 11])
         #expect(library.sources == ["Fixture source A", "Fixture source B"])
-        #expect(library.content(forWeek: 7)?.lengthCm == nil)
-        #expect(library.content(forWeek: 8)?.weightG == 1)
+        let week7 = try #require(library.content(forWeek: 7))
+        #expect(week7.crlMm == 9.6)
+        #expect(week7.weightG == nil)
+        let week10 = try #require(library.content(forWeek: 10))
+        #expect(week10.crlMm == 31.3)
+        #expect(week10.weightG == 35)
+        #expect(week10.weightP10G == 29)
+        #expect(week10.weightP90G == 41)
+    }
+
+    @Test func weightBeyondWeek40ReusesTheEndOfTheStandard() throws {
+        var week = try #require(try library().content(forWeek: 10))
+        #expect(!week.weightBeyondStandard)
+        week.week = 40
+        #expect(!week.weightBeyondStandard)
+        week.week = 41
+        #expect(week.weightBeyondStandard)
+        week.weightG = nil
+        #expect(!week.weightBeyondStandard)
+        #expect(WeekContent.weightStandardLastWeek == 40)
     }
 
     @Test func malformedJSONThrows() {
