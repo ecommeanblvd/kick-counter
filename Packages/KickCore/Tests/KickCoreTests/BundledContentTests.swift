@@ -64,6 +64,31 @@ struct BundledContentTests {
         }
     }
 
+    /// Core danger signs must be repeated every week of their stage, not only in some weeks.
+    @Test func coreDangerSignsAppearEveryWeekOfTheirStage() {
+        func mentions(_ items: [String], _ keywords: [String]) -> Bool {
+            items.contains { item in keywords.contains { item.localizedCaseInsensitiveContains($0) } }
+        }
+        for week in library.document.weeks {
+            let en = week.warnings.en
+            let vi = week.warnings.vi
+            #expect(mentions(en, ["fever"]), "week \(week.week): fever")
+            #expect(mentions(vi, ["sốt"]), "week \(week.week): sốt")
+            if week.week >= 20 {
+                #expect(mentions(en, ["bleeding"]), "week \(week.week): bleeding")
+                #expect(mentions(vi, ["ra máu"]), "week \(week.week): ra máu")
+                #expect(mentions(en, ["headache"]), "week \(week.week): headache")
+                #expect(mentions(en, ["vision"]), "week \(week.week): vision")
+                #expect(mentions(en, ["fluid", "waters"]), "week \(week.week): leaking fluid")
+            }
+            if week.week >= 24 {
+                #expect(mentions(en, ["mov"]), "week \(week.week): movements")
+            }
+        }
+        let week24 = library.content(forWeek: 24)?.warnings.en ?? []
+        #expect(mentions(week24, ["not felt your baby move"]), "week 24: not felt your baby move")
+    }
+
     @Test func vietnameseTextHasDiacritics() {
         var texts: [String] = []
         for week in library.document.weeks {
