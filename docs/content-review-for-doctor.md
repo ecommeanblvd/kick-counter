@@ -81,7 +81,7 @@ cần bác sĩ quyết định. Tích vào ô vuông khi đã xong.
         Về mặt hình ảnh đây là quả bí ngô kiểu Halloween, có thể gây cảm giác không phù hợp
         hoặc hài hước không đúng lúc trong nội dung y tế. Xác nhận có cần đổi minh họa khác
         cho "bí đỏ" (ví dụ chỉ dùng mô tả bằng chữ, không emoji) hay giữ nguyên.
-        *Cập nhật:* đã đổi 🎃 sang 🍈 — xác nhận minh họa mới chấp nhận được.
+        *Cập nhật:* đã bỏ "bí đỏ" và 🎃; các tuần này nay dùng dưa lê / dưa hấu / chuối (mục 21).
 20. [ ] **Tên gọi món ăn/trái cây theo miền**: nội dung hiện dùng từ ngữ miền Bắc (vừng,
         dưa chuột, dứa, ngô — xem thêm mục 13). Xác nhận giữ nguyên (và có thể ghi chú từ
         đồng nghĩa miền Nam trong mô tả) hay đổi sang từ trung lập/phổ biến hơn cho cả nước.
@@ -91,11 +91,14 @@ cần bác sĩ quyết định. Tích vào ô vuông khi đã xong.
         - Tuần 10–40: cân nặng ước tính bách phân vị 50 kèm khoảng bách phân vị 10–90 theo
           Hadlock 1991 (Bảng 1), hiển thị "Khoảng 331 g (thường 275–387 g)", kèm dòng
           "Cân nặng ước tính qua siêu âm có thể chênh lệch khoảng 10–15%."
-        - Tuần 41–42: dùng lại số liệu tuần 40, kèm dòng "Số liệu chuẩn Hadlock chỉ đến tuần 40".
-        - Tuần 7–13: chiều dài đầu–mông (mm) tính từ phương trình Hadlock 1992 (9,6 / 16,0 /
-          23,1 / 31,3 / 41,2 / 53,5 / 67,2 mm). Từ tuần 14 không hiển thị chiều dài.
-        - Đổi so sánh kích thước tuần 10 (quả chanh ta), 11 (củ tỏi), 28 (quả bưởi) cho hợp
-          cân nặng mới; emoji 🎃 được thay bằng 🍈 (xem mục 19).
+        - Tuần 41–42: dùng lại số liệu tuần 40, kèm dòng "Số liệu chuẩn Hadlock chỉ đến tuần 40."
+        - Tuần 7–13: chiều dài đầu–mông (mm) tính từ phương trình hồi quy của Hadlock 1992 (bài
+          báo không in bảng các giá trị này): 9,6 / 16,0 / 23,1 / 31,3 / 41,2 / 53,5 / 67,2 mm,
+          hiển thị "Khoảng 53,5 mm". Từ tuần 14 không hiển thị chiều dài.
+        - Đổi so sánh kích thước cho hợp cân nặng mới và để emoji đúng với vật được so sánh:
+          tuần 10 củ gừng 🫚, 11 củ tỏi 🧄, 28 quả dứa nhỏ 🍍, 35 quả dưa lê 🍈, 38 quả dưa hấu
+          nhỏ 🍉, 40 quả dưa hấu vừa 🍉, 41 hai nải chuối 🍌, 42 quả dưa hấu to 🍉 (bỏ "bí đỏ"
+          vì không có emoji bí đỏ phù hợp — xem mục 19).
         Xin bác sĩ xác nhận các con số này và cách diễn đạt khoảng "thường A–B".
 
 ## 4. Lịch khám gợi ý — xác nhận theo thực hành hiện hành của Bộ Y tế

@@ -1344,6 +1344,23 @@
         }
       }
     },
+    "pregnancy.baby.crlValue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng %@"
+          }
+        }
+      }
+    },
     "pregnancy.baby.estimateNote": {
       "extractionState": "manual",
       "localizations": {
@@ -1384,13 +1401,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hadlock's standard ends at week %d"
+            "value": "Hadlock's standard ends at week %d."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Số liệu chuẩn Hadlock chỉ đến tuần %d"
+            "value": "Số liệu chuẩn Hadlock chỉ đến tuần %d."
           }
         }
       }

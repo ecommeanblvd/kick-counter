@@ -14,20 +14,20 @@ enum Formatting {
         )
     }
 
-    /// Grams below 1 kg ("600 g"), kilograms from 1 kg ("3.62 kg" / "3,62 kg").
+    /// Grams below 1 kg ("600 g"), kilograms with one decimal from 1 kg ("3.6 kg" / "3,6 kg").
     static func weight(grams: Int, spoken: Bool = false) -> String {
         weightInUnit(grams, unitOf: grams, spoken: spoken)
     }
 
     /// A weight range in the unit `weight(grams: reference)` uses, unit written once:
-    /// "275–387 g", "758–1,068 g", "1–1.42 kg". Word joiners around the dash and a
+    /// "275–387 g", "758–1,068 g", "3.0–4.2 kg". Word joiners around the dash and a
     /// no-break space before the unit keep the range on one line when the text wraps.
     static func weightRange(_ low: Int, _ high: Int, unitOf reference: Int) -> String {
         let end = weightInUnit(high, unitOf: reference).replacingOccurrences(of: " ", with: "\u{00A0}")
         return "\(weightRangeStart(low, unitOf: reference))\u{2060}–\u{2060}\(end)"
     }
 
-    /// The bare number that starts a range, e.g. "275" or "1" (kg).
+    /// The bare number that starts a range, e.g. "275" or "3.0" (kg).
     static func weightRangeStart(_ grams: Int, unitOf reference: Int) -> String {
         reference >= 1000
             ? (Double(grams) / 1000).formatted(kilogramDigits)
@@ -48,6 +48,6 @@ enum Formatting {
     }
 
     private static var kilogramDigits: FloatingPointFormatStyle<Double> {
-        .number.precision(.fractionLength(0...2))
+        .number.precision(.fractionLength(1))
     }
 }

@@ -61,8 +61,8 @@ struct BabySizeCard: View {
                     if let crl = week.crlMm {
                         LabeledValue(
                             title: L10n.pregnancyBabyCRL,
-                            value: Formatting.crownRumpLength(mm: crl),
-                            spokenValue: Formatting.crownRumpLength(mm: crl, spoken: true)
+                            value: L10n.pregnancyBabyCRLValue(Formatting.crownRumpLength(mm: crl)),
+                            spokenValue: L10n.pregnancyBabyCRLValue(Formatting.crownRumpLength(mm: crl, spoken: true))
                         )
                     }
                     // Hadlock 1991 50th percentile with the 10th–90th range, weeks 10–42.

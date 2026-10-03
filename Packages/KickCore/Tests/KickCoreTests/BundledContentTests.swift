@@ -195,6 +195,40 @@ struct BundledContentTests {
         #expect(joined.contains("Radiology. 1992;182(2):501–505"))
     }
 
+    @Test func sourceJSONHasNoLegacyLengthKey() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/KickCore/Resources/\(WeeklyContentLibrary.resourceName).json")
+        let text = try String(contentsOf: url, encoding: .utf8)
+        #expect(!text.contains("\"lengthCm\""))
+    }
+
+    /// The CRL values are calculated from Hadlock 1992's equation, not printed in the paper.
+    @Test func crlSourceSaysValuesAreCalculated() throws {
+        let source = try #require(library.sources.first { $0.contains("Hadlock FP, Shah YP") })
+        #expect(source.contains("calculated from this paper's regression equation"), "\(source)")
+    }
+
+    /// Every size item must be depicted by its own emoji; items without an
+    /// accurate emoji (pumpkin, pomelo, lime …) are not used.
+    @Test func sizeEmojiDepictsTheItem() {
+        let expectedEmoji: [(keyword: String, emoji: Set<String>)] = [
+            ("watermelon", ["🍉"]), ("cantaloupe", ["🍈"]), ("honeydew", ["🍈"]),
+            ("pineapple", ["🍍"]), ("coconut", ["🥥"]), ("banana", ["🍌"]),
+            ("cabbage", ["🥬"]), ("lettuce", ["🥬"]), ("lemon", ["🍋"]),
+            ("garlic", ["🧄"]), ("ginger", ["🫚"]),
+        ]
+        for week in library.document.weeks {
+            let name = week.size.en
+            for unsupported in ["pumpkin", "pomelo", "lime"] {
+                #expect(!name.contains(unsupported), "week \(week.week): \(name)")
+            }
+            for rule in expectedEmoji where name.contains(rule.keyword) {
+                #expect(rule.emoji.contains(week.size.emoji), "week \(week.week): \(name) \(week.size.emoji)")
+            }
+        }
+    }
+
     /// 🎃 is a carved jack-o'-lantern; not fitting for medical content.
     @Test func noJackOLanternEmoji() {
         for week in library.document.weeks {

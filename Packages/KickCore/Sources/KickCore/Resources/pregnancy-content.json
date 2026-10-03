@@ -6,7 +6,7 @@
     "NHS: Your pregnancy and baby guide (National Health Service, UK)",
     "Bộ Y tế Việt Nam: Hướng dẫn quốc gia về các dịch vụ chăm sóc sức khỏe sinh sản",
     "Hadlock FP, Harrist RB, Martinez-Poyer J. In utero analysis of fetal growth: a sonographic weight standard. Radiology. 1991;181(1):129–133. doi:10.1148/radiology.181.1.1887021 — estimated fetal weight, 10th/50th/90th percentiles, weeks 10–40.",
-    "Hadlock FP, Shah YP, Kanon DJ, Lindsey JV. Fetal crown-rump length: reevaluation of relation to menstrual age (5–18 weeks) with high-resolution real-time US. Radiology. 1992;182(2):501–505. doi:10.1148/radiology.182.2.1732970 — crown–rump length, weeks 7–13."
+    "Hadlock FP, Shah YP, Kanon DJ, Lindsey JV. Fetal crown-rump length: reevaluation of relation to menstrual age (5–18 weeks) with high-resolution real-time US. Radiology. 1992;182(2):501–505. doi:10.1148/radiology.182.2.1732970 — crown–rump length at weeks 7–13, calculated from this paper's regression equation."
   ],
   "weeks": [
     {
@@ -338,9 +338,9 @@
       "week": 10,
       "reviewed": false,
       "size": {
-        "emoji": "🍋",
-        "en": "a lime",
-        "vi": "một quả chanh ta"
+        "emoji": "🫚",
+        "en": "a knob of ginger",
+        "vi": "một củ gừng"
       },
       "crlMm": 31.3,
       "weightG": 35,
@@ -1360,9 +1360,9 @@
       "week": 28,
       "reviewed": false,
       "size": {
-        "emoji": "🍊",
-        "en": "a pomelo",
-        "vi": "một quả bưởi"
+        "emoji": "🍍",
+        "en": "a small pineapple",
+        "vi": "một quả dứa nhỏ"
       },
       "weightG": 1210,
       "weightP10G": 1004,
@@ -1797,8 +1797,8 @@
       "reviewed": false,
       "size": {
         "emoji": "🍈",
-        "en": "a small pumpkin",
-        "vi": "một quả bí đỏ nhỏ"
+        "en": "a honeydew melon",
+        "vi": "một quả dưa lê"
       },
       "weightG": 2595,
       "weightP10G": 2154,
@@ -1982,9 +1982,9 @@
       "week": 38,
       "reviewed": false,
       "size": {
-        "emoji": "🍈",
-        "en": "a pumpkin",
-        "vi": "một quả bí đỏ"
+        "emoji": "🍉",
+        "en": "a small watermelon",
+        "vi": "một quả dưa hấu nhỏ"
       },
       "weightG": 3236,
       "weightP10G": 2686,
@@ -2107,8 +2107,8 @@
       "reviewed": false,
       "size": {
         "emoji": "🍉",
-        "en": "a small watermelon",
-        "vi": "một quả dưa hấu nhỏ"
+        "en": "a medium watermelon",
+        "vi": "một quả dưa hấu vừa"
       },
       "weightG": 3619,
       "weightP10G": 3004,
@@ -2168,9 +2168,9 @@
       "week": 41,
       "reviewed": false,
       "size": {
-        "emoji": "🍈",
-        "en": "a large pumpkin",
-        "vi": "một quả bí đỏ lớn"
+        "emoji": "🍌",
+        "en": "two bunches of bananas",
+        "vi": "hai nải chuối"
       },
       "weightG": 3619,
       "weightP10G": 3004,
@@ -2231,8 +2231,8 @@
       "reviewed": false,
       "size": {
         "emoji": "🍉",
-        "en": "a watermelon",
-        "vi": "một quả dưa hấu"
+        "en": "a large watermelon",
+        "vi": "một quả dưa hấu to"
       },
       "weightG": 3619,
       "weightP10G": 3004,

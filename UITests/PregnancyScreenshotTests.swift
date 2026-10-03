@@ -54,7 +54,7 @@ final class PregnancyScreenshotTests: XCTestCase {
             XCTAssertTrue(babyCard.waitForExistence(timeout: 10))
             if language == "en" {
                 XCTAssertTrue(babyCard.label.contains("Crown–rump length"), babyCard.label)
-                XCTAssertTrue(babyCard.label.contains("53.5"), babyCard.label)
+                XCTAssertTrue(babyCard.label.contains("About 53.5"), babyCard.label)
                 XCTAssertTrue(babyCard.label.contains("typically 48 to 68"), babyCard.label)
             }
             babyCard.tap()
