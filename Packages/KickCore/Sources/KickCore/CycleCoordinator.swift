@@ -101,7 +101,7 @@ public final class CycleCoordinator {
 
     private func performLoad() async {
         guard refresh() else { return }
-        await syncReminders(generation: reminderGeneration, mayPrompt: false)
+        await syncReminders(generation: bump(), mayPrompt: false)
     }
 
     // MARK: - Periods
@@ -188,7 +188,9 @@ public final class CycleCoordinator {
             logger.error("Saving cycle data failed: \(error.localizedDescription)")
             return report(CycleFailure(error))
         }
-        refresh()
+        // Saved, but the reload failed (`failure` is set): leave reminders alone
+        // rather than syncing them to data that no longer matches the store.
+        guard refresh() else { return nil }
         await syncReminders(generation: bump(), mayPrompt: true)
         return nil
     }
@@ -231,6 +233,10 @@ public final class CycleCoordinator {
             try await notifications.scheduleCycleReminders(for: forecast, now: now(), texts: reminderTexts, calendar: calendar)
         } catch {
             logger.error("Scheduling cycle reminders failed: \(error.localizedDescription)")
+            // Requests that landed before the failure may be stale by now.
+            if generation != reminderGeneration {
+                await syncReminders(generation: reminderGeneration, mayPrompt: false)
+            }
             return
         }
         // Changed while the requests were in flight: re-apply the newest state.
@@ -250,14 +256,18 @@ public final class CycleCoordinator {
     @discardableResult
     private func refresh() -> Bool {
         settings = CycleSettings.load(from: defaults)
+        let loadedPeriods: [PeriodRecord]
+        let loadedLogs: [CycleLogRecord]
         do {
-            periods = try store.periods()
-            logs = try store.logs()
+            loadedPeriods = try store.periods()
+            loadedLogs = try store.logs()
         } catch {
             logger.error("Loading cycle data failed: \(error.localizedDescription)")
             failure = .loadFailed
             return false
         }
+        periods = loadedPeriods
+        logs = loadedLogs
         recomputeForecast()
         return true
     }

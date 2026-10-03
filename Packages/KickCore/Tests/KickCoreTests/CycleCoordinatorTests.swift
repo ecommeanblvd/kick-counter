@@ -108,6 +108,27 @@ struct CycleCoordinatorTests {
         #expect(repository.periodReads == 1)
     }
 
+    @Test func failedLogsReadLeavesTheLoadedDataUntouched() async {
+        seedRegularCycles()
+        repository.failNextLogsRead = true
+        await coordinator.load()
+        #expect(coordinator.failure == .loadFailed)
+        #expect(coordinator.periods.isEmpty)
+        #expect(coordinator.forecast == nil)
+    }
+
+    @Test func writeWhoseReloadFailsLeavesRemindersAlone() async {
+        seedRegularCycles()
+        center.status = .notDetermined
+        await coordinator.load()
+        repository.failNextRead = true
+        #expect(await coordinator.saveLog(CycleLogRecord(day: day("2026-09-05"), mucus: .creamy)) == nil)
+        #expect(repository.storedLogs.count == 1)
+        #expect(coordinator.failure == .loadFailed)
+        #expect(center.requestCount == 0)
+        #expect(center.added.isEmpty)
+    }
+
     // MARK: - Periods
 
     @Test func startingAPeriodSavesItAndPromptsOnce() async throws {
@@ -355,5 +376,63 @@ struct CycleCoordinatorTests {
         _ = await first
 
         #expect(reminderIDs == ["cycle-period", "cycle-late"])
+    }
+
+    @Test func loadWhileSchedulingIsInFlightWins() async throws {
+        seedRegularCycles()
+        clock.now = date("2026-09-09T07:00:00Z")
+        await coordinator.load()
+        center.holdAdd = true
+
+        async let saving = coordinator.saveLog(CycleLogRecord(day: day("2026-09-08"), mucus: .creamy)) // suspends in center.add
+        defer { center.releaseAdd() }
+        try await waitUntil(center.addPending)
+
+        // iCloud brings a positive LH test for today: window 09-05…09-11 → no fertile reminder.
+        repository.seed(logs: [CycleLogRecord(day: day("2026-09-09"), lh: .positive)])
+        await coordinator.load()
+        center.releaseAdd()
+        _ = await saving
+
+        #expect(coordinator.forecast?.ovulationSource == .lhTest)
+        #expect(reminderIDs == ["cycle-period", "cycle-late"])
+    }
+
+    @Test func changeThatCannotScheduleItselfIsAppliedOncePermissionIsGranted() async throws {
+        seedRegularCycles()
+        clock.now = date("2026-09-09T07:00:00Z")
+        center.status = .notDetermined
+        center.holdRequestAuthorization = true
+
+        async let saving = coordinator.saveLog(CycleLogRecord(day: day("2026-09-08"), mucus: .creamy)) // suspends on the prompt
+        defer { center.releaseRequestAuthorization() }
+        try await waitUntil(center.requestAuthorizationPending)
+
+        // The reload never prompts and permission is still undecided, so it schedules nothing itself.
+        repository.seed(logs: [CycleLogRecord(day: day("2026-09-09"), lh: .positive)])
+        await coordinator.load()
+        #expect(center.added.isEmpty)
+        center.releaseRequestAuthorization()
+        _ = await saving
+
+        #expect(center.requestCount == 1)
+        #expect(reminderIDs == ["cycle-period", "cycle-late"])
+    }
+
+    @Test func imPregnantWhileAFailingScheduleIsInFlightLeavesNoReminders() async throws {
+        seedRegularCycles()
+        await coordinator.load()
+        center.holdAdd = true
+
+        async let saving = coordinator.saveLog(CycleLogRecord(day: day("2026-09-05"), mucus: .creamy)) // suspends in the first center.add
+        defer { center.releaseAdd() }
+        try await waitUntil(center.addPending)
+
+        coordinator.switchToPregnant(source: .lmp, date: day("2026-09-03"))
+        center.failNextAdd = true // the held fertile reminder lands, the next request fails
+        center.releaseAdd()
+        _ = await saving
+
+        #expect(center.added.isEmpty)
     }
 }

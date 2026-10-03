@@ -39,7 +39,16 @@ final class FakeNotificationCenter: NotificationCenterClient {
     var grantOnRequest = true
     var requestCount = 0
 
+    struct AddFailed: Error {}
+
+    /// One-shot: the next `add(_:)` call throws instead of scheduling.
+    var failNextAdd = false
+
     func add(_ request: UNNotificationRequest) async throws {
+        if failNextAdd {
+            failNextAdd = false
+            throw AddFailed()
+        }
         if holdAdd {
             holdAdd = false
             addPending = true
@@ -389,6 +398,8 @@ final class FakeCycleRepository: CycleRepository {
     var calendar = utcCalendar
     var failNextRead = false
     var failNextWrite = false
+    /// One-shot: the next `logs()` call throws (after `periods()` succeeded).
+    var failNextLogsRead = false
 
     func seed(periods: [PeriodRecord] = [], logs: [CycleLogRecord] = []) {
         storedPeriods += periods
@@ -421,6 +432,10 @@ final class FakeCycleRepository: CycleRepository {
 
     func logs() throws -> [CycleLogRecord] {
         try checkRead()
+        if failNextLogsRead {
+            failNextLogsRead = false
+            throw Failed()
+        }
         let merged = CycleRules.mergingDuplicates(storedLogs, calendar: calendar)
         storedLogs = merged.logs
         return merged.logs
