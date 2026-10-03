@@ -4,20 +4,16 @@
 - [ ] Task 0 đã xong: identifiers, app record, API key (Admin), secrets trên GitHub.
 - [ ] CloudKit Console (icloud.developer.apple.com) — bản TestFlight/App Store dùng CloudKit
       **Production**, môi trường này không tự tạo record type; không có Xcode trên máy này nên
-      không có bản build ký development để tạo record type trực tiếp. Chọn một trong hai cách:
-      - (a) Trên một Mac có Xcode: chạy một bản build ký development trên thiết bị thật, tạo một
-        lượt đếm cử động (kick session) và một lịch hẹn (appointment) để SwiftData tự sinh record
-        type trong Development, rồi vào CloudKit Console → **Deploy Schema Changes** từ
-        Development lên Production.
-      - (b) Không có Mac nào có Xcode: tạo trực tiếp các record type sau trong CloudKit Console →
-        schema **Development**, rồi **Deploy Schema Changes** lên Production (field suy ra từ
-        `Packages/KickData/Sources/KickData/Models.swift`, SwiftData sinh tên record/field có tiền tố `CD_`):
-        - `CD_KickSession`: `CD_id` (String), `CD_startedAt` (Date/Time), `CD_endedAt` (Date/Time,
-          optional), `CD_targetCount` (Int64), `CD_statusRaw` (String), `CD_exceededThreshold`
-          (Int64), `CD_kicks` (Reference, List — quan hệ ngược từ `Kick.session`).
-        - `CD_Kick`: `CD_timestamp` (Date/Time), `CD_session` (Reference tới `CD_KickSession`).
-        - `CD_Appointment`: `CD_id` (String), `CD_date` (Date/Time), `CD_title` (String), `CD_note`
-          (String), `CD_isDone` (Int64), `CD_milestoneID` (String, optional).
+      không có bản build ký development để tạo record type trực tiếp. Cách làm:
+      - Trên một Mac có Xcode: chạy một bản build ký development trên thiết bị thật, tạo một
+        lượt đếm cử động (kick session) và một lịch hẹn (appointment) để SwiftData tự sinh đúng các
+        record type (`CD_KickSession`, `CD_Kick`, `CD_Appointment`) trong Development, kiểm tra trong
+        CloudKit Console, rồi **Deploy Schema Changes** từ Development lên Production.
+      - **Không** tự tạo record type bằng tay: cách NSPersistentCloudKitContainer/SwiftData lưu quan
+        hệ và các field hệ thống (vd. `CD_entityName`) dễ bị đoán sai, mà field đã deploy lên
+        Production thì không xóa hay đổi kiểu được — một field sai sẽ làm hỏng đồng bộ vĩnh viễn.
+        Nếu buộc phải làm tay, đối chiếu tài liệu Apple "Reading CloudKit Records for Core Data"
+        trước khi deploy.
       Cho tới khi schema được deploy lên Production, bộ test thủ công đồng bộ hai máy (v1 và
       Giai đoạn 2, bên dưới) **sẽ thất bại như dự kiến**.
 - [ ] Icon 1024×1024 trong `App/Assets.xcassets/AppIcon.appiconset` (không trong suốt, không bo góc) —
@@ -56,16 +52,14 @@
 - [ ] Checklist chi tiết cho bác sĩ (14 điểm cần quyết định y khoa, cách duyệt nội dung): [`docs/content-review-for-doctor.md`](content-review-for-doctor.md).
 - [ ] Không còn mục chưa duyệt — lệnh sau in ra `[] []`:
       `python3 -c "import json;d=json.load(open('Packages/KickCore/Sources/KickCore/Resources/pregnancy-content.json'));print([w['week'] for w in d['weeks'] if not w['reviewed']],[m['id'] for m in d['milestones'] if not m['reviewed']])"`
-- [ ] Workflow phát hành App Store (khi tạo) **không** đặt `CONTENT_PREVIEW` — kiểm tra bằng
+- [ ] Bản build gửi App Store Review **không** bật `CONTENT_PREVIEW` — kiểm tra bằng
       `LunaContentPreview = NO` trong Info.plist của bản build / trong App Store Connect build
       metadata. Chạy TestFlight với `content_preview=true` (workflow_dispatch input, mặc định
       `false`) **chỉ** để thử nội bộ/cho bác sĩ: `gh workflow run testflight.yml -f content_preview=true`.
       Bản gửi lên App Store Review phải được tải lên với `content_preview=false` (giá trị mặc định).
-- [ ] CloudKit Console: record type `CD_Appointment` có trong Development (tạo theo cách (a) hoặc
-      (b) ở mục "Cấu hình" phía trên, sau khi một lịch hẹn đã được lưu), rồi **Deploy Schema
-      Changes** lên Production — làm cùng lần với bước deploy schema của v1. Record type
-      `CD_Appointment` có các field: `CD_id`, `CD_date`, `CD_title`, `CD_note`, `CD_isDone`,
-      `CD_milestoneID` (optional) — xem `Packages/KickData/Sources/KickData/Models.swift`.
+- [ ] CloudKit Console: record type `CD_Appointment` có trong Development (sinh tự động theo cách
+      ở mục "Cấu hình" phía trên, sau khi một lịch hẹn đã được lưu từ bản build ký development), rồi
+      **Deploy Schema Changes** lên Production — làm cùng lần với bước deploy schema của v1.
 - [ ] Ảnh chụp App Store mới cho tab Thai kỳ (vi + en): `ci-artifacts/screenshots/pregnancy-home-24-*`, `week-24-*`, `appointments-*`.
 - [ ] Ghi chú phát hành: tab Thai kỳ; nội dung bé + mẹ tuần 4–42; lịch khám có nhắc trước 1 ngày; nhập ngày dự sinh hoặc ngày đầu kỳ kinh cuối.
 
@@ -85,5 +79,5 @@
 - [ ] Hai máy cùng Apple ID: lịch hẹn thêm trên máy A hiện trên máy B sau khi mở app, và máy B cũng nhắc.
       (Dự kiến thất bại cho tới khi schema CloudKit được deploy lên Production — xem mục "Cấu hình".)
 - [ ] Từ tuần 28: thẻ "Đếm cử động thai hôm nay" chuyển sang tab Đếm.
-- [ ] Dynamic Type lớn nhất: thẻ không bị cắt chữ; VoiceOver đọc emoji bằng tên loại quả và đọc mỗi thẻ thành một câu.
+- [ ] Dynamic Type lớn nhất: thẻ không bị cắt chữ; VoiceOver đọc mỗi thẻ thành một câu (tên loại quả chỉ đọc một lần, qua dòng tiêu đề; emoji được ẩn).
 - [ ] Thông tin y tế → "Nguồn tham khảo" liệt kê đủ nguồn.
