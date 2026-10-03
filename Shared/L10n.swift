@@ -116,6 +116,22 @@ enum L10n {
 
     static var appointmentsReminderTitle: String { t("appointments.reminder.title") }
     static var appointmentsReminderBody: String { t("appointments.reminder.body") }
+    static var appointmentsTitle: String { t("appointments.title") }
+    static var appointmentsUpcoming: String { t("appointments.upcoming") }
+    static var appointmentsPast: String { t("appointments.past") }
+    static var appointmentsEmpty: String { t("appointments.empty") }
+    static var appointmentsAdd: String { t("appointments.add") }
+    static var appointmentsEdit: String { t("appointments.edit") }
+    static var appointmentsFieldTitle: String { t("appointments.field.title") }
+    static var appointmentsFieldDate: String { t("appointments.field.date") }
+    static var appointmentsFieldNote: String { t("appointments.field.note") }
+    static var appointmentsMarkDone: String { t("appointments.markDone") }
+    static var appointmentsStatusDone: String { t("appointments.status.done") }
+    static var appointmentsMilestones: String { t("appointments.milestones") }
+    static var appointmentsMilestoneAdd: String { t("appointments.milestone.add") }
+    static var appointmentsNotificationsOff: String { t("appointments.notificationsOff") }
+    static var appointmentsDeleteConfirmTitle: String { t("appointments.delete.confirm.title") }
+    static func milestoneWeeks(_ from: Int, _ to: Int) -> String { String(format: t("milestone.weeks"), from, to) }
 
     static var medicalTitle: String { t("medical.title") }
     static var medicalBody: String { t("medical.body") }

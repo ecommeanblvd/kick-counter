@@ -96,11 +96,16 @@ struct PregnancyHomeView: View {
                 EmptyView()
             }
 
-            NextAppointmentCard(
-                appointment: appointments.nextAppointment,
-                milestone: library?.upcomingMilestones(atWeek: timeline.week.weeks, visibility: visibility).first,
-                language: language
-            )
+            NavigationLink {
+                AppointmentsView()
+            } label: {
+                NextAppointmentCard(
+                    appointment: appointments.nextAppointment,
+                    milestone: library?.upcomingMilestones(atWeek: timeline.week.weeks, visibility: visibility).first,
+                    language: language
+                )
+            }
+            .buttonStyle(.plain)
             .accessibilityIdentifier("nextAppointmentCard")
 
             if timeline.isKickCountingWeek {

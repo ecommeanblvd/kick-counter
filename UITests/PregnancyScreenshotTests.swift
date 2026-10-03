@@ -78,4 +78,46 @@ final class PregnancyScreenshotTests: XCTestCase {
             app.terminate()
         }
     }
+
+    @MainActor
+    func testAppointmentsScreens() {
+        for (language, dark) in [("vi", false), ("vi", true), ("en", false)] {
+            let suffix = "\(language)-\(dark ? "dark" : "light")"
+            let app = XCUIApplication.launchPinned(language: language, dark: dark, dueDate: UITestDates.dueAtWeek24)
+            let card = app.buttons["nextAppointmentCard"]
+            XCTAssertTrue(card.waitForExistence(timeout: 10))
+            card.tap()
+            let add = app.buttons["addAppointmentButton"]
+            XCTAssertTrue(add.waitForExistence(timeout: 5))
+            attachScreenshot(app, "appointments-empty-\(suffix)")
+
+            if language == "vi", !dark {
+                // Add the first two suggested milestones (week 24–28, then 27–36).
+                for index in 0..<2 {
+                    app.buttons.matching(identifier: "addMilestoneButton").firstMatch.tap()
+                    let save = app.buttons["appointmentSaveButton"]
+                    XCTAssertTrue(save.waitForExistence(timeout: 5))
+                    if index == 0 { attachScreenshot(app, "appointment-editor-milestone-vi") }
+                    save.tap()
+                    XCTAssertTrue(add.waitForExistence(timeout: 5))
+                }
+                let firstRow = app.buttons.matching(identifier: "appointmentRow").firstMatch
+                XCTAssertTrue(firstRow.waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointments-upcoming-vi-light")
+
+                firstRow.tap()
+                let markDone = app.buttons["appointmentMarkDoneButton"]
+                XCTAssertTrue(markDone.waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointment-editor-edit-vi")
+                markDone.tap()
+                XCTAssertTrue(app.staticTexts["pastHeader"].waitForExistence(timeout: 5))
+                attachScreenshot(app, "appointments-with-past-vi-light")
+
+                app.navigationBars.buttons.element(boundBy: 0).tap()
+                XCTAssertTrue(card.waitForExistence(timeout: 5))
+                attachScreenshot(app, "pregnancy-home-with-appointment-vi-light")
+            }
+            app.terminate()
+        }
+    }
 }

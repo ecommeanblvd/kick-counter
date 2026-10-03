@@ -42,4 +42,37 @@ final class PregnancyUITests: XCTestCase {
         XCTAssertTrue(progress.label.contains("Trimester 1"), progress.label)
         XCTAssertTrue(progress.label.contains("Days to go: 187"), progress.label)
     }
+
+    @MainActor
+    func testAddedAppointmentAppearsInUpcoming() {
+        let app = XCUIApplication.launchPinned(language: "en", dueDate: UITestDates.dueAtWeek24)
+        let card = app.buttons["nextAppointmentCard"]
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        card.tap()
+
+        let add = app.buttons["addAppointmentButton"]
+        XCTAssertTrue(add.waitForExistence(timeout: 5))
+        add.tap()
+        let title = app.textFields["appointmentTitleField"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        title.tap()
+        title.typeText("Glucose test")
+        app.buttons["appointmentSaveButton"].tap()
+
+        // Default date is tomorrow 9:00, so it belongs under "Upcoming", above the milestones.
+        let row = app.buttons.matching(NSPredicate(format: "identifier == 'appointmentRow' AND label CONTAINS 'Glucose test'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        let upcomingHeader = app.staticTexts["upcomingHeader"]
+        let milestonesHeader = app.staticTexts["milestonesHeader"]
+        XCTAssertTrue(upcomingHeader.exists)
+        XCTAssertTrue(milestonesHeader.exists)
+        XCTAssertLessThan(upcomingHeader.frame.minY, row.frame.minY)
+        XCTAssertLessThan(row.frame.maxY, milestonesHeader.frame.minY)
+        XCTAssertFalse(app.staticTexts["pastHeader"].exists)
+
+        // The home card now shows it as the next check-up.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        XCTAssertTrue(card.label.contains("Glucose test"), card.label)
+    }
 }
