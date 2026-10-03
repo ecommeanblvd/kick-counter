@@ -369,3 +369,12 @@ final class FakeAppointmentRepository: AppointmentRepository {
         return appointment
     }
 }
+
+/// A fresh, empty defaults domain (one per call).
+func makeTestDefaults() -> UserDefaults {
+    let name = "KickCoreTests-\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: name)!
+    defaults.removePersistentDomain(forName: name)
+    return defaults
+}
+
