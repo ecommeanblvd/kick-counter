@@ -86,6 +86,23 @@
         }
       }
     },
+    "common.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu"
+          }
+        }
+      }
+    },
     "completion.done": {
       "extractionState": "manual",
       "localizations": {
@@ -715,6 +732,40 @@
         }
       }
     },
+    "medical.sources.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The week-by-week pregnancy content is general information based on public guidance from these organisations, checked by an obstetrician before release. It does not replace advice from your own doctor or midwife."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nội dung thai kỳ theo tuần là thông tin chung, dựa trên khuyến nghị công khai của các tổ chức dưới đây và được bác sĩ sản khoa kiểm tra trước khi phát hành. Nội dung không thay thế lời khuyên của bác sĩ hay nữ hộ sinh theo dõi mẹ."
+          }
+        }
+      }
+    },
+    "medical.sources.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nguồn tham khảo"
+          }
+        }
+      }
+    },
     "medical.title": {
       "extractionState": "manual",
       "localizations": {
@@ -834,6 +885,40 @@
         }
       }
     },
+    "onboarding.4.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your dates to follow your baby's growth week by week. You can also do this later in Settings."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập ngày để theo dõi bé lớn lên từng tuần. Mẹ cũng có thể làm sau trong Cài đặt."
+          }
+        }
+      }
+    },
+    "onboarding.4.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pregnancy"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thai kỳ của bạn"
+          }
+        }
+      }
+    },
     "onboarding.agree": {
       "extractionState": "manual",
       "localizations": {
@@ -847,6 +932,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tôi đã hiểu"
+          }
+        }
+      }
+    },
+    "onboarding.later": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Later"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để sau"
           }
         }
       }
@@ -898,6 +1000,142 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đã hơn 2 giờ"
+          }
+        }
+      }
+    },
+    "pregnancyDate.estimatedDue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimated due date: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày dự sinh ước tính: %@"
+          }
+        }
+      }
+    },
+    "pregnancyDate.hint.dueDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use the due date from your doctor or your dating scan."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng ngày dự sinh bác sĩ đã báo hoặc theo kết quả siêu âm."
+          }
+        }
+      }
+    },
+    "pregnancyDate.hint.lmp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your due date is estimated as 280 days after the first day of your last period."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày dự sinh được ước tính bằng 280 ngày sau ngày đầu kỳ kinh cuối."
+          }
+        }
+      }
+    },
+    "pregnancyDate.lmp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First day of last period"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày đầu kỳ kinh cuối"
+          }
+        }
+      }
+    },
+    "pregnancyDate.source": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date type"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loại ngày"
+          }
+        }
+      }
+    },
+    "pregnancyDate.source.dueDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due date"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày dự sinh"
+          }
+        }
+      }
+    },
+    "pregnancyDate.source.lmp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last period"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỳ kinh cuối"
+          }
+        }
+      }
+    },
+    "pregnancyDate.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregnancy dates"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày thai kỳ"
           }
         }
       }
@@ -966,23 +1204,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngày dự sinh"
-          }
-        }
-      }
-    },
-    "settings.dueDate.toggle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set due date"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đặt ngày dự sinh"
           }
         }
       }
@@ -1072,6 +1293,74 @@
         }
       }
     },
+    "settings.pregnancy.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear pregnancy dates"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa thông tin thai kỳ"
+          }
+        }
+      }
+    },
+    "settings.pregnancy.clear.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear your due date and pregnancy dates?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa ngày dự sinh và thông tin thai kỳ?"
+          }
+        }
+      }
+    },
+    "settings.pregnancy.fromLMP": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculated from your last period (%@)"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tính từ kỳ kinh cuối (%@)"
+          }
+        }
+      }
+    },
+    "settings.pregnancy.notSet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not set"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa nhập"
+          }
+        }
+      }
+    },
     "settings.pregnancy.section": {
       "extractionState": "manual",
       "localizations": {
@@ -1085,6 +1374,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thai kỳ"
+          }
+        }
+      }
+    },
+    "settings.pregnancy.set": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set pregnancy dates"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập ngày thai kỳ"
           }
         }
       }

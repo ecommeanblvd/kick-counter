@@ -46,13 +46,13 @@ enum L10n {
     static var commonDelete: String { t("common.delete") }
     static var commonCancel: String { t("common.cancel") }
     static var commonOK: String { t("common.ok") }
+    static var commonSave: String { t("common.save") }
 
     static var settingsTitle: String { t("settings.title") }
     static var settingsReminderSection: String { t("settings.reminder.section") }
     static var settingsReminderToggle: String { t("settings.reminder.toggle") }
     static var settingsReminderTime: String { t("settings.reminder.time") }
     static var settingsPregnancySection: String { t("settings.pregnancy.section") }
-    static var settingsDueDateToggle: String { t("settings.dueDate.toggle") }
     static var settingsDueDate: String { t("settings.dueDate") }
     static var settingsPermissionsSection: String { t("settings.permissions.section") }
     static var settingsNotificationsDenied: String { t("settings.notifications.denied") }
@@ -61,6 +61,20 @@ enum L10n {
     static var settingsAboutSection: String { t("settings.about.section") }
     static var settingsMedicalInfo: String { t("settings.medicalInfo") }
     static var settingsVersion: String { t("settings.version") }
+    static var settingsPregnancySet: String { t("settings.pregnancy.set") }
+    static var settingsPregnancyNotSet: String { t("settings.pregnancy.notSet") }
+    static func settingsPregnancyFromLMP(_ date: String) -> String { String(format: t("settings.pregnancy.fromLMP"), date) }
+    static var settingsPregnancyClear: String { t("settings.pregnancy.clear") }
+    static var settingsPregnancyClearConfirm: String { t("settings.pregnancy.clear.confirm") }
+
+    static var pregnancyDateTitle: String { t("pregnancyDate.title") }
+    static var pregnancyDateSourceLabel: String { t("pregnancyDate.source") }
+    static var pregnancyDateSourceDueDate: String { t("pregnancyDate.source.dueDate") }
+    static var pregnancyDateSourceLMP: String { t("pregnancyDate.source.lmp") }
+    static var pregnancyDateLMPLabel: String { t("pregnancyDate.lmp") }
+    static var pregnancyDateHintDueDate: String { t("pregnancyDate.hint.dueDate") }
+    static var pregnancyDateHintLMP: String { t("pregnancyDate.hint.lmp") }
+    static func pregnancyDateEstimatedDue(_ date: String) -> String { String(format: t("pregnancyDate.estimatedDue"), date) }
 
     static var reminderTitle: String { t("reminder.title") }
     static var reminderBody: String { t("reminder.body") }
@@ -70,6 +84,8 @@ enum L10n {
 
     static var medicalTitle: String { t("medical.title") }
     static var medicalBody: String { t("medical.body") }
+    static var medicalSourcesTitle: String { t("medical.sources.title") }
+    static var medicalSourcesNote: String { t("medical.sources.note") }
 
     static var onboarding1Title: String { t("onboarding.1.title") }
     static var onboarding1Body: String { t("onboarding.1.body") }
@@ -79,6 +95,9 @@ enum L10n {
     static var onboarding3Body: String { t("onboarding.3.body") }
     static var onboardingNext: String { t("onboarding.next") }
     static var onboardingAgree: String { t("onboarding.agree") }
+    static var onboarding4Title: String { t("onboarding.4.title") }
+    static var onboarding4Body: String { t("onboarding.4.body") }
+    static var onboardingLater: String { t("onboarding.later") }
 
     static var errorSave: String { t("error.save") }
     static var errorLoad: String { t("error.load") }

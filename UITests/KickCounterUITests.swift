@@ -18,6 +18,9 @@ final class KickCounterUITests: XCTestCase {
         next.tap()
         next.tap()
         app.buttons["onboardingAgree"].tap()
+        let later = app.buttons["onboardingSkipDate"]
+        XCTAssertTrue(later.waitForExistence(timeout: 5))
+        later.tap()
     }
 
     private func tapKick(times: Int) {
