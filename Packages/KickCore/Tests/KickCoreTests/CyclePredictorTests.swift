@@ -281,6 +281,15 @@ struct CyclePredictorTests {
         #expect(result.ovulationConfirmed == false)
     }
 
+    @Test func baselineIsTheMaxOfThePreviousSixNotTheirMean() throws {
+        // Mean of the six baseline readings is ~36.27 (+0.2 = 36.47, which 36.7
+        // would clear); the rule uses the max, 36.6 (+0.2 = 36.8), which 36.7
+        // does not clear, so this must NOT confirm.
+        let logs = temperatures(from: "2026-09-05", [36.2, 36.2, 36.2, 36.2, 36.2, 36.6, 36.7, 36.7, 36.7])
+        let result = try forecast(periods("2026-07-09", "2026-08-06", "2026-09-03"), logs: logs, now: "2026-09-14")
+        #expect(result.ovulationConfirmed == false)
+    }
+
     @Test func temperatureConfirmationWinsOverAnLHTest() throws {
         var logs = temperatures(from: "2026-09-05", [36.3, 36.4, 36.2, 36.4, 36.3, 36.4, 36.6, 36.7, 36.6])
         logs.append(CycleLogRecord(day: day("2026-09-07"), lh: .positive))
@@ -306,6 +315,30 @@ struct CyclePredictorTests {
         #expect(late.cycleDay == 32)
         // A missed period is not shown as predicted on days already passed.
         #expect(late.dayStatus(for: day("2026-10-02")) == .low)
+    }
+
+    @Test func noFertileOrPeakPredictionWhileAPeriodIsLate() throws {
+        // 13 days late (nextPeriodStart 2026-10-01): nothing past the predicted
+        // start should show fertile/peak/predicted-period until a new period
+        // is actually logged.
+        let result = try forecast(periods("2026-07-09", "2026-08-06", "2026-09-03"), now: "2026-10-14")
+        #expect(result.daysLate == 13)
+        #expect(result.nextPeriodStart == day("2026-10-01"))
+        #expect(result.dayStatus(for: day("2026-10-14")) == .low)
+        for offset in 0...10 {
+            let probe = calendar.date(byAdding: .day, value: offset, to: day("2026-10-10"))!
+            #expect(result.dayStatus(for: probe) == .low)
+        }
+    }
+
+    @Test func futureFertileWindowsAreUnaffectedWhenNotLate() throws {
+        // Same cycle, but observed before the next period is due: future cycle
+        // predictions keep showing their fertile/peak days as before.
+        let result = try forecast(periods("2026-07-09", "2026-08-06", "2026-09-03"), now: "2026-09-15")
+        #expect(result.daysLate == 0)
+        #expect(result.dayStatus(for: day("2026-10-10")) == .fertile)
+        #expect(result.dayStatus(for: day("2026-10-14")) == .peak)
+        #expect(result.dayStatus(for: day("2026-10-15")) == .peak)
     }
 
     @Test func openPeriodShowsLoggedDaysThenPredictedDays() throws {

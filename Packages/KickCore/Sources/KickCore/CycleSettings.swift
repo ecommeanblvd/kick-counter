@@ -7,8 +7,8 @@ public struct CycleSettings: Equatable, Sendable {
     public static let defaultCycleLength = 28
     public static let defaultPeriodLength = 5
 
-    public var typicalCycleLength: Int
-    public var typicalPeriodLength: Int
+    public private(set) var typicalCycleLength: Int
+    public private(set) var typicalPeriodLength: Int
     public var remindersEnabled: Bool
 
     /// Lengths outside the allowed ranges are clamped into them.

@@ -80,6 +80,9 @@ public struct CycleForecast: Equatable, Sendable {
             return .period(isPredicted: true)
         }
         guard day >= currentPeriodStart else { return .low }
+        // A missed period: no fertile/peak/predicted-period coloring from the
+        // predicted next start onward until a new period is actually logged.
+        if daysLate > 0, day >= nextPeriodStart { return .low }
         if let status = windowStatus(day, ovulation: ovulationDate, window: fertileWindow) {
             return status
         }
