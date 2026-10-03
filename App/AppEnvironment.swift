@@ -11,10 +11,16 @@ struct AppEnvironment {
     let content: WeeklyContentLibrary?
 
     private static let arguments = ProcessInfo.processInfo.arguments
+    #if DEBUG
     static let isUITesting = AppClock.launchOptions.isUITesting
     static let forceDarkMode = arguments.contains("-forceDarkMode")
+    #else
+    static let isUITesting = false
+    static let forceDarkMode = false
+    #endif
 
     static func make() throws -> AppEnvironment {
+        #if DEBUG
         if isUITesting {
             AppGroup.defaults.removePersistentDomain(forName: AppGroup.identifier)
             if arguments.contains("-skipOnboarding") {
@@ -24,6 +30,7 @@ struct AppEnvironment {
                 PregnancyProfile.saveDueDate(seededDueDate, to: AppGroup.defaults)
             }
         }
+        #endif
         let container = try KickPersistence.makeContainer(inMemory: isUITesting)
         let notificationCenter: NotificationCenterClient = isUITesting ? DisabledNotificationCenter() : SystemNotificationCenter()
         let liveActivities: LiveActivityManaging = isUITesting ? NoopLiveActivityManager() : SystemLiveActivityManager()
