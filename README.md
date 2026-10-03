@@ -15,3 +15,11 @@ Dự án Xcode được sinh từ `project.yml` — sửa `project.yml`, không 
 
 ## Phát hành TestFlight
     gh workflow run testflight.yml
+
+## Thai kỳ (giai đoạn 2)
+- Nội dung theo tuần: `Packages/KickCore/Sources/KickCore/Resources/pregnancy-content.json`
+  (song ngữ, kiểm định bằng `scripts/test-core.sh`). Bác sĩ duyệt → đổi `reviewed` thành `true`.
+- Bản TestFlight (`CONTENT_PREVIEW=1`) hiện cả nội dung chưa duyệt; bản App Store chỉ hiện nội dung đã duyệt.
+- Chuỗi giao diện mới: `scripts/add-strings.py` (xem đầu file).
+- UI test: `-uiTesting -fixedNow <ISO8601>` cố định đồng hồ màn thai kỳ/lịch khám,
+  `-seedDueDate <ISO8601>` ghi sẵn ngày dự sinh.

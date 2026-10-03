@@ -30,6 +30,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           DEVELOPMENT_TEAM: ${{ vars.DEVELOPMENT_TEAM }}
           BUILD_NUMBER: ${{ github.run_number }}
+          CONTENT_PREVIEW: "1"
         run: scripts/release.sh
       - name: Remove API key
         if: always()

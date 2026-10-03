@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(KickCoordinator.self) private var coordinator
+    @Environment(AppointmentCoordinator.self) private var appointments
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(SettingsKey.hasCompletedOnboarding, store: AppGroup.defaults)
     private var hasCompletedOnboarding = false
@@ -22,9 +23,14 @@ struct RootView: View {
         )) {
             OnboardingView { hasCompletedOnboarding = true }
         }
-        .task { await coordinator.load() }
+        .task { await reload() }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await coordinator.load() } }
+            if phase == .active { Task { await reload() } }
         }
+    }
+
+    private func reload() async {
+        await coordinator.load()
+        await appointments.load()
     }
 }

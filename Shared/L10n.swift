@@ -65,6 +65,9 @@ enum L10n {
     static var reminderTitle: String { t("reminder.title") }
     static var reminderBody: String { t("reminder.body") }
 
+    static var appointmentsReminderTitle: String { t("appointments.reminder.title") }
+    static var appointmentsReminderBody: String { t("appointments.reminder.body") }
+
     static var medicalTitle: String { t("medical.title") }
     static var medicalBody: String { t("medical.body") }
 

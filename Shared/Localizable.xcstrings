@@ -1,6 +1,40 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "appointments.reminder.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remember to bring your pregnancy records."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mẹ nhớ mang theo sổ khám thai nhé."
+          }
+        }
+      }
+    },
+    "appointments.reminder.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check-up tomorrow"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày mai mẹ có lịch khám"
+          }
+        }
+      }
+    },
     "common.cancel": {
       "extractionState": "manual",
       "localizations": {
