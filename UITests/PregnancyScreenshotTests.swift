@@ -112,8 +112,18 @@ final class PregnancyScreenshotTests: XCTestCase {
                 markDone.tap()
                 // The milestones still ahead push "Past" below the fold; List only
                 // renders cells near the viewport, so scroll before it can exist.
-                app.swipeUp()
-                XCTAssertTrue(app.staticTexts["pastHeader"].waitForExistence(timeout: 5))
+                // Nudge up a little at a time (rather than a full swipeUp, which
+                // would scroll "Upcoming" out of frame too) and stop as soon as
+                // "Past" is realized, so both sections stay visible for the shot.
+                let pastHeader = app.staticTexts["pastHeader"]
+                var remainingNudges = 10
+                while !pastHeader.exists, remainingNudges > 0 {
+                    let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+                    let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55))
+                    start.press(forDuration: 0.02, thenDragTo: end)
+                    remainingNudges -= 1
+                }
+                XCTAssertTrue(pastHeader.waitForExistence(timeout: 5))
                 attachScreenshot(app, "appointments-with-past-vi-light")
 
                 app.navigationBars.buttons.element(boundBy: 0).tap()
