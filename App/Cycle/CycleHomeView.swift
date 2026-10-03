@@ -73,7 +73,10 @@ struct CycleHomeView: View {
                 )
             }
             NextPeriodCard(forecast: forecast)
-            FertileWindowCard(forecast: forecast)
+            // While late the window has passed; showing it beside "low chance" confuses.
+            if forecast.daysLate <= 0 {
+                FertileWindowCard(forecast: forecast)
+            }
             quickActions(for: forecast)
             if cycle.notificationsDenied {
                 Text(L10n.cycleNotificationsOff)

@@ -1,3 +1,4 @@
+import Accessibility
 import KickCore
 import SwiftUI
 
@@ -118,7 +119,8 @@ struct CycleDayLogSheet: View {
     private var periodSection: some View {
         Section(L10n.dayLogPeriodSection) {
             if let period = coveringPeriod {
-                Text(description(of: period))
+                Text(description(of: period, formatting: Formatting.cycleDate))
+                    .accessibilityLabel(description(of: period, formatting: Formatting.spokenDay))
                     .accessibilityIdentifier("dayLogPeriodInfo")
                 if period.isOpen, day > period.startDate {
                     endButton(for: period)
@@ -146,10 +148,10 @@ struct CycleDayLogSheet: View {
         .accessibilityIdentifier("dayLogEndPeriod")
     }
 
-    private func description(of period: PeriodRecord) -> String {
-        let start = Formatting.cycleDate(period.startDate)
+    private func description(of period: PeriodRecord, formatting format: (Date) -> String) -> String {
+        let start = format(period.startDate)
         guard let end = period.endDate else { return L10n.dayLogPeriodSince(start) }
-        return L10n.dayLogPeriodRange(start, Formatting.cycleDate(end))
+        return L10n.dayLogPeriodRange(start, format(end))
     }
 
     private func run(_ action: () async -> CycleFailure?) async {
@@ -168,6 +170,7 @@ struct CycleDayLogSheet: View {
         case .valid(let value): temperature = value
         case .invalid:
             temperatureInvalid = true
+            AccessibilityNotification.Announcement(L10n.cycleFailure(.invalidTemperature)).post()
             return
         }
         let log = CycleLogRecord(

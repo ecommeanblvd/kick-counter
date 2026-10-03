@@ -83,9 +83,13 @@ struct CycleStatusCard: View {
 struct NextPeriodCard: View {
     let forecast: CycleForecast
 
-    private var value: String {
+    private var value: String { value(formatting: Formatting.cycleDate) }
+    /// The same text with the date in spoken form, for VoiceOver.
+    private var spokenValue: String { value(formatting: Formatting.spokenDay) }
+
+    private func value(formatting format: (Date) -> String) -> String {
         if forecast.daysLate > 0 { return L10n.cycleNextPeriodLate(forecast.daysLate) }
-        let date = Formatting.cycleDate(forecast.nextPeriodStart)
+        let date = format(forecast.nextPeriodStart)
         let days = forecast.daysUntilNextPeriod
         return days == 0 ? L10n.cycleNextPeriodToday(date) : L10n.cycleNextPeriodIn(date, days)
     }
@@ -100,6 +104,7 @@ struct NextPeriodCard: View {
             .font(.headline)
             Text(value)
                 .font(.title3.weight(.semibold))
+                .accessibilityLabel(spokenValue)
         }
         .card()
         .accessibilityElement(children: .combine)
@@ -118,15 +123,12 @@ struct FertileWindowCard: View {
                 Image(systemName: "leaf.fill").foregroundStyle(CyclePalette.fertile)
             }
             .font(.headline)
-            Text(L10n.cycleFertileRange(
-                Formatting.cycleDate(forecast.fertileWindow.lowerBound),
-                Formatting.cycleDate(forecast.fertileWindow.upperBound)
-            ))
-            .font(.title3.weight(.semibold))
+            Text(range(formatting: Formatting.cycleDate))
+                .font(.title3.weight(.semibold))
+                .accessibilityLabel(range(formatting: Formatting.spokenDay))
             Label {
-                Text(forecast.ovulationConfirmed
-                    ? L10n.cycleOvulationConfirmed(Formatting.cycleDate(forecast.ovulationDate))
-                    : L10n.cycleOvulation(Formatting.cycleDate(forecast.ovulationDate)))
+                Text(ovulation(formatting: Formatting.cycleDate))
+                    .accessibilityLabel(ovulation(formatting: Formatting.spokenDay))
             } icon: {
                 Image(systemName: forecast.ovulationConfirmed ? "checkmark.seal.fill" : "sparkles")
                     .foregroundStyle(CyclePalette.peak)
@@ -149,6 +151,15 @@ struct FertileWindowCard: View {
         .card()
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("cycleFertileCard")
+    }
+
+    private func range(formatting format: (Date) -> String) -> String {
+        L10n.cycleFertileRange(format(forecast.fertileWindow.lowerBound), format(forecast.fertileWindow.upperBound))
+    }
+
+    private func ovulation(formatting format: (Date) -> String) -> String {
+        let date = format(forecast.ovulationDate)
+        return forecast.ovulationConfirmed ? L10n.cycleOvulationConfirmed(date) : L10n.cycleOvulation(date)
     }
 }
 

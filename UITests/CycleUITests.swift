@@ -13,8 +13,12 @@ final class CycleUITests: XCTestCase {
         let app = XCUIApplication.launchPinned(language: "en", seedCycles: "fertile")
         let fertileCard = app.descendants(matching: .any)["cycleFertileCard"]
         XCTAssertTrue(fertileCard.waitForExistence(timeout: 10))
-        // Regular 28-day cycles, cycle day 13: calendar ovulation on 10-04.
-        XCTAssertTrue(fertileCard.label.contains("Estimated ovulation: 10/04"), fertileCard.label)
+        // Regular 28-day cycles, cycle day 13: calendar ovulation on 10-04,
+        // window 09-29 … 10-05, next period on 10-18. VoiceOver hears spoken dates.
+        XCTAssertTrue(fertileCard.label.contains("Estimated ovulation: October 4"), fertileCard.label)
+        XCTAssertTrue(fertileCard.label.contains("September 29 – October 5"), fertileCard.label)
+        let nextPeriod = app.descendants(matching: .any)["cycleNextPeriodCard"]
+        XCTAssertTrue(nextPeriod.label.contains("October 18"), nextPeriod.label)
 
         let logToday = app.buttons["cycleLogTodayButton"]
         app.scrollUntilHittable(logToday)
@@ -25,7 +29,7 @@ final class CycleUITests: XCTestCase {
         app.buttons["dayLogSave"].tap()
 
         // A positive test today (10-02) puts ovulation on the next day.
-        waitForLabel(fertileCard, containing: "Estimated ovulation: 10/03")
+        waitForLabel(fertileCard, containing: "Estimated ovulation: October 3")
         XCTAssertTrue(fertileCard.label.contains("Based on your positive LH test"), fertileCard.label)
     }
 
@@ -53,6 +57,10 @@ final class CycleUITests: XCTestCase {
         let late = app.descendants(matching: .any)["cycleLateCard"]
         XCTAssertTrue(late.waitForExistence(timeout: 10))
         XCTAssertTrue(late.label.contains("Your period is 4 days late"), late.label)
+        // While late, the past fertile window is not shown.
+        let fertileCard = app.descendants(matching: .any)["cycleFertileCard"]
+        XCTAssertTrue(app.descendants(matching: .any)["cycleNextPeriodCard"].exists)
+        XCTAssertFalse(fertileCard.exists)
 
         let periodButton = app.buttons["cyclePeriodButton"]
         app.scrollUntilHittable(periodButton)
@@ -63,6 +71,14 @@ final class CycleUITests: XCTestCase {
         waitForLabel(status, containing: "Day 1 of your cycle")
         XCTAssertFalse(late.exists)
         XCTAssertEqual(periodButton.label, "Period ended today")
+        XCTAssertTrue(fertileCard.exists)
+
+        let logToday = app.buttons["cycleLogTodayButton"]
+        app.scrollUntilHittable(logToday)
+        logToday.tap()
+        let periodInfo = app.descendants(matching: .any)["dayLogPeriodInfo"]
+        XCTAssertTrue(periodInfo.waitForExistence(timeout: 5))
+        XCTAssertEqual(periodInfo.label, "Period since October 2")
     }
 
     /// Spec §6: a temperature outside 35.0–38.5 °C is not saved.
