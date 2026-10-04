@@ -163,6 +163,23 @@ enum L10n {
     static var onboarding4Title: String { t("onboarding.4.title") }
     static var onboarding4Body: String { t("onboarding.4.body") }
     static var onboardingLater: String { t("onboarding.later") }
+    static var onboardingModeTitle: String { t("onboarding.mode.title") }
+    static var onboardingModeBody: String { t("onboarding.mode.body") }
+    static var onboardingModeTTCDetail: String { t("onboarding.mode.ttc.detail") }
+    static var onboardingModePregnantDetail: String { t("onboarding.mode.pregnant.detail") }
+    static var onboardingCycleTitle: String { t("onboarding.cycle.title") }
+    static var onboardingCycleBody: String { t("onboarding.cycle.body") }
+    static var modeTryingToConceive: String { t("mode.tryingToConceive") }
+    static var modePregnant: String { t("mode.pregnant") }
+    static func cycleSettingsCycleLength(_ days: Int) -> String { String(format: t("cycleSettings.cycleLength"), days) }
+    static func cycleSettingsPeriodLength(_ days: Int) -> String { String(format: t("cycleSettings.periodLength"), days) }
+    static var cycleSettingsHint: String { t("cycleSettings.hint") }
+    static var settingsModeSection: String { t("settings.mode.section") }
+    static var settingsCycleSection: String { t("settings.cycle.section") }
+    static var settingsCycleReminders: String { t("settings.cycle.reminders") }
+    static var settingsCycleRemindersHint: String { t("settings.cycle.remindersHint") }
+    static var medicalTTCTitle: String { t("medical.ttc.title") }
+    static var medicalTTCBody: String { t("medical.ttc.body") }
 
     static var errorSave: String { t("error.save") }
     static var errorLoad: String { t("error.load") }

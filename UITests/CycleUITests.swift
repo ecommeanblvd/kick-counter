@@ -158,4 +158,63 @@ final class CycleUITests: XCTestCase {
         XCTAssertTrue(progress.label.contains("Week 4 + 4 days"), progress.label)
         XCTAssertEqual(app.tabBars.buttons.count, 4)
     }
+
+    /// Spec §8: onboarding → "Trying to conceive" → last period → the Cycle tab shows the right cycle day.
+    @MainActor
+    func testOnboardingTryingToConceiveShowsTheCycleDay() {
+        let app = XCUIApplication.launchPinned(language: "en", skipOnboarding: false)
+        let next = app.buttons["onboardingNext"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        next.tap()
+        next.tap()
+        app.buttons["onboardingAgree"].tap()
+        let tryingToConceive = app.buttons["onboardingModeTTC"]
+        XCTAssertTrue(tryingToConceive.waitForExistence(timeout: 5))
+        tryingToConceive.tap()
+
+        let wheels = app.pickerWheels
+        XCTAssertTrue(wheels.element(boundBy: 2).waitForExistence(timeout: 5))
+        wheels.element(boundBy: 0).adjust(toPickerWheelValue: "September") // en_US order: month, day, year
+        wheels.element(boundBy: 1).adjust(toPickerWheelValue: "20")
+        app.buttons["onboardingSaveCycle"].tap()
+
+        // 2026-09-20 → 2026-10-02 is cycle day 13, on the three trying-to-conceive tabs.
+        let status = app.descendants(matching: .any)["cycleStatusCard"]
+        XCTAssertTrue(status.waitForExistence(timeout: 10))
+        XCTAssertTrue(status.label.contains("Day 13 of your cycle"), status.label)
+        XCTAssertEqual(app.tabBars.buttons.count, 3)
+    }
+
+    /// Spec §4.3: switching mode in Settings keeps the pregnancy dates.
+    @MainActor
+    func testSwitchingModeInSettingsKeepsThePregnancyDates() {
+        let app = XCUIApplication.launchPinned(language: "en", dueDate: UITestDates.dueAtWeek24)
+        app.openTab(.settings)
+        let tryingToConceive = app.segmentedControls.buttons["Trying to conceive"]
+        XCTAssertTrue(tryingToConceive.waitForExistence(timeout: 10))
+        tryingToConceive.tap()
+
+        // Settings stays open, now with the cycle section and three tabs.
+        XCTAssertTrue(app.descendants(matching: .any)["settingsCycleLength"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.tabBars.buttons.count, 3)
+        XCTAssertFalse(app.buttons["settingsPregnancyDates"].exists)
+        app.openCycleTab(.cycle)
+        XCTAssertTrue(app.buttons["cycleAddPeriodButton"].waitForExistence(timeout: 5))
+
+        // Back to pregnant: no period logged, so the sheet starts from the stored due date.
+        app.openCycleTab(.settings)
+        let pregnant = app.segmentedControls.buttons["Pregnant"]
+        XCTAssertTrue(pregnant.waitForExistence(timeout: 5))
+        pregnant.tap()
+        let save = app.buttons["imPregnantSave"]
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        save.tap()
+
+        XCTAssertTrue(app.buttons["settingsPregnancyDates"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.tabBars.buttons.count, 4)
+        app.openTab(.pregnancy)
+        let progress = app.descendants(matching: .any)["weekProgressCard"]
+        XCTAssertTrue(progress.waitForExistence(timeout: 5))
+        XCTAssertTrue(progress.label.contains("Week 24 + 3 days"), progress.label)
+    }
 }

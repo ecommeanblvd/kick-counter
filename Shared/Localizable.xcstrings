@@ -1667,6 +1667,57 @@
         }
       }
     },
+    "cycleSettings.cycleLength": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cycle length: %d days"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Độ dài chu kỳ: %d ngày"
+          }
+        }
+      }
+    },
+    "cycleSettings.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used for predictions until you have logged a few cycles."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng để dự đoán cho tới khi bạn đã ghi vài chu kỳ."
+          }
+        }
+      }
+    },
+    "cycleSettings.periodLength": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period length: %d days"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số ngày hành kinh: %d ngày"
+          }
+        }
+      }
+    },
     "dayLog.bbt": {
       "extractionState": "manual",
       "localizations": {
@@ -2517,6 +2568,40 @@
         }
       }
     },
+    "medical.ttc.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trying-to-conceive mode only helps you track your cycle. It is not a method of contraception and must not be used to avoid pregnancy. Ovulation, the fertile window and the next period are estimates based on what you log.\n\nSee a doctor if:\n• you have been trying for 12 months without getting pregnant (6 months if you are 35 or older);\n• your cycles are shorter than 21 days, longer than 45 days, or very irregular;\n• you have unusual bleeding between periods."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ Mong con chỉ giúp bạn theo dõi chu kỳ. Đây không phải là biện pháp tránh thai và không được dùng để tránh thai. Ngày rụng trứng, cửa sổ thụ thai và kỳ kinh tiếp theo chỉ là ước tính dựa trên những gì bạn ghi.\n\nHãy đi khám bác sĩ nếu:\n• đã cố gắng có thai 12 tháng mà chưa có (6 tháng nếu từ 35 tuổi trở lên);\n• chu kỳ ngắn hơn 21 ngày, dài hơn 45 ngày hoặc rất không đều;\n• ra máu bất thường giữa hai kỳ kinh."
+          }
+        }
+      }
+    },
+    "medical.ttc.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trying to conceive"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi đang mong con"
+          }
+        }
+      }
+    },
     "milestone.weeks": {
       "extractionState": "manual",
       "localizations": {
@@ -2530,6 +2615,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tuần %1$ld–%2$ld"
+          }
+        }
+      }
+    },
+    "mode.pregnant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregnant"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang mang thai"
+          }
+        }
+      }
+    },
+    "mode.tryingToConceive": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trying to conceive"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mong con"
           }
         }
       }
@@ -2687,6 +2806,40 @@
         }
       }
     },
+    "onboarding.cycle.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the first day of your last period, or skip this and add it later."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập ngày đầu tiên của kỳ kinh gần nhất, hoặc bỏ qua để nhập sau."
+          }
+        }
+      }
+    },
+    "onboarding.cycle.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your cycle"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chu kỳ của bạn"
+          }
+        }
+      }
+    },
     "onboarding.later": {
       "extractionState": "manual",
       "localizations": {
@@ -2700,6 +2853,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Để sau"
+          }
+        }
+      }
+    },
+    "onboarding.mode.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can change this any time in Settings."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn có thể đổi bất cứ lúc nào trong Cài đặt."
+          }
+        }
+      }
+    },
+    "onboarding.mode.pregnant.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow your pregnancy week by week and count your baby's kicks"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo dõi thai kỳ từng tuần và đếm cử động thai"
+          }
+        }
+      }
+    },
+    "onboarding.mode.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What would you like to track?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn muốn theo dõi điều gì?"
+          }
+        }
+      }
+    },
+    "onboarding.mode.ttc.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track your periods and your most fertile days"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo dõi kỳ kinh và những ngày dễ thụ thai"
           }
         }
       }
@@ -3401,6 +3622,57 @@
         }
       }
     },
+    "settings.cycle.reminders": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cycle reminders"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắc chu kỳ"
+          }
+        }
+      }
+    },
+    "settings.cycle.remindersHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders come at 9:00: 2 days before your fertile window, the day before your period is due, and once if it is 3 days late."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắc lúc 9:00: 2 ngày trước cửa sổ thụ thai, 1 ngày trước kỳ kinh dự kiến và một lần khi trễ kinh 3 ngày."
+          }
+        }
+      }
+    },
+    "settings.cycle.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cycle"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chu kỳ"
+          }
+        }
+      }
+    },
     "settings.dueDate": {
       "extractionState": "manual",
       "localizations": {
@@ -3448,6 +3720,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thông tin y tế"
+          }
+        }
+      }
+    },
+    "settings.mode.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ"
           }
         }
       }

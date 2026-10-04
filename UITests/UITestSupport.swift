@@ -25,11 +25,11 @@ extension XCUIApplication {
         language: String = "en",
         dark: Bool = false,
         dueDate: String? = nil,
-        seedCycles: String? = nil
+        seedCycles: String? = nil,
+        skipOnboarding: Bool = true
     ) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = [
-            "-uiTesting", "-skipOnboarding",
+        app.launchArguments = ["-uiTesting"] + (skipOnboarding ? ["-skipOnboarding"] : []) + [
             "-AppleLanguages", "(\(language))",
             "-AppleLocale", language == "vi" ? "vi_VN" : "en_US",
             "-fixedNow", UITestDates.fixedNow,

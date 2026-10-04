@@ -103,13 +103,20 @@ final class ScreenshotTests: XCTestCase {
         next.tap()
         snap(app, "onboarding-3")
         app.buttons["onboardingAgree"].tap()
+        let pregnant = app.buttons["onboardingModePregnant"]
+        XCTAssertTrue(pregnant.waitForExistence(timeout: 5))
+        snap(app, "onboarding-mode")
+        pregnant.tap()
         let later = app.buttons["onboardingSkipDate"]
         XCTAssertTrue(later.waitForExistence(timeout: 5))
         snap(app, "onboarding-4")
         later.tap()
 
         app.openTab(.settings)
+        // The new "Mode" section sits on top; Form only creates rows near the viewport.
+        XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
         let datesRow = app.buttons["settingsPregnancyDates"]
+        app.scrollUntilHittable(datesRow)
         XCTAssertTrue(datesRow.waitForExistence(timeout: 5))
         snap(app, "settings")
 
