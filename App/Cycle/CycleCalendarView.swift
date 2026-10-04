@@ -145,7 +145,9 @@ struct CalendarDayCell: View {
             }
             .opacity(isFuture && status == nil ? 0.5 : 1)
         }
-        .buttonStyle(.plain)
+        // Not .plain: a disabled plain button fades the whole cell, which made the
+        // predicted peak days unreadable. Future days keep their colours.
+        .buttonStyle(CalendarDayButtonStyle())
         .disabled(isFuture)
         .accessibilityLabel(CycleAccessibility.dayLabel(day: day, status: status, log: log, isToday: isToday))
         .accessibilityIdentifier("calendarDay")
@@ -167,6 +169,13 @@ struct CalendarDayCell: View {
         case .period(isPredicted: false)?, .peak?: Color(.systemBackground)
         default: Color.primary
         }
+    }
+}
+
+/// Pressed feedback only; ignores the disabled state so future days stay legible.
+private struct CalendarDayButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.opacity(configuration.isPressed ? 0.6 : 1)
     }
 }
 
