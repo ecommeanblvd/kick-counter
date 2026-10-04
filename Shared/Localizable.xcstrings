@@ -1157,6 +1157,23 @@
         }
       }
     },
+    "cycle.imPregnant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm pregnant"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tôi đã có thai"
+          }
+        }
+      }
+    },
     "cycle.irregular.body": {
       "extractionState": "manual",
       "localizations": {
@@ -2258,6 +2275,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lịch sử"
+          }
+        }
+      }
+    },
+    "imPregnant.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your due date is worked out from the first day of your last period. Check the date, then tap Save."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày dự sinh được tính từ ngày đầu tiên của kỳ kinh cuối. Hãy kiểm tra lại ngày rồi bấm Lưu."
+          }
+        }
+      }
+    },
+    "imPregnant.keepsData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your cycle history is kept. You can switch back in Settings."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu chu kỳ vẫn được giữ lại. Bạn có thể đổi lại trong Cài đặt."
+          }
+        }
+      }
+    },
+    "imPregnant.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Congratulations!"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chúc mừng bạn!"
           }
         }
       }

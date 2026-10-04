@@ -94,4 +94,24 @@ final class CycleScreenshotTests: XCTestCase {
             app.terminate()
         }
     }
+
+    @MainActor
+    func testImPregnantScreens() {
+        for (language, dark) in Self.variants {
+            let suffix = "\(language)-\(dark ? "dark" : "light")"
+            let app = XCUIApplication.launchPinned(language: language, dark: dark, seedCycles: "late")
+            let button = app.buttons["imPregnantButton"]
+            XCTAssertTrue(button.waitForExistence(timeout: 10))
+            app.scrollUntilHittable(button)
+            button.tap()
+            XCTAssertTrue(app.buttons["imPregnantSave"].waitForExistence(timeout: 5))
+            attachScreenshot(app, "im-pregnant-\(suffix)")
+            if language == "vi", !dark {
+                app.buttons["imPregnantSave"].tap()
+                XCTAssertTrue(app.descendants(matching: .any)["weekProgressCard"].waitForExistence(timeout: 10))
+                attachScreenshot(app, "im-pregnant-after-vi-light")
+            }
+            app.terminate()
+        }
+    }
 }

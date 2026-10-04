@@ -209,6 +209,10 @@ enum L10n {
     static var cycleStartPeriod: String { t("cycle.startPeriod") }
     static var cycleEndPeriod: String { t("cycle.endPeriod") }
     static var cycleLogToday: String { t("cycle.logToday") }
+    static var cycleImPregnant: String { t("cycle.imPregnant") }
+    static var imPregnantTitle: String { t("imPregnant.title") }
+    static var imPregnantBody: String { t("imPregnant.body") }
+    static var imPregnantKeepsData: String { t("imPregnant.keepsData") }
     static var cycleDisclaimer: String { t("cycle.disclaimer") }
     static var cycleNotificationsOff: String { t("cycle.notificationsOff") }
     static var cycleReminderFertileTitle: String { t("cycle.reminder.fertile.title") }

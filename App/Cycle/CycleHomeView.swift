@@ -8,13 +8,15 @@ struct CycleDaySelection: Identifiable {
 }
 
 /// Trying-to-conceive mode, tab 1 (default): where the cycle stands today,
-/// the next period, the fertile window and quick logging.
+/// the next period, the fertile window, quick logging and — once the period
+/// is 3 days late — "I'm pregnant".
 struct CycleHomeView: View {
     @Environment(CycleCoordinator.self) private var cycle
     @State private var showingLastPeriodSheet = false
     @State private var logDay: CycleDaySelection?
     @State private var actionFailure: CycleFailure?
     @State private var working = false
+    @State private var showingImPregnant = false
 
     var body: some View {
         NavigationStack {
@@ -23,6 +25,9 @@ struct CycleHomeView: View {
                 .sheet(isPresented: $showingLastPeriodSheet) { LastPeriodSheet() }
                 .sheet(item: $logDay) { selection in
                     CycleDayLogSheet(day: selection.date, existing: cycle.log(on: selection.date))
+                }
+                .sheet(isPresented: $showingImPregnant) {
+                    ImPregnantSheet(lastPeriodStart: cycle.forecast?.currentPeriodStart)
                 }
                 .alert(failureMessage ?? "", isPresented: failureBinding) {
                     Button(L10n.commonOK) {}
@@ -97,7 +102,14 @@ struct CycleHomeView: View {
             title: L10n.cycleLateTitle(forecast.daysLate),
             message: L10n.cycleLateBody,
             identifier: "cycleLateCard"
-        )
+        ) {
+            Button { showingImPregnant = true } label: {
+                Label(L10n.cycleImPregnant, systemImage: "heart.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("imPregnantButton")
+        }
     }
 
     private func quickActions(for forecast: CycleForecast) -> some View {
@@ -150,7 +162,7 @@ struct CycleHomeView: View {
     /// Only while no sheet is open: the sheets report their own errors.
     private var failureBinding: Binding<Bool> {
         Binding(
-            get: { failureMessage != nil && logDay == nil && !showingLastPeriodSheet },
+            get: { failureMessage != nil && logDay == nil && !showingLastPeriodSheet && !showingImPregnant },
             set: { if !$0 { actionFailure = nil; cycle.clearFailure() } }
         )
     }

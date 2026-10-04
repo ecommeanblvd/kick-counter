@@ -136,4 +136,26 @@ final class CycleUITests: XCTestCase {
         waitForLabel(day("October 2,"), containing: "today, most fertile day, positive LH test logged")
         XCTAssertTrue(day("October 4,").label.contains("fertile window"), day("October 4,").label)
     }
+
+    /// Spec §8: "I'm pregnant" switches to the Pregnancy tab at the right week.
+    @MainActor
+    func testImPregnantOpensThePregnancyTabAtTheRightWeek() {
+        let app = XCUIApplication.launchPinned(language: "en", seedCycles: "late")
+        let button = app.buttons["imPregnantButton"]
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        app.scrollUntilHittable(button)
+        button.tap()
+
+        // Prefilled with the latest period, 2026-08-31 → due 2027-06-07.
+        let estimate = app.staticTexts["pregnancyEstimatedDue"]
+        XCTAssertTrue(estimate.waitForExistence(timeout: 5))
+        XCTAssertTrue(estimate.label.contains("June 7, 2027"), estimate.label)
+        app.buttons["imPregnantSave"].tap()
+
+        // 32 days since the last period: 4 weeks 4 days, on the four pregnancy tabs.
+        let progress = app.descendants(matching: .any)["weekProgressCard"]
+        XCTAssertTrue(progress.waitForExistence(timeout: 10))
+        XCTAssertTrue(progress.label.contains("Week 4 + 4 days"), progress.label)
+        XCTAssertEqual(app.tabBars.buttons.count, 4)
+    }
 }
